@@ -3,5 +3,10 @@
     "name": "DEBUG-1",
     "html": "games/html/DEBUG/DEBUG-1.html",
     "icon": "games/icons/DEBUG/DEBUG-1"
+  },
+  {
+    "name": "DEBUG-2",
+    "html": "games/html/DEBUG/DEBUG-2.html",
+    "icon": "games/icons/DEBUG/DEBUG-2"
   }
 ]
