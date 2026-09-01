@@ -25,14 +25,29 @@
     "icon": "games/icons/FNAF/Five-Nights-at-Freddys.png"
   },
   {
+    "name": "FNF Garcelleo",
+    "html": "games/html/FNF/FNF Garcelleo.html",
+    "icon": "games/icons/FNF/FNF-Garcelleo.png"
+  },
+  {
+    "name": "FNF Ourple Guy",
+    "html": "games/html/FNF/FNF Ourple Guy.html",
+    "icon": "games/icons/FNF/FNF-Ourple-Guy.png"
+  },
+  {
     "name": "Friday Night Funkin' + Hatsune Miku",
     "html": "games/html/FNF/Friday Night Funkin' + Hatsune Miku.html",
     "icon": "games/icons/FNF/Friday-Night-Funkin'-+-Hatsune-Miku.png"
   },
   {
-    "name": "Friday Night Funkin'",
-    "html": "games/html/FNF/Friday Night Funkin'.html",
+    "name": "Friday Night Funkin",
+    "html": "games/html/FNF/Friday Night Funkin.html",
     "icon": "games/icons/FNF/Friday-Night-Funkin'.png"
+  },
+  {
+    "name": "8 Ball Pool",
+    "html": "games/html/Flash/8 Ball Pool.html",
+    "icon": "games/icons/Flash/8-Ball-Pool.png"
   },
   {
     "name": "Backyard Baseball",
@@ -43,6 +58,11 @@
     "name": "Baseball Bros",
     "html": "games/html/Flash/Baseball Bros.html",
     "icon": "games/icons/Flash/Baseball-Bros.png"
+  },
+  {
+    "name": "Earn to Die 2",
+    "html": "games/html/Flash/Earn to Die 2.html",
+    "icon": "games/icons/Flash/Earn-to-Die-2.png"
   },
   {
     "name": "Papa's Pizzeria",
@@ -90,6 +110,11 @@
     "icon": "games/icons/Minecraft/Minecraft-Indev.png"
   },
   {
+    "name": "Super Mario 64",
+    "html": "games/html/N64/Super Mario 64.html",
+    "icon": "games/icons/N64/Super-Mario-64.png"
+  },
+  {
     "name": "100 in 1",
     "html": "games/html/NES/100 in 1.html",
     "icon": "games/icons/NES/100-in-1.png"
@@ -115,19 +140,49 @@
     "icon": "games/icons/Ports/Deltarune.png"
   },
   {
+    "name": "Die in the Dungeon",
+    "html": "games/html/Ports/Die in the Dungeon.html",
+    "icon": "games/icons/Ports/Die-in-the-Dungeon.png"
+  },
+  {
+    "name": "Grand Theif Auto",
+    "html": "games/html/PS1/Grand Theif Auto.html",
+    "icon": "games/icons/PS1/Grand-Theif-Auto.png"
+  },
+  {
+    "name": "Sonic Jam",
+    "html": "games/html/Sega Saturn/Sonic Jam.html",
+    "icon": "games/icons/Sega Saturn/Sonic-Jam.png"
+  },
+  {
+    "name": "Sonic R",
+    "html": "games/html/Sega Saturn/Sonic R.html",
+    "icon": "games/icons/Sega Saturn/Sonic-R.png"
+  },
+  {
+    "name": "Donkey Kong Country",
+    "html": "games/html/SNES/Donkey Kong Country.html",
+    "icon": "games/icons/SNES/Donkey-Kong-Country.png"
+  },
+  {
     "name": "Emulator.js",
     "html": "games/html/Tools/Emulator.js.html",
     "icon": "games/icons/Tools/Emulator.js.png"
   },
   {
-    "name": "Drive Mad",
-    "html": "games/html/Website/Drive Mad.html",
-    "icon": "games/icons/Website/Drive-Mad.png"
+    "name": "Cookie Clicker",
+    "html": "games/html/Website/Cookie Clicker.html",
+    "icon": "games/icons/Website/Cookie-Clicker.png"
   },
   {
     "name": "Dune Dash",
     "html": "games/html/Website/Dune Dash.html",
     "icon": "games/icons/Website/Dune-Dash.png"
+  },
+  {
+    "name": "Escape Road City 2",
+    "html": "games/html/Website/Escape Road City 2.html",
+    "icon": "games/icons/Website/Escape-Road-City-2.png"
   },
   {
     "name": "Gladihoppers",
@@ -143,6 +198,11 @@
     "name": "OvO",
     "html": "games/html/Website/OvO.html",
     "icon": "games/icons/Website/OvO.png"
+  },
+  {
+    "name": "Ragdoll Hit",
+    "html": "games/html/Website/Ragdoll Hit.html",
+    "icon": "games/icons/Website/Ragdoll-Hit.png"
   },
   {
     "name": "Retro Bowl",
@@ -163,6 +223,11 @@
     "name": "Stickman Duel",
     "html": "games/html/Website/Stickman Duel.html",
     "icon": "games/icons/Website/Stickman-Duel.png"
+  },
+  {
+    "name": "Tag",
+    "html": "games/html/Website/Tag.html",
+    "icon": "games/icons/Website/Tag.png"
   },
   {
     "name": "Wordle",
