@@ -25,19 +25,9 @@
     "icon": "games/icons/FNAF/fnaf.png"
   },
   {
-    "name": "FNF Garcelleo",
-    "html": "games/html/FNF/fnf.html",
-    "icon": "games/icons/FNF/fnf.png"
-  },
-  {
     "name": "FNF Ourple Guy",
     "html": "games/html/FNF/fnf-ourple-guy.html",
     "icon": "games/icons/FNF/fnf-ourple-guy.png"
-  },
-  {
-    "name": "Friday Night Funkin' + Hatsune Miku",
-    "html": "games/html/FNF/fnf.html",
-    "icon": "games/icons/FNF/fnf.png"
   },
   {
     "name": "Friday Night Funkin",
