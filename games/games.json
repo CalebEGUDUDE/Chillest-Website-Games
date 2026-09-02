@@ -10,228 +10,213 @@
     "icon": "games/icons/DEBUG/DEBUG-2.png"
   },
   {
-    "name": "Doom",
-    "html": "games/html/DOS/Doom.html",
-    "icon": "games/icons/DOS/Doom.png"
+    "name": "doom",
+    "html": "games/html/DOS/doom.html",
+    "icon": "games/icons/DOS/doom.png"
   },
   {
     "name": "Five Nights at Epstien's",
-    "html": "games/html/FNAF/Five-Nights-at-Epstiens.html",
+    "html": "games/html/FNAF/fnae.html",
     "icon": "games/icons/placeholder.png"
   },
   {
     "name": "Five Nights at Freddy's",
-    "html": "games/html/FNAF/Five-Nights-at-Freddys.html",
-    "icon": "games/icons/FNAF/Five-Nights-at-Freddys.png"
+    "html": "games/html/FNAF/fnaf.html",
+    "icon": "games/icons/FNAF/fnaf.png"
   },
   {
     "name": "FNF Garcelleo",
-    "html": "games/html/FNF/FNF Garcelleo.html",
-    "icon": "games/icons/FNF/FNF Garcello.png"
+    "html": "games/html/FNF/fnf.html",
+    "icon": "games/icons/FNF/fnf.png"
   },
   {
     "name": "FNF Ourple Guy",
-    "html": "games/html/FNF/FNF Ourple Guy.html",
-    "icon": "games/icons/FNF/FNF Ourple Guy.png"
+    "html": "games/html/FNF/fnf-ourple-guy.html",
+    "icon": "games/icons/FNF/fnf-ourple-guy.png"
   },
   {
     "name": "Friday Night Funkin' + Hatsune Miku",
-    "html": "games/html/FNF/Friday Night Funkin' + Hatsune Miku.html",
-    "icon": "games/icons/FNF/Friday-Night-Funkin'-+-Hatsune-Miku.png"
+    "html": "games/html/FNF/fnf.html",
+    "icon": "games/icons/FNF/fnf.png"
   },
   {
     "name": "Friday Night Funkin",
-    "html": "games/html/FNF/Friday Night Funkin.html",
-    "icon": "games/icons/FNF/Friday-Night-Funkin'.png"
+    "html": "games/html/FNF/fnf.html",
+    "icon": "games/icons/FNF/fnf.png"
   },
   {
     "name": "8 Ball Pool",
-    "html": "games/html/Flash/8 Ball Pool.html",
-    "icon": "games/icons/Flash/8 Ball Pool.png"
+    "html": "games/html/Flash/8-ball-pool.html",
+    "icon": "games/icons/Flash/8-ball-pool.png"
   },
   {
     "name": "Backyard Baseball",
-    "html": "games/html/Flash/Backyard-Baseball.html",
-    "icon": "games/icons/Flash/Backyard-Baseball.png"
+    "html": "games/html/Flash/backyard-baseball.html",
+    "icon": "games/icons/Flash/backyard-baseball.png"
   },
   {
     "name": "Baseball Bros",
-    "html": "games/html/Flash/Baseball Bros.html",
-    "icon": "games/icons/Flash/Baseball-Bros.png"
+    "html": "games/html/Flash/basketball-bros.html",
+    "icon": "games/icons/placeholder.png"
   },
   {
     "name": "Earn to Die 2",
-    "html": "games/html/Flash/Earn to Die 2.html",
-    "icon": "games/icons/Flash/Earn to Die 2.png"
+    "html": "games/html/Flash/earn-to-die-2.html",
+    "icon": "games/icons/placeholder.png"
   },
   {
     "name": "Papa's Pizzeria",
-    "html": "games/html/Flash/Papas-Pizzeria.html",
-    "icon": "games/icons/Flash/Papas-Pizzeria.png"
+    "html": "games/html/Flash/papas-pizzeria.html",
+    "icon": "games/icons/Flash/papas-pizzeria.png"
   },
   {
     "name": "Plants vs Zombies",
-    "html": "games/html/Flash/Plants-vs-Zombies.html",
-    "icon": "games/icons/Flash/Plants-vs-Zombies.png"
+    "html": "games/html/Flash/pvz.html",
+    "icon": "games/icons/Flash/pvz.png"
   },
   {
     "name": "Minecraft 1.12.2",
-    "html": "games/html/Minecraft/Minecraft 1.12.2.html",
-    "icon": "games/icons/Minecraft/Minecraft-1.12.2.png"
+    "html": "games/html/Minecraft/mc-1-12-2.html",
+    "icon": "games/icons/Minecraft/mc-1-12-2.png"
   },
   {
     "name": "Minecraft 1.5.2",
-    "html": "games/html/Minecraft/Minecraft 1.5.2.html",
-    "icon": "games/icons/Minecraft/Minecraft-1.5.2.png"
+    "html": "games/html/Minecraft/mc-1-5-2.html",
+    "icon": "games/icons/Minecraft/mc-1-5-2.png"
   },
   {
     "name": "Minecraft 1.8.8",
-    "html": "games/html/Minecraft/Minecraft 1.8.8.html",
-    "icon": "games/icons/Minecraft/Minecraft-1.8.8.png"
+    "html": "games/html/Minecraft/mc-1-8-8.html",
+    "icon": "games/icons/Minecraft/mc-1-8-8.png"
   },
   {
     "name": "Minecraft Alpha 1.2.6",
-    "html": "games/html/Minecraft/Minecraft Alpha 1.2.6.html",
-    "icon": "games/icons/Minecraft/Minecraft-Alpha-1.2.6.png"
+    "html": "games/html/Minecraft/mc-alp-1-2-6.html",
+    "icon": "games/icons/Minecraft/mc-alp-1-2-6.png"
   },
   {
     "name": "Minecraft Beta 1.3",
-    "html": "games/html/Minecraft/Minecraft Beta 1.3.html",
-    "icon": "games/icons/Minecraft/Minecraft-Beta-1.3.png"
+    "html": "games/html/Minecraft/mc-beta-1-3.html",
+    "icon": "games/icons/Minecraft/mc-beta-1-3.png"
   },
   {
     "name": "Minecraft Beta 1.7.3",
-    "html": "games/html/Minecraft/Minecraft Beta 1.7.3.html",
-    "icon": "games/icons/Minecraft/Minecraft-Beta-1.7.3.png"
+    "html": "games/html/Minecraft/mc-beta-1-7-3.html",
+    "icon": "games/icons/Minecraft/mc-beta-1-7-3.png"
   },
   {
     "name": "Minecraft Indev",
-    "html": "games/html/Minecraft/Minecraft Indev.html",
-    "icon": "games/icons/Minecraft/Minecraft-Indev.png"
+    "html": "games/html/Minecraft/mc-indev.html",
+    "icon": "games/icons/Minecraft/mc-indev.png"
   },
   {
     "name": "Super Mario 64",
-    "html": "games/html/N64/Super Mario 64.html",
-    "icon": "games/icons/N64/Super Mario 64.png"
+    "html": "games/html/N64/super-mario-64.html",
+    "icon": "games/icons/N64/super-mario-64.png"
   },
   {
     "name": "100 in 1",
-    "html": "games/html/NES/100 in 1.html",
+    "html": "games/html/NES/100-in-1.html",
     "icon": "games/icons/NES/100-in-1.png"
   },
   {
     "name": "Famidash",
-    "html": "games/html/NES/Famidash.html",
-    "icon": "games/icons/NES/Famidash.png"
+    "html": "games/html/NES/famidash.html",
+    "icon": "games/icons/NES/famidash.png"
   },
   {
     "name": "Angry Birds",
-    "html": "games/html/Ports/Angry Birds.html",
-    "icon": "games/icons/Ports/Angry-Birds.png"
+    "html": "games/html/Ports/angry-birds.html",
+    "icon": "games/icons/Ports/angry-birds.png"
   },
   {
     "name": "Celeste",
-    "html": "games/html/Ports/Celeste.html",
-    "icon": "games/icons/Ports/Celeste.png"
+    "html": "games/html/Ports/celeste.html",
+    "icon": "games/icons/Ports/celeste.png"
   },
   {
     "name": "Deltarune",
-    "html": "games/html/Ports/Deltarune.html",
-    "icon": "games/icons/Ports/Deltarune.png"
+    "html": "games/html/Ports/deltarune-1-2.html",
+    "icon": "games/icons/Ports/deltarune.png"
   },
   {
     "name": "Die in the Dungeon",
-    "html": "games/html/Ports/Die in the Dungeon.html",
-    "icon": "games/icons/Ports/Die in the Dungeon.png"
+    "html": "games/html/Ports/die-in-the-dungeon.html",
+    "icon": "games/icons/Ports/die-in-the-dungeon.png"
   },
   {
     "name": "Grand Theif Auto",
-    "html": "games/html/PS1/Grand Theif Auto.html",
-    "icon": "games/icons/PS1/Grand Theif Auto.png"
+    "html": "games/html/PS1/gta.html",
+    "icon": "games/icons/PS1/gta.png"
   },
   {
     "name": "Sonic Jam",
-    "html": "games/html/Sega Saturn/Sonic Jam.html",
-    "icon": "games/icons/Sega Saturn/Sonic Jam.png"
+    "html": "games/html/Sega Saturn/sonic-jam.html",
+    "icon": "games/icons/Sega Saturn/sonic-jam.png"
   },
   {
     "name": "Sonic R",
-    "html": "games/html/Sega Saturn/Sonic R.html",
-    "icon": "games/icons/Sega Saturn/Sonic R.png"
+    "html": "games/html/Sega Saturn/sonic-r.html",
+    "icon": "games/icons/Sega Saturn/sonic-r.png"
   },
   {
     "name": "Donkey Kong Country",
-    "html": "games/html/SNES/Donkey Kong Country.html",
-    "icon": "games/icons/SNES/Donkey Kong Country.png"
+    "html": "games/html/SNES/donkey-kong-country.html",
+    "icon": "games/icons/SNES/donkey-kong-country.png.png"
   },
   {
     "name": "Emulator.js",
-    "html": "games/html/Tools/Emulator.js.html",
-    "icon": "games/icons/Tools/Emulator.js.png"
+    "html": "games/html/Tools/emulator-js.html",
+    "icon": "games/icons/Tools/emulator-js.png"
   },
   {
     "name": "Cookie Clicker",
-    "html": "games/html/Website/Cookie Clicker.html",
-    "icon": "games/icons/Website/Cookie Clicker.png"
+    "html": "games/html/Website/cookie-clicker.html",
+    "icon": "games/icons/Website/cookie-clicker.png"
   },
   {
     "name": "Dune Dash",
-    "html": "games/html/Website/Dune Dash.html",
-    "icon": "games/icons/Website/Dune-Dash.png"
-  },
-  {
-    "name": "Escape Road City 2",
-    "html": "games/html/Website/Escape Road City 2.html",
-    "icon": "games/icons/Website/Escape Road City 2.png"
+    "html": "games/html/Website/dune-dash.html",
+    "icon": "games/icons/Website/dune-dash.png"
   },
   {
     "name": "Gladihoppers",
-    "html": "games/html/Website/Gladihoppers.html",
-    "icon": "games/icons/Website/Gladihoppers.png"
+    "html": "games/html/Website/gladihoppers.html",
+    "icon": "games/icons/Website/gladihoppers.png"
   },
   {
     "name": "Kart Bros",
-    "html": "games/html/Website/Kart Bros.html",
-    "icon": "games/icons/Website/Kart-Bros.png"
-  },
-  {
-    "name": "OvO",
-    "html": "games/html/Website/OvO.html",
-    "icon": "games/icons/Website/OvO.png"
-  },
-  {
-    "name": "Ragdoll Hit",
-    "html": "games/html/Website/Ragdoll Hit.html",
-    "icon": "games/icons/Website/Ragdoll-Hit.png"
+    "html": "games/html/Website/kart-bros.html",
+    "icon": "games/icons/Website/kart-bros.png"
   },
   {
     "name": "Retro Bowl",
-    "html": "games/html/Website/Retro Bowl.html",
-    "icon": "games/icons/Website/Retro-Bowl.png"
+    "html": "games/html/Website/retro-bowl.html",
+    "icon": "games/icons/Website/retro-bowl.png"
   },
   {
     "name": "Snow Rider 3D",
-    "html": "games/html/Website/Snow Rider 3D.html",
-    "icon": "games/icons/Website/Snow-Rider-3D.png"
+    "html": "games/html/Website/snow-rider-3d.html",
+    "icon": "games/icons/Website/snow-rider-3d.png"
   },
   {
     "name": "Soccer Bros",
-    "html": "games/html/Website/Soccer Bros.html",
-    "icon": "games/icons/Website/Soccer-Bros.png"
+    "html": "games/html/Website/soccer-bros.html",
+    "icon": "games/icons/Website/soccer-bros.png"
   },
   {
     "name": "Stickman Duel",
-    "html": "games/html/Website/Stickman Duel.html",
-    "icon": "games/icons/Website/Stickman-Duel.png"
+    "html": "games/html/Website/stickman-duel.html",
+    "icon": "games/icons/Website/stickman-duel.png"
   },
   {
     "name": "Tag",
-    "html": "games/html/Website/Tag.html",
-    "icon": "games/icons/Website/Tag.png"
+    "html": "games/html/Website/tag.html",
+    "icon": "games/icons/Website/tag.png"
   },
   {
     "name": "Wordle",
-    "html": "games/html/Website/Wordle.html",
-    "icon": "games/icons/Website/Wordle.png"
+    "html": "games/html/Website/wordle.html",
+    "icon": "games/icons/Website/wordle.png"
   }
 ]
