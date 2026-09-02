@@ -10,7 +10,7 @@
     "icon": "games/icons/DEBUG/DEBUG-2.png"
   },
   {
-    "name": "doom",
+    "name": "Doom",
     "html": "games/html/DOS/doom.html",
     "icon": "games/icons/DOS/doom.png"
   },
@@ -145,6 +145,46 @@
     "icon": "games/icons/Ports/die-in-the-dungeon.png"
   },
   {
+    "name": "Cave Story",
+    "html": "games/html/Ports/cave-story.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Class of 09",
+    "html": "games/html/Ports/class-of-09.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Doki Doki Literature Club",
+    "html": "games/html/Ports/doki-doki-literature-club.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "I Wanna Be The Guy",
+    "html": "games/html/Ports/i-wanna-be-the-guy.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Pizza Tower",
+    "html": "games/html/Ports/pizza-tower.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Subway Surfers San Francisco",
+    "html": "games/html/Ports/subway-surfers-san-francisco.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "There is no Game",
+    "html": "games/html/Ports/there-is-no-game.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Yume Nikki",
+    "html": "games/html/Ports/yume-nikki.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
     "name": "Grand Theif Auto",
     "html": "games/html/PS1/gta.html",
     "icon": "games/icons/PS1/gta.png"
@@ -173,6 +213,11 @@
     "name": "Cookie Clicker",
     "html": "games/html/Website/cookie-clicker.html",
     "icon": "games/icons/Website/cookie-clicker.png"
+  },
+  {
+    "name": "Burrito Bison Launcha Lebrie",
+    "html": "games/html/Website/burrito-bison-launcha-lebrie.html",
+    "icon": "games/icons/placeholder.png"
   },
   {
     "name": "Dune Dash",
