@@ -125,7 +125,7 @@
     "icon": "games/icons/Ports/celeste.png"
   },
   {
-    "name": "Deltarune",
+    "name": "Deltarune Ch 1-2",
     "html": "games/html/Ports/deltarune-1-2.html",
     "icon": "games/icons/Ports/deltarune.png"
   },
@@ -155,7 +155,7 @@
     "icon": "games/icons/placeholder.png"
   },
   {
-    "name": "Pizza Tower Alpha",
+    "name": "Pizza Tower",
     "html": "games/html/Ports/pizza-tower.html",
     "icon": "games/icons/placeholder.png"
   },
@@ -205,7 +205,7 @@
     "icon": "games/icons/Website/cookie-clicker.png"
   },
   {
-    "name": "Burrito Bison Launcha Lebrie",
+    "name": "Burrito Bison: Launcha Lebrie",
     "html": "games/html/Website/burrito-bison-launcha-lebrie.html",
     "icon": "games/icons/placeholder.png"
   },
@@ -253,5 +253,185 @@
     "name": "Wordle",
     "html": "games/html/Website/wordle.html",
     "icon": "games/icons/Website/wordle.png"
+  },
+  {
+    "name": "Five Nights at Freddy's 2",
+    "html": "games/html/FNAF/fnaf-2.html",
+    "icon": "games/icons/FNAF/fnaf-2.png"
+  },
+  {
+    "name": "Five Nights at Freddy's 3",
+    "html": "games/html/FNAF/fnaf-3.html",
+    "icon": "games/icons/FNAF/fnaf-3.png"
+  },
+  {
+    "name": "Five Nights at Freddy's 4",
+    "html": "games/html/FNAF/fnaf-4.html",
+    "icon": "games/icons/FNAF/fnaf-4.png"
+  },
+  {
+    "name": "Five Nights at Freddy's Pizzeria Simulator",
+    "html": "games/html/FNAF/fnaf-pizza-simulator.html",
+    "icon": "games/icons/FNAF/fnaf-pizza-location.png"
+  },
+  {
+    "name": "Five Nights at Freddy's Sister Location",
+    "html": "games/html/FNAF/fnaf-sister-location.html",
+    "icon": "games/icons/FNAF/fnaf-sister-location.png"
+  },
+  {
+    "name": "Five Nights at Freddy's UCN",
+    "html": "games/html/FNAF/fnaf-ucn.html",
+    "icon": "games/icons/FNAF/fnaf-ucn.png"
+  },
+  {
+    "name": "Five Nights at Freddy's World",
+    "html": "games/html/FNAF/fnaf-world.html",
+    "icon": "games/icons/FNAF/fnaf-world.png"
+  },
+  {
+    "name": "Five Nights at Frickbears 3",
+    "html": "games/html/FNAF/fnafb-3.html",
+    "icon": "games/icons/FNAF/fnafb-3.png"
+  },
+  {
+    "name": "Line Rider",
+    "html": "games/html/Flash/line-rider.html",
+    "icon": "games/icons/Flash/line-rider.png"
+  },
+  {
+    "name": "Meat Boy",
+    "html": "games/html/Flash/meatboy.html",
+    "icon": "games/icons/Flash/meatball.png"
+  },
+  {
+    "name": "Tetris",
+    "html": "games/html/NES/tetris.html",
+    "icon": "games/icons/NES/tetris.jpg"
+  },
+  {
+    "name": "1 Date Danger",
+    "html": "games/html/Ports/1-date-danger.html",
+    "icon": "games/icons/Ports/1-date-danger.jpg"
+  },
+  {
+    "name": "60 Seconds Reatomized",
+    "html": "games/html/Ports/60-seconds-reatomized.html",
+    "icon": "games/icons/Ports/60-seconds-reatomized.png"
+  },
+  {
+    "name": "A Dance of Fire and Ice",
+    "html": "games/html/Ports/a-dance-of-fire-and-ice.html",
+    "icon": "games/icons/Ports/a-dance-of-fire-and-ice.png"
+  },
+  {
+    "name": "Anton Blast",
+    "html": "games/html/Ports/antonblast.html",
+    "icon": "games/icons/Ports/anton-blast.png"
+  },
+  {
+    "name": "Baldi's Basics The Ultra Decompile",
+    "html": "games/html/Ports/baldis-basics-the-ultra-decomp.html",
+    "icon": "games/icons/Ports/baldis-basics-the-ultra-decomp.png"
+  },
+  {
+    "name": "Beatblock",
+    "html": "games/html/Ports/beatblock.html",
+    "icon": "games/icons/Ports/beatblock.png"
+  },
+  {
+    "name": "Brotato",
+    "html": "games/html/Ports/brotato.html",
+    "icon": "games/icons/Ports/brotato.png"
+  },
+  {
+    "name": "Crazy Cattle 3D",
+    "html": "games/html/Ports/crazy-cattle-3d.html",
+    "icon": "games/icons/Ports/crazy-cattle-3d.png"
+  },
+  {
+    "name": "Endacopia",
+    "html": "games/html/Ports/endacopia.html",
+    "icon": "games/icons/Ports/endacopia.png"
+  },
+  {
+    "name": "Goblin Goopmaxxing",
+    "html": "games/html/Ports/goblin-goopmaxxing.html",
+    "icon": "games/icons/Ports/goblin-goopmaxxing.png"
+  },
+  {
+    "name": "Half-Life",
+    "html": "games/html/Ports/half-life.html",
+    "icon": "games/icons/Ports/half-life.png"
+  },
+  {
+    "name": "Helltaker",
+    "html": "games/html/Ports/helltaker.html",
+    "icon": "games/icons/Ports/helltaker.png"
+  },
+  {
+    "name": "I Wanna Be The Guy",
+    "html": "games/html/Ports/i-wana-be-the-guy.html",
+    "icon": "games/icons/Ports/i-wana-be-the-guy.png"
+  },
+  {
+    "name": "Mindwave",
+    "html": "games/html/Ports/mindwave.html",
+    "icon": "games/icons/Ports/mindwave.png"
+  },
+  {
+    "name": "Nubby's Number Factory",
+    "html": "games/html/Ports/nubbys-number-factory.html",
+    "icon": "games/icons/Ports/nubbys-number-factory.png"
+  },
+  {
+    "name": "OMORI",
+    "html": "games/html/Ports/omori.html",
+    "icon": "games/icons/Ports/omori.png"
+  },
+  {
+    "name": "OneShot: World Machine Edition",
+    "html": "games/html/Ports/one-shot.html",
+    "icon": "games/icons/Ports/one-shot.jpg"
+  },
+  {
+    "name": "People Playground",
+    "html": "games/html/Ports/people-playground.html",
+    "icon": "games/icons/Ports/people-playground.png"
+  },
+  {
+    "name": "Plague Inc",
+    "html": "games/html/Ports/plauge-inc.html",
+    "icon": "games/icons/Ports/plauge-inc.png"
+  },
+  {
+    "name": "Raldi's Crackhouse",
+    "html": "games/html/Ports/raldis-crackhouse.html",
+    "icon": "games/icons/Ports/raldis-crackhouse.png"
+  },
+  {
+    "name": "That's Not My Neighbor",
+    "html": "games/html/Ports/thats-not-my-neighbor.html",
+    "icon": "games/icons/Ports/thats-not-my-neighbor.jpg"
+  },
+  {
+    "name": "Touhou Mother",
+    "html": "games/html/Ports/touhou-mother.html",
+    "icon": "games/icons/Ports/touhou-mother.png"
+  },
+  {
+    "name": "Trees Hate You",
+    "html": "games/html/Ports/trees-hate-you.html",
+    "icon": "games/icons/Ports/trees-hate-you.png"
+  },
+  {
+    "name": "OvO",
+    "html": "games/html/Website/ovo.html",
+    "icon": "games/icons/Website/ovo.png"
+  },
+  {
+    "name": "Poly Track",
+    "html": "games/html/Website/poly-track.html",
+    "icon": "games/icons/Website/poly-track.png"
   }
 ]
