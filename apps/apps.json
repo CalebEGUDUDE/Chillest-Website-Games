@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Volcano v4",
+        "html": "apps/html/volcano.html",
+        "icon": "apps/icons/volcano.png"
+    },
+    {
+        "name": "HTML Editor",
+        "html": "apps/html/html-editor.html",
+        "icon": "apps/icons/html-editor.png"
+    },
+    {
+        "name": "Link Checker",
+        "html": "apps/html/link-checker.html",
+        "icon": "apps/icons/link-checker.png"
+    }
+]

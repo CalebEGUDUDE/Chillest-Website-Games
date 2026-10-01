@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Checker</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            padding: 20px; 
+            max-width: 950px; 
+            margin: auto; 
+            background: #0f1012; 
+            color: #e4e6eb; 
+        }
+        
+        .card { 
+            background: #18191a; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid #2d2f31; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4); 
+            position: relative; 
+        }
+        
+        h1, h3 { color: #f0f2f5; }
+
+        textarea { 
+            width: 100%; 
+            height: 120px; 
+            border-radius: 8px; 
+            border: 1px solid #3a3b3c; 
+            background: #242526; 
+            color: #e4e6eb; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            box-sizing: border-box; 
+            font-family: monospace; 
+            resize: vertical; 
+        }
+        
+        textarea::placeholder { color: #8a8d91; }
+
+        .config-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 15px; 
+            background: #242526; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            font-size: 14px; 
+            border: 1px solid #2d2f31; 
+        }
+        
+        .config-grid label { color: #b0b3b8; }
+
+        .config-grid input { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #3a3b3c; 
+            background: #18191a; 
+            color: #e4e6eb; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+            margin-top: 5px; 
+        }
+
+        .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        
+        button { 
+            padding: 10px 18px; 
+            border-radius: 6px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: 0.3s; 
+        }
+        
+        .btn-scan { background: #2374e1; color: white; }
+        .btn-scan:hover { background: #3982e4; }
+        .btn-pause { background: #f7b924; color: #1c1e21; }
+        .btn-stop { background: #f02849; color: white; }
+        
+        .btn-util { background: #3a3b3c; color: #e4e6eb; font-size: 12px; }
+        .btn-util:hover { background: #4e4f50; }
+        
+        .btn-open { background: #2e893e; color: white; display: none; }
+        .btn-export { background: #673ab7; color: white; display: none; }
+        
+        .ready-glow-export { animation: exportGlow 2s infinite; }
+
+        @keyframes exportGlow {
+            0% { box-shadow: 0 0 0 0 rgba(103, 58, 183, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(103, 58, 183, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(103, 58, 183, 0); }
+        }
+
+        /* Terminal Styling */
+        .console-container { 
+            background: #0d0e0f; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            border: 1px solid #2d2f31; 
+        }
+
+        .console-container:fullscreen { border-radius: 0; width: 100vw; height: 100vh; }
+        .console-header { background: #1c1e21; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-bottom: 1px solid #2d2f31; }
+        
+        #log { 
+            color: #d1d1d1; 
+            padding: 15px; 
+            font-family: 'Consolas', monospace; 
+            height: 240px; 
+            overflow-y: auto; 
+            font-size: 12px; 
+            scroll-behavior: smooth; 
+            flex-grow: 1; 
+        }
+        
+        .log-info { color: #00e5ff; font-weight: bold; }
+        .log-success { color: #45bd62; }
+        .log-error { color: #ff5252; }
+        .log-warn { color: #f7b924; font-style: italic; }
+        .log-finish { color: #ffeb3b; font-weight: bold; border-top: 1px dashed #444; margin-top: 5px; padding-top: 5px; }
+
+        .ratio-bar { height: 10px; width: 100%; background: #18191a; display: flex; flex-shrink: 0; }
+        #ratio-working { height: 100%; background: #45bd62; width: 0%; transition: width 0.3s; }
+        #ratio-broken { height: 100%; background: #f3425f; width: 0%; transition: width 0.3s; }
+
+        /* Dark Completion Overlay */
+        #done-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(24, 25, 26, 0.95);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 12px; z-index: 10; text-align: center;
+        }
+
+        .list-container { border: 1px solid #2d2f31; background: #242526; border-radius: 8px; max-height: 200px; overflow-y: auto; margin: 10px 0; display: none; }
+        #linkList { list-style: none; padding: 0; margin: 0; }
+        #linkList li { padding: 8px 12px; border-bottom: 1px solid #2d2f31; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+
+        #fs-overlay { 
+            display: none; padding: 20px; background: rgba(13, 14, 15, 0.95); color: white; 
+            border-bottom: 1px solid #2d2f31; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; flex-shrink: 0;
+        }
+        .console-container:fullscreen #fs-overlay { display: grid; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Link Checker</h1>
+        <textarea id="linkInput" placeholder="Paste text here..."></textarea>
+        
+        <div class="config-grid">
+            <label>Filters: <input type="text" id="filterStr" value="https://, http://"></label>
+            <label>Timeout (ms): <input type="number" id="timeoutVal" value="3000"></label>
+            <label>Batch Delay (ms): <input type="number" id="delayVal" value="500"></label>
+        </div>
+
+        <div class="controls">
+            <button class="btn-scan" id="scanBtn" onclick="startScan()">Extract & Verify</button>
+            <button class="btn-pause" id="pauseBtn" onclick="togglePause()" style="display: none;">Pause</button>
+            <button class="btn-stop" onclick="stopScan()">Stop</button>
+            <button class="btn-open" id="openBtn" onclick="openAllVerified()">Open Randomly</button>
+            <button class="btn-export" id="exportBtn" onclick="exportToTxt()">Export Verified</button>
+        </div>
+
+        <div id="done-overlay">
+            <div style="font-size: 50px; color: #45bd62;">✔</div>
+            <h2 style="margin:0; color:#f0f2f5;">Scan Complete!</h2>
+            <p id="summaryText" style="color:#b0b3b8;">Ready for action.</p>
+            <button class="btn-util" onclick="closeOverlay()">Close</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="header-row" style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 id="counterLabel" style="margin:0; font-size: 16px;">System Standby</h3>
+            <div id="listControls" style="display: none; gap: 5px;">
+                <button class="btn-util" onclick="toggleSelectAll()">Select All</button>
+                <button class="btn-util" onclick="openSelected()">Open Selected</button>
+                <button class="btn-util" onclick="removeSelected()" style="color: #ff5252;">Remove</button>
+            </div>
+        </div>
+
+        <div class="console-container" id="consoleBox">
+            <div id="fs-overlay">
+                <div class="stat-box"><span id="stat-total" style="font-size:20px; font-weight:bold;">0</span><br><small style="color:#8a8d91;">TOTAL</small></div>
+                <div class="stat-box"><span id="stat-success" style="color:#45bd62; font-size:20px; font-weight:bold;">0</span><br><small style="color:#8a8d91;">LIVE</small></div>
+                <div class="stat-box"><span id="stat-fail" style="color:#ff5252; font-size:20px; font-weight:bold;">0</span><br><small style="color:#8a8d91;">DEAD</small></div>
+                <div class="stat-box"><span id="stat-percent" style="font-size:20px; font-weight:bold;">0%</span><br><small style="color:#8a8d91;">RATE</small></div>
+            </div>
+
+            <div class="console-header">
+                <span style="color:#8a8d91; font-size:10px; font-weight:bold;">TERMINAL OUTPUT</span>
+                <button class="btn-util" style="padding: 2px 8px;" onclick="toggleFullscreen()">Fullscreen</button>
+            </div>
+            
+            <div id="log">Welcome to Link Checker. Paste links above to begin verification.</div>
+            
+            <div class="ratio-bar">
+                <div id="ratio-working"></div>
+                <div id="ratio-broken"></div>
+            </div>
+        </div>
+
+        <div class="list-container" id="listWrapper">
+            <ul id="linkList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let verifiedLinks = [];
+        let brokenCount = 0;
+        let isScanning = false;
+        let isPaused = false;
+        let allSelected = false;
+
+        function log(msg, type = "") {
+            const logEl = document.getElementById('log');
+            if (logEl.innerHTML.includes("Welcome to Link Checker")) logEl.innerHTML = "";
+            const div = document.createElement('div');
+            if (type) div.className = `log-${type}`;
+            div.innerText = `> ${msg}`;
+            logEl.appendChild(div);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateUI(current, total) {
+            document.getElementById('counterLabel').innerText = `${current}/${total} Checked`;
+            document.getElementById('ratio-working').style.width = (verifiedLinks.length / total * 100) + "%";
+            document.getElementById('ratio-broken').style.width = (brokenCount / total * 100) + "%";
+            
+            document.getElementById('stat-total').innerText = current;
+            document.getElementById('stat-success').innerText = verifiedLinks.length;
+            document.getElementById('stat-fail').innerText = brokenCount;
+            document.getElementById('stat-percent').innerText = Math.round((verifiedLinks.length / (current || 1)) * 100) + "%";
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('pauseBtn');
+            btn.innerText = isPaused ? "Resume" : "Pause";
+            btn.style.background = isPaused ? "#45bd62" : "#f7b924";
+            btn.style.color = isPaused ? "#ffffff" : "#1c1e21";
+            if (isPaused) log("Process Paused.", "warn");
+            else log("Process Resumed.", "info");
+        }
+
+        async function startScan() {
+            if (isScanning) return;
+            const filters = document.getElementById('filterStr').value.split(',').map(f => f.trim().toLowerCase()).filter(f => f.length > 0);
+            const rawText = document.getElementById('linkInput').value;
+            
+            let foundLinks = [];
+            filters.forEach(f => {
+                const escaped = f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(escaped + '[\\w\\.\\-\\/\\?&\\=]+', 'gi');
+                const matches = rawText.match(regex);
+                if (matches) foundLinks.push(...matches);
+            });
+
+            const uniqueLinks = [...new Set(foundLinks)];
+            if (uniqueLinks.length === 0) return alert("No valid URLs found.");
+
+            isScanning = true;
+            isPaused = false;
+            verifiedLinks = [];
+            brokenCount = 0;
+            
+            document.getElementById('done-overlay').style.display = "none";
+            document.getElementById('scanBtn').disabled = true;
+            document.getElementById('pauseBtn').style.display = "inline-block";
+            document.getElementById('pauseBtn').innerText = "Pause";
+            document.getElementById('listWrapper').style.display = "block";
+            document.getElementById('listControls').style.display = "flex";
+            document.getElementById('linkList').innerHTML = "";
+            document.getElementById('log').innerHTML = "";
+            document.getElementById('exportBtn').classList.remove('ready-glow-export');
+
+            log(`Initiated: Checking ${uniqueLinks.length} URLs.`, "info");
+
+            const timeout = parseInt(document.getElementById('timeoutVal').value);
+
+            for (let i = 0; i < uniqueLinks.length; i++) {
+                if (!isScanning) break;
+
+                while (isPaused && isScanning) {
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                try {
+                    const controller = new AbortController();
+                    const id = setTimeout(() => controller.abort(), timeout);
+                    await fetch(uniqueLinks[i], { mode: 'no-cors', signal: controller.signal });
+                    clearTimeout(id);
+                    verifiedLinks.push(uniqueLinks[i]);
+                    addLinkToUI(uniqueLinks[i]);
+                    log(`VALID: ${uniqueLinks[i]}`, "success");
+                } catch (e) {
+                    brokenCount++;
+                    log(`BROKEN: ${uniqueLinks[i]}`, "error");
+                }
+                updateUI(i + 1, uniqueLinks.length);
+                
+                const delay = parseInt(document.getElementById('delayVal').value);
+                if (delay > 0) await new Promise(r => setTimeout(r, delay));
+            }
+
+            if (isScanning) {
+                document.getElementById('done-overlay').style.display = "flex";
+                document.getElementById('summaryText').innerText = `Verified ${verifiedLinks.length} out of ${uniqueLinks.length} links.`;
+                log(`COMPLETE: ${verifiedLinks.length} Working / ${brokenCount} Broken.`, "finish");
+                if (verifiedLinks.length > 0) {
+                    document.getElementById('openBtn').style.display = "inline-block";
+                    document.getElementById('exportBtn').style.display = "inline-block";
+                    document.getElementById('exportBtn').classList.add('ready-glow-export');
+                }
+            }
+            isScanning = false;
+            document.getElementById('scanBtn').disabled = false;
+            document.getElementById('pauseBtn').style.display = "none";
+        }
+
+        function toggleSelectAll() {
+            allSelected = !allSelected;
+            document.querySelectorAll('.link-check').forEach(cb => cb.checked = allSelected);
+        }
+
+        function openSelected() {
+            const selected = Array.from(document.querySelectorAll('.link-check:checked')).map(cb => cb.getAttribute('data-url'));
+            if (selected.length === 0) return alert("Select links first.");
+            selected.forEach(link => window.open(link, '_blank'));
+        }
+
+        function closeOverlay() { document.getElementById('done-overlay').style.display = "none"; }
+
+        function addLinkToUI(link) {
+            const li = document.createElement('li');
+            li.innerHTML = `<input type="checkbox" class="link-check" data-url="${link}"><a href="${link}" target="_blank" style="color:#4599ff; text-decoration:none; word-break:break-all;">${link}</a>`;
+            document.getElementById('linkList').appendChild(li);
+        }
+
+        function removeSelected() {
+            document.querySelectorAll('.link-check:checked').forEach(cb => {
+                verifiedLinks = verifiedLinks.filter(l => l !== cb.getAttribute('data-url'));
+                cb.closest('li').remove();
+            });
+        }
+
+        function exportToTxt() {
+            const blob = new Blob([verifiedLinks.join('\n')], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.download = 'verified_links.txt';
+            a.href = window.URL.createObjectURL(blob);
+            a.click();
+        }
+
+        async function openAllVerified() {
+            const shuffled = [...verifiedLinks].sort(() => Math.random() - 0.5);
+            const delay = parseInt(document.getElementById('delayVal').value);
+            for (const link of shuffled) {
+                window.open(link, '_blank');
+                await new Promise(r => setTimeout(r, delay));
+            }
+        }
+
+        function stopScan() {
+            isScanning = false;
+            isPaused = false;
+            document.getElementById('scanBtn').disabled = false;
+            document.getElementById('pauseBtn').style.display = "none";
+            log("Stopped by user.", "error");
+        }
+
+        function toggleFullscreen() {
+            const el = document.getElementById('consoleBox');
+            if (!document.fullscreenElement) el.requestFullscreen();
+            else document.exitFullscreen();
+        }
+    </script>
+</body>
+</html>

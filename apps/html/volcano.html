@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖</title>
+    <!-- Expanded Google Fonts Selection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700;900&family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;700&family=Oswald:wght@400;700&family=Comic+Neue:wght@700&family=Fira+Code:wght@400;700&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Bebas+Neue&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link id="dynamic-favicon" rel="icon" href="https://www.volcanic.world/_next/image?url=%2Fnew-logo%2Fvolcanic_logo_no_bg.png&w=3840&q=75">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --bg: #09090b;
+            --sidebar-bg: #040405;
+            --surface: #121217;
+            --surface2: #1a1a21;
+            --surface-hover: #22222b;
+            --text: #ededf3;
+            --text2: #9292a8;
+            --accent: #ff3366;
+            --accent2: #ff6688;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-brand: 'Rajdhani', sans-serif;
+            --font-ui: 'Space Grotesk', sans-serif;
+            --ui-scale: 1;
+            --glow-intensity: 1;
+            --custom-bg-image: none;
+            --radius-sm: 2px;
+            --radius-md: 4px;
+            --radius-lg: 6px;
+        }
+
+        .theme-volcanic-bloom { --bg: #09090b; --sidebar-bg: #040405; --surface: #121217; --accent: #ff3366; --accent2: #ff6688; }
+        .theme-neon-ash { --bg: #0d0a0b; --sidebar-bg: #050404; --surface: #171113; --accent: #ff0055; --accent2: #ff3377; }
+        .theme-midnight-purple { --bg: #06040f; --sidebar-bg: #020106; --surface: #0c081c; --accent: #8b5cf6; --accent2: #a78bfa; }
+        .theme-dark-matrix { --bg: #000a00; --sidebar-bg: #000400; --surface: #001400; --accent: #00ff41; --accent2: #39ff6b; }
+        .theme-frost-volcanic { --bg: #040914; --sidebar-bg: #02040a; --surface: #0a1428; --accent: #0ea5e9; --accent2: #38bdf8; }
+        .theme-ember-black { --bg: #0f0404; --sidebar-bg: #080202; --surface: #1c0808; --accent: #ef4444; --accent2: #f87171; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: var(--font-ui); background: var(--bg); background-image: var(--custom-bg-image); background-size: cover; background-position: center; color: var(--text); user-select: none; }
+        
+        body::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px; opacity: 0.3;
+        }
+
+        #boot-loader {
+            position: fixed; inset: 0; background: var(--sidebar-bg); z-index: 9999999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .loader-logo { font-size: 3rem; color: var(--accent); margin-bottom: 20px; animation: pulseGlow 1.5s infinite alternate; font-family: var(--font-brand); text-shadow: 0 0 20px var(--accent); }
+        .loader-text { font-family: 'Fira Code', monospace; font-size: 0.8rem; letter-spacing: 0.3em; color: var(--text2); margin-bottom: 30px; text-transform: uppercase; }
+        .loader-bar { width: 200px; height: 2px; background: var(--surface2); overflow: hidden; position: relative; }
+        .loader-progress { width: 0%; height: 100%; background: var(--accent); animation: loadProgress 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards; box-shadow: 0 0 10px var(--accent); }
+        @keyframes pulseGlow { from { opacity: 0.7; transform: scale(0.95); } to { opacity: 1; transform: scale(1.05); } }
+        @keyframes loadProgress { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 100%; } }
+
+        #portal-root { display: flex; width: 100vw; height: 100vh; transform: scale(var(--ui-scale)); transform-origin: top left; }
+
+        #sidebar { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 32px 20px; flex-shrink: 0; z-index: 10; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s, opacity 0.3s; }
+        #sidebar.collapsed { width: 0; padding: 0; opacity: 0; overflow: hidden; }
+        .brand-header { margin-bottom: 36px; }
+        .brand-title { font-family: var(--font-brand); font-size: 3rem; font-weight: 900; color: #fff; letter-spacing: -1px; line-height: 1; text-transform: uppercase; transition: color 0.3s; }
+        .brand-title span { color: var(--accent); text-shadow: 0 0 calc(20px * var(--glow-intensity)) var(--accent2); }
+        
+        .brand-sub { font-size: 0.8rem; color: var(--text2); margin-top: 12px; font-weight: 400; font-family: var(--font-ui); line-height: 1.5; padding-left: 2px; }
+        .dyn-word { color: var(--accent); font-weight: 700; transition: opacity 0.3s ease; display: inline-block; text-transform: uppercase; letter-spacing: 0.05em;}
+
+        .nav-section { margin-bottom: 28px; }
+        .nav-label { font-size: 0.65rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 700; padding: 0 12px; margin-bottom: 12px; font-family: 'Fira Code', monospace; }
+        .nav-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; color: var(--text2); font-size: 0.9rem; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; margin-bottom: 4px; border: 1px solid transparent; }
+        .nav-item:hover { color: #fff; background: var(--surface); border-color: var(--border); }
+        .nav-item.active { background: rgba(255, 255, 255, 0.03); color: #fff; font-weight: 700; border-color: var(--border); border-left: 3px solid var(--accent); }
+        .nav-item-left { display: flex; align-items: center; gap: 12px; }
+        .nav-icon { font-size: 1.1rem; width: 22px; text-align: center; color: var(--accent); opacity: 0.8; }
+        .nav-item.active .nav-icon { opacity: 1; text-shadow: 0 0 10px var(--accent); }
+        .nav-badge { background: var(--surface2); color: var(--text2); font-size: 0.65rem; padding: 2px 6px; border-radius: var(--radius-sm); font-weight: 700; border: 1px solid var(--border); font-family: 'Fira Code', monospace; }
+        .nav-item.active .nav-badge { background: var(--accent); color: #fff; border-color: var(--accent2); }
+
+        .sidebar-footer { margin-top: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-footer-row { display: flex; align-items: center; justify-content: space-between; }
+        .clock-display { font-size: 1rem; font-weight: 700; color: #fff; font-family: 'Fira Code', monospace; }
+        .weather-display { font-size: 0.75rem; color: var(--text2); font-weight: 600; cursor: pointer; text-align: right; }
+        .user-status { font-size: 0.75rem; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff41; box-shadow: 0 0 10px #00ff41; }
+
+        #main-content { flex: 1; overflow-y: auto; padding: 48px 64px; position: relative; }
+        .view-panel { display: none; animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); height: 100%; flex-direction: column; }
+        .view-panel.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .home-title { font-family: var(--font-brand); font-size: 4.5rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; letter-spacing: -2px; line-height: 1; }
+        .home-subtitle { font-size: 1.1rem; color: var(--accent); margin-bottom: 40px; font-weight: 600; font-family: 'Fira Code', monospace; letter-spacing: 0.05em; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; margin-bottom: 48px; max-width: 800px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+        .stat-card { background: var(--surface); padding: 24px 20px; text-align: left; position: relative; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0%; background: var(--accent); transition: height 0.3s; }
+        .stat-card:hover::before { height: 100%; }
+        .stat-value { font-family: var(--font-brand); font-size: 2.5rem; font-weight: 800; color: #fff; margin-bottom: 4px; line-height: 1; }
+        .stat-label { font-size: 0.75rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; font-family: 'Fira Code', monospace; }
+
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 48px; }
+        .lib-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 32px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.3s ease; position: relative; }
+        .lib-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); }
+        .lib-icon { width: 48px; height: 48px; border-radius: var(--radius-sm); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 24px; border: 1px solid var(--border); color: var(--accent); }
+        .lib-source { font-size: 0.7rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 8px; font-family: 'Fira Code', monospace; }
+        .lib-title { font-family: var(--font-brand); font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 16px; line-height: 1.1; text-transform: uppercase; }
+        .lib-desc { font-size: 0.95rem; color: var(--text2); line-height: 1.6; margin-bottom: 32px; flex-grow: 1; }
+        .lib-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 20px; }
+        .lib-meta { font-size: 0.75rem; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+        
+        .btn-browse { background: transparent; color: #fff; border: 1px solid var(--accent); padding: 10px 24px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.1em; }
+        .btn-browse:hover { background: var(--accent); box-shadow: 0 0 20px rgba(255, 51, 102, 0.4); }
+
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .store-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 28px; text-align: left; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+        .store-card:hover { border-color: var(--accent); transform: translateY(-4px); background: var(--surface2); }
+        .store-icon { font-size: 2.5rem; margin-bottom: 16px; }
+        .store-title { font-weight: 800; color: #fff; font-size: 1.4rem; margin-bottom: 10px; font-family: var(--font-brand); text-transform: uppercase; }
+        .store-desc { font-size: 0.9rem; color: var(--text2); margin-bottom: 24px; min-height: 44px; line-height: 1.5; }
+
+        .section-header { font-size: 0.85rem; color: #fff; text-transform: uppercase; letter-spacing: 0.2em; font-weight: 800; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; font-family: var(--font-brand); }
+        .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .subdocs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+        .doc-card { background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 24px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+        .doc-card::before { content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%; background: var(--border); transition: 0.3s; }
+        .doc-card:hover { background: var(--surface); }
+        .doc-card:hover::before { background: var(--accent); }
+        .doc-card h4 { font-family: var(--font-brand); font-size: 1.4rem; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+        .doc-card p { font-size: 0.9rem; color: var(--text2); line-height: 1.5; }
+
+        .embed-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border); color: #fff; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.85rem; font-family: 'Fira Code', monospace; text-transform: uppercase; }
+        .embed-btn:hover { background: var(--surface2); border-color: var(--accent); color: var(--accent); }
+        
+        .browser-header-actions { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+        .browser-layout { display: flex; flex: 1; gap: 0; overflow: hidden; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); position: relative; }
+        .browser-iframe-container { flex: 1; overflow: hidden; background: #fff; }
+        .embed-iframe { width: 100%; height: 100%; border: none; }
+        
+        .browser-side-menu { width: 72px; background: var(--sidebar-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; padding: 16px 0; align-items: center; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; z-index: 5; }
+        .browser-side-menu:hover { width: 300px; align-items: flex-start; padding: 16px; }
+        .browser-side-title { white-space: nowrap; opacity: 0; font-size: 0.75rem; color: var(--text2); font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; margin-left: 12px; transition: opacity 0.2s; font-family: 'Fira Code', monospace; }
+        .browser-side-menu:hover .browser-side-title { opacity: 1; transition-delay: 0.1s; }
+        
+        .side-browser-pill { display: flex; align-items: center; width: calc(100% - 24px); margin: 0 auto; gap: 16px; padding: 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; background: transparent; border: 1px solid transparent; overflow: hidden; flex-shrink: 0; }
+        .side-browser-pill:hover { background: var(--surface); border-color: var(--border); }
+        .side-browser-pill.active { background: rgba(255,51,102,0.1); color: #fff; border-color: var(--accent); }
+        .sb-icon { font-size: 1.5rem; min-width: 28px; text-align: center; color: var(--accent); }
+        .sb-info { display: flex; flex-direction: column; white-space: nowrap; opacity: 0; transition: opacity 0.2s; }
+        .browser-side-menu:hover .sb-info { opacity: 1; transition-delay: 0.1s; }
+        .sb-name { font-weight: 800; font-size: 1.05rem; color: #fff; text-transform: uppercase; font-family: var(--font-brand); }
+        .sb-desc { font-size: 0.75rem; color: var(--text2); }
+        .sb-default-badge { font-size: 0.6rem; background: var(--accent); color: #fff; padding: 2px 6px; border-radius: 2px; margin-left: 8px; font-weight: bold; font-family: 'Fira Code', monospace; }
+
+        .paint-workspace { display: flex; flex: 1; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface2); }
+        .paint-toolbar-side { width: 80px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 16px; }
+        .tool-btn { width: 48px; height: 48px; border-radius: var(--radius-sm); background: transparent; border: 1px solid transparent; color: #fff; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .tool-btn:hover { background: var(--surface); border-color: var(--border); }
+        .tool-btn.active { background: rgba(255,51,102,0.1); border-color: var(--accent); color: var(--accent); }
+        .color-swatch { width: 32px; height: 32px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-swatch:hover { transform: scale(1.1); }
+        .color-swatch.active { border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.5); }
+        #canvas-wrapper { flex: 1; position: relative; background: #ffffff; overflow: hidden; cursor: crosshair; }
+        #paint-canvas { position: absolute; top: 0; left: 0; touch-action: none; }
+
+        /* FlashPoint IDE Styles */
+        .flashpoint-layout { display: flex; flex: 1; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface); }
+        .fp-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+        .fp-toolbar-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .fp-title-badge { font-family: var(--font-brand); font-size: 1.2rem; font-weight: 800; color: #fff; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .fp-title-badge span { color: var(--accent); }
+        .fp-lang-select { background: var(--surface2); border: 1px solid var(--border); color: #fff; padding: 6px 14px; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; cursor: pointer; text-transform: uppercase; }
+        .fp-lang-select:focus { border-color: var(--accent); }
+        .fp-toolbar-right { display: flex; gap: 10px; flex-wrap: wrap; }
+        .fp-workspace { display: flex; flex: 1; overflow: hidden; }
+        .fp-editor-pane, .fp-preview-pane { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .fp-editor-pane { border-right: 1px solid var(--border); background: #0c0c0f; }
+        .fp-pane-header { padding: 8px 16px; font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--text2); background: var(--surface); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: space-between; align-items: center; }
+        .fp-pane-header-actions { display: flex; gap: 8px; }
+        .fp-pane-btn { background: transparent; border: 1px solid var(--border); color: var(--text2); padding: 4px 10px; border-radius: var(--radius-sm); cursor: pointer; font-family: 'Fira Code', monospace; font-size: 0.65rem; transition: 0.2s; text-transform: uppercase; }
+        .fp-pane-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .fp-textarea { flex: 1; width: 100%; height: 100%; background: #0b0b0e; color: #e4e4e7; font-family: 'Fira Code', monospace; font-size: 0.95rem; line-height: 1.6; border: none; outline: none; padding: 20px; resize: none; tab-size: 4; white-space: pre; }
+        .fp-textarea:focus { background: #0d0d12; }
+        .fp-iframe { width: 100%; height: 100%; border: none; background: #ffffff; }
+        .fp-console { flex: 1; background: #09090b; color: #10b981; font-family: 'Fira Code', monospace; font-size: 0.9rem; padding: 20px; overflow-y: auto; white-space: pre-wrap; display: none; border: none; }
+
+        /* Fullscreen Overlay for Preview */
+        #fp-fullscreen-overlay { position: fixed; inset: 0; z-index: 9999; background: #000; display: none; flex-direction: column; }
+        #fp-fullscreen-overlay.active { display: flex; }
+        #fp-fullscreen-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); }
+        #fp-fullscreen-header span { color: #fff; font-family: 'Fira Code', monospace; font-size: 0.8rem; text-transform: uppercase; font-weight: 700; }
+        #fp-fullscreen-frame { flex: 1; width: 100%; border: none; background: #fff; }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle-btn { position: fixed; top: 16px; left: 16px; z-index: 9999; background: var(--surface); border: 1px solid var(--border); color: #fff; width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; transition: all 0.2s; opacity: 0.7; }
+        .sidebar-toggle-btn:hover { opacity: 1; border-color: var(--accent); color: var(--accent); }
+        .sidebar-toggle-btn.visible { left: 16px; }
+        .sidebar-toggle-btn.hidden-sidebar { left: 16px; }
+
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; max-width: 1400px; padding-bottom: 40px; }
+        .setting-box { background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 32px; position: relative; }
+        .setting-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: var(--border); transition: 0.3s; }
+        .setting-box:hover::before { background: var(--accent); }
+        
+        .setting-box h3 { font-family: var(--font-brand); font-size: 1.8rem; color: #fff; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .setting-box label { display: block; font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; margin-bottom: 12px; margin-top: 24px; font-family: 'Fira Code', monospace; }
+        .setting-box label:first-of-type { margin-top: 0; }
+        .setting-box input[type="text"], .setting-box select { width: 100%; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: #fff; outline: none; font-family: var(--font-ui); margin-bottom: 8px; font-size: 0.95rem; transition: 0.2s; }
+        .setting-box input[type="text"]:focus, .setting-box select:focus { border-color: var(--accent); background: var(--surface2); }
+        
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; margin-bottom: 8px; }
+        .file-upload-btn { width: 100%; padding: 12px 16px; background: transparent; border: 1px dashed var(--border); border-radius: var(--radius-sm); color: var(--text2); font-family: 'Fira Code', monospace; text-transform: uppercase; font-size: 0.85rem; text-align: center; cursor: pointer; transition: 0.2s; }
+        .file-upload-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,51,102,0.05); }
+        .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+
+        .theme-grid-mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; }
+        .theme-btn { padding: 12px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.1); background: var(--surface); color: #fff; font-size: 0.85rem; cursor: pointer; text-align: center; font-family: 'Fira Code', monospace; font-weight: 600; text-transform: uppercase; transition: 0.2s; }
+        .theme-btn:hover { filter: brightness(1.2); transform: translateY(-2px); border-color: #fff; }
+        
+        .wallpaper-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; margin-bottom: 16px; }
+        .wp-btn { padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-size: 0.8rem; cursor: pointer; text-align: center; font-weight: 600; font-family: var(--font-ui); transition: 0.2s; text-transform: uppercase; }
+        .wp-btn:hover { background: var(--surface-hover); border-color: var(--accent); color: #fff; }
+
+        .cloak-action-btn { width: 100%; padding: 14px 20px; background: var(--accent); border: 1px solid var(--accent2); border-radius: var(--radius-sm); color: #fff; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; font-family: 'Fira Code', monospace; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 20px; text-align: center; }
+        .cloak-action-btn:hover { background: var(--accent2); box-shadow: 0 0 25px rgba(255, 51, 102, 0.6); transform: translateY(-1px); }
+        .cloak-action-btn.secondary { background: transparent; border: 1px dashed var(--border); color: var(--text2); margin-top: 12px; }
+        .cloak-action-btn.secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(255,51,102,0.05); box-shadow: none; }
+
+        .credits-container { max-width: 800px; padding: 20px 0; }
+        .credits-header { font-family: var(--font-brand); font-size: 3rem; color: #fff; text-transform: uppercase; margin-bottom: 40px; border-bottom: 2px solid var(--border); padding-bottom: 20px; line-height: 1; }
+        .credits-row { display: flex; justify-content: space-between; align-items: flex-end; padding: 16px 0; border-bottom: 1px solid var(--border); transition: border-color 0.3s; }
+        .credits-row:hover { border-color: var(--accent); }
+        .credits-role { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.2em; font-weight: 700; }
+        .credits-name { font-size: 1.4rem; color: #fff; font-weight: 600; text-align: right; }
+        
+        #notifications-container { position: fixed; top: 32px; right: 32px; z-index: 99999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
+        .notification { background: var(--sidebar-bg); border: 1px solid var(--accent); border-left: 4px solid var(--accent); border-radius: var(--radius-sm); padding: 16px 24px; color: #fff; font-size: 0.95rem; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: notifIn 0.3s cubic-bezier(0.16, 1, 0.3, 1), notifOut 0.3s ease 3.5s forwards; font-family: var(--font-ui); text-transform: uppercase; letter-spacing: 0.05em; }
+        @keyframes notifIn { from { opacity: 0; transform: translateX(50px); } } @keyframes notifOut { to { opacity: 0; transform: translateX(50px); } }
+
+        /* Rock-End Chat Styles */
+        .chat-auth-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9998;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .chat-auth-box {
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            padding: 40px; width: 420px; max-width: 90vw;
+        }
+        .chat-auth-box h2 {
+            font-family: var(--font-brand); font-size: 2rem; color: #fff; margin-bottom: 24px;
+            text-transform: uppercase; text-align: center;
+        }
+        .chat-auth-box input {
+            width: 100%; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: #fff; outline: none; font-family: var(--font-ui);
+            margin-bottom: 16px; font-size: 0.95rem; transition: 0.2s;
+        }
+        .chat-auth-box input:focus { border-color: var(--accent); }
+        .chat-auth-box .auth-switch {
+            text-align: center; margin-top: 16px; color: var(--text2); font-size: 0.85rem;
+        }
+        .chat-auth-box .auth-switch span { color: var(--accent); cursor: pointer; font-weight: 700; }
+        .chat-auth-box .auth-switch span:hover { text-decoration: underline; }
+
+        .rockend-layout { display: flex; flex: 1; height: 100%; gap: 0; overflow: hidden; }
+        .rockend-sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+        .rockend-sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .rockend-pfp { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); cursor: pointer; }
+        .rockend-pfp-placeholder { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 1.2rem; cursor: pointer; border: 2px solid var(--accent2); }
+        .rockend-user-info { flex: 1; }
+        .rockend-username { font-weight: 700; color: #fff; font-size: 0.95rem; }
+        .rockend-status { font-size: 0.7rem; color: var(--text2); }
+        .rockend-sidebar-search { padding: 12px 20px; }
+        .rockend-sidebar-search input {
+            width: 100%; padding: 8px 12px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: #fff; outline: none; font-size: 0.85rem; font-family: var(--font-ui);
+        }
+        .rockend-sidebar-search input:focus { border-color: var(--accent); }
+        .rockend-user-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+        .rockend-user-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 20px; cursor: pointer;
+            transition: 0.2s; border-left: 3px solid transparent;
+        }
+        .rockend-user-item:hover { background: var(--surface); }
+        .rockend-user-item.active { background: rgba(255,51,102,0.1); border-left-color: var(--accent); }
+        .rockend-user-item .ru-pfp { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+        .rockend-user-item .ru-pfp-placeholder { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 0.9rem; border: 1px solid var(--border); }
+        .rockend-user-item .ru-name { font-weight: 600; color: #fff; font-size: 0.9rem; }
+        .rockend-user-item .ru-preview { font-size: 0.75rem; color: var(--text2); }
+        .rockend-logout-btn { padding: 12px 20px; border-top: 1px solid var(--border); color: #ef4444; cursor: pointer; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; text-align: center; transition: 0.2s; }
+        .rockend-logout-btn:hover { background: rgba(239,68,68,0.1); }
+
+        .rockend-chat-area { flex: 1; display: flex; flex-direction: column; background: var(--surface); }
+        .rockend-chat-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .rockend-chat-header .ch-pfp { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+        .rockend-chat-header .ch-pfp-placeholder { width: 36px; height: 36px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); }
+        .rockend-chat-header .ch-name { font-weight: 700; color: #fff; font-size: 1rem; }
+        .rockend-chat-header .ch-action { margin-left: auto; color: var(--text2); cursor: pointer; font-size: 0.8rem; }
+        .rockend-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+        .rockend-msg { display: flex; gap: 10px; align-items: flex-end; max-width: 70%; }
+        .rockend-msg.mine { align-self: flex-end; flex-direction: row-reverse; }
+        .rockend-msg .msg-pfp { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); flex-shrink: 0; }
+        .rockend-msg .msg-pfp-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent); font-size: 0.7rem; flex-shrink: 0; border: 1px solid var(--border); }
+        .rockend-msg .msg-bubble { padding: 10px 16px; border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.4; word-break: break-word; }
+        .rockend-msg:not(.mine) .msg-bubble { background: var(--surface2); color: #fff; border: 1px solid var(--border); }
+        .rockend-msg.mine .msg-bubble { background: var(--accent); color: #fff; border: 1px solid var(--accent2); }
+        .rockend-msg .msg-time { font-size: 0.65rem; color: var(--text2); margin-top: 4px; }
+        .rockend-msg.mine .msg-time { text-align: right; }
+        .rockend-input-area { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; }
+        .rockend-input-area input {
+            flex: 1; padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); color: #fff; outline: none; font-size: 0.9rem; font-family: var(--font-ui);
+        }
+        .rockend-input-area input:focus { border-color: var(--accent); }
+        .rockend-input-area button {
+            padding: 12px 24px; background: var(--accent); border: 1px solid var(--accent2); border-radius: var(--radius-sm);
+            color: #fff; font-weight: 700; cursor: pointer; font-family: var(--font-ui); text-transform: uppercase;
+            letter-spacing: 0.05em; transition: 0.2s;
+        }
+        .rockend-input-area button:hover { background: var(--accent2); }
+        .rockend-empty-chat { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text2); font-size: 1.2rem; flex-direction: column; gap: 12px; }
+        
+        #pfp-upload-input { display: none; }
+        .dummy-email-hint { font-size: 0.65rem; color: var(--text2); margin-top: -8px; margin-bottom: 12px; font-family: 'Fira Code', monospace; }
+
+        /* Update Popup Modal Styles */
+        #update-popup-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); z-index: 9999999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeInOverlay 0.5s ease;
+        }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+
+        #update-popup {
+            background: var(--surface); border: 2px solid var(--accent); border-radius: var(--radius-lg);
+            width: 700px; max-width: 92vw; max-height: 88vh; overflow-y: auto;
+            padding: 48px 40px; position: relative;
+            box-shadow: 0 0 60px rgba(255, 51, 102, 0.3), 0 20px 60px rgba(0, 0, 0, 0.8);
+            animation: popupSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popupSlideIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .update-popup-header {
+            text-align: center; margin-bottom: 40px;
+        }
+        .update-popup-badge {
+            font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--accent);
+            text-transform: uppercase; letter-spacing: 0.25em; font-weight: 800; margin-bottom: 12px;
+        }
+        .update-popup-title {
+            font-family: var(--font-brand); font-size: 3.5rem; font-weight: 900; color: #fff;
+            text-transform: uppercase; letter-spacing: -1px; line-height: 1.1; margin-bottom: 8px;
+        }
+        .update-popup-title span { color: var(--accent); }
+        .update-popup-sub {
+            font-size: 1rem; color: var(--text2); font-weight: 600;
+        }
+
+        .update-feature-list {
+            display: flex; flex-direction: column; gap: 28px; margin-bottom: 40px;
+        }
+        .update-feature {
+            display: flex; gap: 20px; align-items: flex-start;
+            padding: 20px; background: var(--surface2); border-radius: var(--radius-sm);
+            border: 1px solid var(--border); transition: all 0.3s;
+        }
+        .update-feature:hover {
+            border-color: var(--accent); transform: translateX(6px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .update-feature-icon {
+            font-size: 2.8rem; min-width: 56px; text-align: center; line-height: 1;
+        }
+        .update-feature-content h3 {
+            font-family: var(--font-brand); font-size: 1.4rem; color: #fff;
+            text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px;
+        }
+        .update-feature-content p {
+            font-size: 0.9rem; color: var(--text2); line-height: 1.6;
+        }
+        .update-feature-content .feature-highlight {
+            color: var(--accent); font-weight: 700;
+        }
+
+        .update-popup-footer {
+            text-align: center; margin-top: 12px;
+        }
+        .update-dismiss-btn {
+            padding: 16px 48px; background: var(--accent); border: 2px solid var(--accent2);
+            border-radius: var(--radius-sm); color: #fff; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: all 0.3s; font-family: var(--font-ui);
+            text-transform: uppercase; letter-spacing: 0.15em;
+        }
+        .update-dismiss-btn:hover {
+            background: var(--accent2); box-shadow: 0 0 35px rgba(255, 51, 102, 0.7);
+            transform: translateY(-2px);
+        }
+        .update-never-again {
+            margin-top: 16px; font-size: 0.7rem; color: var(--text2);
+            font-family: 'Fira Code', monospace; text-transform: uppercase; letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body class="theme-volcanic-bloom">
+    
+    <div id="boot-loader">
+        <div class="loader-logo">◆</div>
+        <div class="loader-text">INITIALIZING VOLCANIC ENVIRONMENT</div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+
+    <!-- Update Popup -->
+    <div id="update-popup-overlay" style="display: none;">
+        <div id="update-popup">
+            <div class="update-popup-header">
+                <div class="update-popup-badge">🌋
+                 v4.0 — Major Update</div>
+                <div class="update-popup-title">𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖<span>.</span></div>
+                <div class="update-popup-sub">Welcome 𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 — rebuilt for YOU.</div>
+            </div>
+
+            <div class="update-feature-list">
+                <div class="update-feature">
+                    <div class="update-feature-icon">🖥️</div>
+                    <div class="update-feature-content">
+                        <h3>1. Refined & Simple UI</h3>
+                        <p>A <span class="feature-highlight">better and more simple</span> interface — we ditched the OS-style layout for a <span class="feature-highlight">clean, modern design</span> that's easier to navigate and actually pleasant to use.</p>
+                    </div>
+                </div>
+
+                <div class="update-feature">
+                    <div class="update-feature-icon">🌐</div>
+                    <div class="update-feature-content">
+                        <h3>2. Enhanced Proxy Browser</h3>
+                        <p><span class="feature-highlight">More proxies</span> to choose from! If one gets blocked, just switch to another engine — <span class="feature-highlight">Fern, Nocturne, Arctic, & OverCloaked</span> are at your disposal so you'll <span class="feature-highlight">never be locked out</span> from searching the web.</p>
+                    </div>
+                </div>
+
+                <div class="update-feature">
+                    <div class="update-feature-icon">🎮</div>
+                    <div class="update-feature-content">
+                        <h3>3. Massive Game Library</h3>
+                        <p><span class="feature-highlight">GN-Math, Nocturne, and DuckMath</span> combine to give you the <span class="feature-highlight">best unblocked gaming experience</span> right inside Volcanic — hundreds of games, one platform.</p>
+                    </div>
+                </div>
+
+                <div class="update-feature">
+                    <div class="update-feature-icon">💬</div>
+                    <div class="update-feature-content">
+                        <h3>4. Custom Volcanic Apps</h3>
+                        <p><span class="feature-highlight">Rock-End Chat</span> — talk with <span class="feature-highlight">ANYONE</span> using Volcanic, and even <span class="feature-highlight">DM your friends privately</span> with encrypted messages. <span class="feature-highlight">FlashPoint IDE</span> — code whatever YOU want in HTML, CSS, JS, Python, or plain text, ALL inside Volcanic with live preview!</p>
+                    </div>
+                </div>
+
+                <div class="update-feature">
+                    <div class="update-feature-icon">🛡️</div>
+                    <div class="update-feature-content">
+                        <h3>5. Advanced Cloaking & Customization</h3>
+                        <p><span class="feature-highlight">About:Blank cloaking</span> via blob URL injection, <span class="feature-highlight">panic key redirects</span>, custom themes, fonts, wallpapers, and accent colors — <span class="feature-highlight">make Volcanic feel truly YOURS</span>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-popup-footer">
+                <button class="update-dismiss-btn" onclick="dismissUpdatePopup()">⚡ ENTER 𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 ⚡</button>
+                <div class="update-never-again">This won't show again.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button class="sidebar-toggle-btn visible" id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
+
+    <div id="portal-root">
+        <div id="sidebar">
+            <div class="brand-header">
+                <div class="brand-title" id="brand-title-text">Volcanic<span>.</span></div>
+                <div class="brand-sub">
+                    Welcome to a <br>
+                    <span class="dyn-word" id="dyn-1">fast</span>, <span class="dyn-word" id="dyn-2">clean</span>, <br>
+                    <span class="dyn-word" id="dyn-3">modern</span> experience.
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Main System</div>
+                <div class="nav-item active" onclick="switchTab('home', this)">
+                    <div class="nav-item-left"><span class="nav-icon">◆</span> Home</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('library', this)">
+                    <div class="nav-item-left"><span class="nav-icon">◇</span> 𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 Library</div>
+                    <span class="nav-badge">ALL</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-label">Tools & Utilities</div>
+                <div class="nav-item" onclick="switchTab('browser', this)">
+                    <div class="nav-item-left"><span class="nav-icon">⟡</span> Web Browser</div>
+                    <span class="nav-badge">PROX</span>
+                </div>
+                <div class="nav-item" onclick="switchTab('doc1', this)">
+                    <div class="nav-item-left"><span class="nav-icon">▤</span> Boxed's Doc</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('doc2', this)">
+                    <div class="nav-item-left"><span class="nav-icon">▥</span> Nico's Doc</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('settings', this)">
+                    <div class="nav-item-left"><span class="nav-icon">⚙</span> Settings</div>
+                </div>
+                <div class="nav-item" onclick="switchTab('credits', this)">
+                    <div class="nav-item-left"><span class="nav-icon">★</span> Credits</div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-row">
+                    <div class="clock-display" id="sidebar-clock">00:00</div>
+                    <div class="weather-display" id="weather-display" onclick="fetchLiveWeather()" title="Click to update weather">SYNC...</div>
+                </div>
+                <div class="sidebar-footer-row" style="margin-top: 4px;">
+                    <div class="user-status"><div class="status-dot"></div> SYSTEM ONLINE</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="main-content">
+            
+            <div id="view-home" class="view-panel active">
+                <h1 class="home-title" id="home-welcome-title">𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖
+
+                    
+                </h1>
+                <p class="home-subtitle">Browse the web ⬧ Play YOUR favorite games ⬧ Visit OUR apps ⬧ ALL, in Stealth.</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-value">819</div><div class="stat-label">GN-MATH APPS</div></div>
+                    <div class="stat-card"><div class="stat-value">1.5K+</div><div class="stat-label">DUCKMATH APPS</div></div>
+                    <div class="stat-card"><div class="stat-value" id="stat-time">00:00</div><div class="stat-label">LOCAL TIME</div></div>
+                </div>
+
+                <div class="library-grid">
+                    <div class="lib-card">
+                        <div>
+                            <div class="lib-icon">📐</div>
+                            <div class="lib-source">Classic Games</div>
+                            <div class="lib-title">GN-Math</div>
+                            <div class="lib-desc">Most known game site and pretty classic. Fast and reliable.</div>
+                        </div>
+                        <div class="lib-footer">
+                            <span class="lib-meta">Gn-Math</span>
+                            <button class="btn-browse" onclick="openWebGame('https://cdn.jsdelivr.net/gh/stockable/sites@main/gnmath.svg')">Initialize</button>
+                        </div>
+                    </div>
+                    <div class="lib-card">
+                        <div>
+                            <div class="lib-icon">🦆</div>
+                            <div class="lib-source">Bigger Game library</div>
+                            <div class="lib-title">DuckMath</div>
+                            <div class="lib-desc">A classic and messy list packed with a massive collection of unblocked games for instant execution.</div>
+                        </div>
+                        <div class="lib-footer">
+                            <span class="lib-meta">Duck Math</span>
+                            <button class="btn-browse" onclick="openWebGame('https://unpkg.com/jacorn-7fz3@1.0.0/index.html')">Initialize</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">QUICK ACCESS DIRECTORIES</div>
+                <div class="subdocs-grid">
+                    <div class="doc-card" onclick="switchTab('library', document.querySelectorAll('.nav-item')[1])">
+                        <h4>📚 𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 LIBRARY</h4>
+                        <p>View all games, proxy browsers, and media in one place.</p>
+                    </div>
+                    <div class="doc-card" onclick="switchTab('browser', document.querySelectorAll('.nav-item')[2])">
+                        <h4>🌐 PROXY BROWSERS</h4>
+                        <p>Launch the stealth web browser engine selector.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-library" class="view-panel">
+                <h2 class="home-title" style="font-size: 3.5rem; margin-bottom: 40px;">𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 Library</h2>
+                <div class="store-grid" id="games-container">
+                    <div class="store-card" onclick="switchTab('flashpoint')">
+                        <div><div class="store-icon">⚡</div><div class="store-title">FlashPoint</div><div class="store-desc">Simple VS Code style editor with live preview for HTML, CSS, JS, Python, and plain text.</div></div>
+                        <button class="btn-browse" style="width: 100%;">Code Now</button>
+                    </div>
+                    <div class="store-card" onclick="switchTab('rockend')">
+                        <div><div class="store-icon">💬</div><div class="store-title">Rock-End</div><div class="store-desc">Launch Volcanic's encrypted private messaging platform.</div></div>
+                        <button class="btn-browse" style="width: 100%;">Chat Now</button>
+                    </div>
+                    <div class="store-card" onclick="switchTab('paint')">
+                        <div><div class="store-icon">🎨</div><div class="store-title">Paint Studio</div><div class="store-desc">Advanced canvas drawing tool with precise tracking and colors.</div></div>
+                        <button class="btn-browse" style="width: 100%;">Draw Now</button>
+                    </div>
+                    <div class="store-card" onclick="openWebGame('https://incinerate-plus.lovable.app/')">
+                        <div><div class="store-icon">🎬</div><div class="store-title">Incinerate+</div><div class="store-desc">Streaming movie site with instant browser access. Watch films directly!</div></div>
+                        <button class="btn-browse" style="width: 100%;">Watch Now</button>
+                    </div>
+                    <div class="store-card" onclick="openWebGame('https://cdn.jsdelivr.net/gh/stockable/sites@main/gnmath.svg')">
+                        <div><div class="store-icon">📐</div><div class="store-title">GN-Math</div><div class="store-desc">Most known game site, pretty classic. Full stockable catalog.</div></div>
+                        <button class="btn-browse" style="width: 100%;">Play Games</button>
+                    </div>
+                    <div class="store-card" onclick="openWebGame('https://quizizz.com/_media/uploadedFiles/c3d0642e-5b00-4838-bb91-3e98e3c6d577-v2')">
+                        <div><div class="store-icon">🕹️</div><div class="store-title">Nocturne Games</div><div class="store-desc">I didn't even know Nocturne had a game site LMAO</div></div>
+                        <button class="btn-browse" style="width: 100%;">Play Games</button>
+                    </div>
+                    <div class="store-card" onclick="openWebGame('https://unpkg.com/jacorn-7fz3@1.0.0/index.html')">
+                        <div><div class="store-icon">🦆</div><div class="store-title">DuckMath</div><div class="store-desc">A classic AND messy list of a massive amount of browser games.</div></div>
+                        <button class="btn-browse" style="width: 100%;">Play Games</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FlashPoint Coding App View (now accessed from Library) -->
+            <div id="view-flashpoint" class="view-panel">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+                    <h2 class="home-title" style="font-size: 3rem; margin: 0;">FlashPoint Studio</h2>
+                    <button class="btn-browse" onclick="switchTab('library')" style="font-size: 0.75rem;">← Back to Library</button>
+                </div>
+                <div class="flashpoint-layout">
+                    <div class="fp-toolbar">
+                        <div class="fp-toolbar-left">
+                            <div class="fp-title-badge">⚡ FlashPoint <span>IDE</span></div>
+                            <select id="fp-lang-selector" class="fp-lang-select" onchange="switchFlashPointLang(this.value)">
+                                <option value="html">HTML5</option>
+                                <option value="css">CSS3</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="python">Python</option>
+                                <option value="text">Plain Text</option>
+                            </select>
+                        </div>
+                        <div class="fp-toolbar-right">
+                            <button class="btn-browse" onclick="clearFlashPointEditor()">🗑️ Clear</button>
+                            <button class="btn-browse" style="background: var(--accent);" onclick="runFlashPointCode()">▶ Run Code</button>
+                        </div>
+                    </div>
+                    <div class="fp-workspace">
+                        <div class="fp-editor-pane">
+                            <div class="fp-pane-header">
+                                <span>Code Editor</span>
+                                <span id="fp-lang-label">HTML5</span>
+                            </div>
+                            <textarea id="fp-code-editor" class="fp-textarea" spellcheck="false" placeholder="Write code here...">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; text-align: center; background: #0c0c0f; color: #fff; padding: 40px; }
+    h1 { color: #7a00ff; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;⚡ Welcome to FlashPoint!&lt;/h1&gt;
+  &lt;p&gt;Edit HTML, CSS, JS, Python, or Text and click Run Code.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+                        </div>
+                        <div class="fp-preview-pane">
+                            <div class="fp-pane-header">
+                                <span>Live Output</span>
+                                <div class="fp-pane-header-actions">
+                                    <button class="fp-pane-btn" onclick="openFlashPointFullscreen()" title="Fullscreen Preview">⛶ Fullscreen</button>
+                                    <span id="fp-output-status" style="margin-left: 8px;">PREVIEW READY</span>
+                                </div>
+                            </div>
+                            <iframe id="fp-live-preview" class="fp-iframe"></iframe>
+                            <pre id="fp-console-view" class="fp-console"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FlashPoint Fullscreen Overlay -->
+            <div id="fp-fullscreen-overlay">
+                <div id="fp-fullscreen-header">
+                    <span>⚡ FlashPoint Fullscreen Preview</span>
+                    <button class="btn-browse" onclick="closeFlashPointFullscreen()" style="font-size: 0.75rem;">✕ Exit Fullscreen</button>
+                </div>
+                <iframe id="fp-fullscreen-frame"></iframe>
+            </div>
+
+            <div id="view-rockend" class="view-panel">
+                <h2 class="home-title" style="font-size: 3rem; margin-bottom: 24px;">Rock-End Chat</h2>
+                <div class="rockend-layout" id="rockend-layout">
+                    <div class="rockend-sidebar">
+                        <div class="rockend-sidebar-header">
+                            <div id="rockend-my-pfp-container" style="cursor:pointer;" onclick="document.getElementById('pfp-upload-input').click()">
+                                <div class="rockend-pfp-placeholder" id="rockend-my-pfp-placeholder">?</div>
+                                <img class="rockend-pfp" id="rockend-my-pfp" style="display:none;" alt="PFP">
+                            </div>
+                            <input type="file" id="pfp-upload-input" accept="image/*" onchange="uploadPFP(this)">
+                            <div class="rockend-user-info">
+                                <div class="rockend-username" id="rockend-my-username">Loading...</div>
+                                <div class="rockend-status" style="color:#00ff41;">● Online</div>
+                            </div>
+                        </div>
+                        <div class="rockend-sidebar-search">
+                            <input type="text" placeholder="Search users..." id="rockend-user-search" oninput="filterUsers()">
+                        </div>
+                        <div class="rockend-user-list" id="rockend-user-list">
+                            <div style="padding:20px;color:var(--text2);text-align:center;">Loading users...</div>
+                        </div>
+                        <div class="rockend-logout-btn" onclick="rockendLogout()">⏻ Sign Out</div>
+                    </div>
+                    <div class="rockend-chat-area" id="rockend-chat-area">
+                        <div class="rockend-empty-chat" id="rockend-empty-chat">
+                            <span style="font-size:3rem;">💬</span>
+                            <span>Select a user to start chatting</span>
+                        </div>
+                        <div id="rockend-active-chat" style="display:none;flex-direction:column;flex:1;">
+                            <div class="rockend-chat-header">
+                                <div id="rockend-chat-pfp-container"></div>
+                                <div class="ch-name" id="rockend-chat-name">User</div>
+                            </div>
+                            <div class="rockend-messages" id="rockend-messages"></div>
+                            <div class="rockend-input-area">
+                                <input type="text" id="rockend-msg-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMessage()">
+                                <button onclick="sendMessage()">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-auth-overlay" id="rockend-auth-overlay">
+                    <div class="chat-auth-box">
+                        <h2 id="rockend-auth-title">Rock-End Login</h2>
+                        <input type="text" id="rockend-auth-username" placeholder="Choose a username">
+                        <button class="btn-browse" style="width:100%;" onclick="rockendAuthAction()" id="rockend-auth-btn">Enter Chat</button>
+                        <div class="auth-switch">
+                            <span style="font-size:0.7rem;color:var(--text2);">No email or password needed.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-browser" class="view-panel">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+                    <h2 class="home-title" style="font-size: 3rem; margin: 0;">Web Browser</h2>
+                    <div class="browser-header-actions">
+                        <button class="embed-btn" onclick="makeCurrentBrowserDefault()">★ PREFER BROWSER</button>
+                        <button class="embed-btn" onclick="document.getElementById('browser-frame').requestFullscreen()">⛶ FULLSCREEN</button>
+                    </div>
+                </div>
+                
+                <div class="browser-layout">
+                    <div class="browser-iframe-container"><iframe id="browser-frame" class="embed-iframe" allowfullscreen></iframe></div>
+                    <div class="browser-side-menu">
+                        <div class="browser-side-title">Select Engine</div>
+                        <div class="side-browser-pill" id="s-bp-fern" data-id="fern" data-url="https://s3.amazonaws.com/writevc/index.html" onclick="selectBrowser('fern')">
+                            <div class="sb-icon">🌿</div><div class="sb-info"><div class="sb-name">Fern <span class="sb-default-badge" id="badge-fern" style="display:none;">DEF</span></div><div class="sb-desc">Classic, best experience</div></div>
+                        </div>
+                        <div class="side-browser-pill" id="s-bp-nocturne" data-id="nocturne" data-url="https://yfx1m44q8q1ghflp.mvd.www.mvd.92.38.177.23.nip.io/" onclick="selectBrowser('nocturne')">
+                            <div class="sb-icon">🌙</div><div class="sb-info"><div class="sb-name">Nocturne <span class="sb-default-badge" id="badge-nocturne" style="display:none;">DEF</span></div><div class="sb-desc">Modern but complex</div></div>
+                        </div>
+                        <div class="side-browser-pill" id="s-bp-arctic" data-id="arctic" data-url="https://quizizz-static.s3.amazonaws.com/_media/arctic/ead256dc-0d87-4534-ad4f-106368554887-v2" onclick="selectBrowser('arctic')">
+                            <div class="sb-icon">❄️</div><div class="sb-info"><div class="sb-name">Arctic <span class="sb-default-badge" id="badge-arctic" style="display:none;">DEF</span></div><div class="sb-desc">New but overstimulating</div></div>
+                        </div>
+                        <div class="side-browser-pill" id="s-bp-overcloaked" data-id="overcloaked" data-url="https://digitallearninghelp.onlidigital.com/" onclick="selectBrowser('overcloaked')">
+                            <div class="sb-icon">😎</div><div class="sb-info"><div class="sb-name">OverCloaked <span class="sb-default-badge" id="badge-overcloaked" style="display:none;">DEF</span></div><div class="sb-desc">Simple, modern, kinda slow</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-doc1" class="view-panel">
+                <h2 class="home-title" style="font-size: 3rem; margin-bottom: 24px;">Boxed's Doc</h2>
+                <div class="embed-container" style="flex:1;"><iframe class="embed-iframe" src="https://docs.google.com/document/d/1Hn2GGki0FheR42GdO4cDzzZrB8OgLcbd08HMj9zNH28/preview" style="background:var(--surface);"></iframe></div>
+            </div>
+            <div id="view-doc2" class="view-panel">
+                <h2 class="home-title" style="font-size: 3rem; margin-bottom: 24px;">Nico's Doc</h2>
+                <div class="embed-container" style="flex:1;"><iframe class="embed-iframe" src="https://docs.google.com/document/d/1JW0Br9OWGVCCXjSGix8lc2XCOXKdXdDgP5YZOowOXVU/preview" style="background:var(--surface);"></iframe></div>
+            </div>
+
+            <div id="view-paint" class="view-panel">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 24px;">
+                    <h2 class="home-title" style="font-size: 3rem; margin: 0;">Paint Studio</h2>
+                </div>
+                <div class="paint-workspace">
+                    <div class="paint-toolbar-side">
+                        <button class="tool-btn active" id="tool-brush" onclick="setTool('brush')" title="Brush">✏️</button>
+                        <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')" title="Eraser">🧼</button>
+                        <button class="tool-btn" id="tool-fill" onclick="fillCanvas()" title="Fill Canvas">🪣</button>
+                        <button class="tool-btn" onclick="clearCanvas()" title="Clear All" style="color:#ef4444;">🗑️</button>
+                        <div style="width: 100%; height: 1px; background: var(--border); margin: 10px 0;"></div>
+                        <input type="range" id="paint-size" min="1" max="50" value="5" style="width: 40px; transform: rotate(-90deg); margin: 20px 0;">
+                        <span id="size-label" style="font-size: 0.7rem; font-weight:bold; color:var(--text2); font-family: 'Fira Code', monospace;">5px</span>
+                        <div style="width: 100%; height: 1px; background: var(--border); margin: 10px 0;"></div>
+                        <div class="color-swatch active" style="background: #000000;" onclick="setColor(this, '#000000')"></div>
+                        <div class="color-swatch" style="background: #ffffff;" onclick="setColor(this, '#ffffff')"></div>
+                        <div class="color-swatch" style="background: #ef4444;" onclick="setColor(this, '#ef4444')"></div>
+                        <div class="color-swatch" style="background: #3b82f6;" onclick="setColor(this, '#3b82f6')"></div>
+                        <div class="color-swatch" style="background: #22c55e;" onclick="setColor(this, '#22c55e')"></div>
+                        <div class="color-swatch" style="background: #eab308;" onclick="setColor(this, '#eab308')"></div>
+                        <input type="color" id="custom-color" value="#ff3366" style="width:32px; height:32px; padding:0; border:none; border-radius:4px; cursor:pointer; overflow:hidden;" onchange="setColor(null, this.value)">
+                    </div>
+                    <div id="canvas-wrapper"><canvas id="paint-canvas"></canvas></div>
+                </div>
+            </div>
+
+            <div id="view-settings" class="view-panel">
+                <h2 class="home-title" style="font-size: 3.5rem; margin-bottom: 40px;">Settings Panel</h2>
+                <div class="settings-grid">
+                    
+                    <div class="setting-box">
+                        <h3>🎨 Theme Engine</h3>
+                        <label>𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 Themes</label>
+                        <div class="theme-grid-mini">
+                            <button class="theme-btn" style="background:#09090b; border-color:#ff3366;" onclick="setTheme('volcanic-bloom')">Bloom</button>
+                            <button class="theme-btn" style="background:#0d0a0b; border-color:#ff0055;" onclick="setTheme('neon-ash')">Ash</button>
+                            <button class="theme-btn" style="background:#06040f; border-color:#8b5cf6;" onclick="setTheme('midnight-purple')">Midnight</button>
+                            <button class="theme-btn" style="background:#001400; border-color:#00ff41;" onclick="setTheme('dark-matrix')">Matrix</button>
+                            <button class="theme-btn" style="background:#040914; border-color:#0ea5e9;" onclick="setTheme('frost-volcanic')">Frost</button>
+                            <button class="theme-btn" style="background:#1c0808; border-color:#ef4444;" onclick="setTheme('ember-black')">Ember</button>
+                        </div>
+                        
+                        <label>Custom Accent Color</label>
+                        <div style="display:flex; gap: 16px; align-items:center; margin-top: 8px;">
+                            <input type="color" id="accent-color-picker" value="#ff3366" style="width: 60px; height: 40px; border:none; border-radius:var(--radius-sm); cursor:pointer; background:transparent;" onchange="setCustomAccent(this.value)">
+                            <span style="font-size:0.8rem; color:var(--text2); line-height: 1.4; font-family: 'Fira Code', monospace;">Modifies globally targeted elements.</span>
+                        </div>
+
+                        <label>Portal Title Font (Brand)</label>
+                        <select id="brand-font-select" onchange="setBrandFont(this.value)">
+                            <option value="'Rajdhani', sans-serif">Rajdhani (Default Edge)</option>
+                            <option value="'Orbitron', sans-serif">Orbitron (Sci-Fi)</option>
+                            <option value="'Bebas Neue', sans-serif">Bebas Neue (Impact)</option>
+                            <option value="'Syncopate', sans-serif">Syncopate (Wide)</option>
+                            <option value="'League Spartan', sans-serif">League Spartan</option>
+                            <option value="'Space Grotesk', sans-serif">Space Grotesk</option>
+                            <option value="'Inter', sans-serif">Inter</option>
+                        </select>
+
+                        <label>Main UI Font (Other Things)</label>
+                        <select id="ui-font-select" onchange="setUIFont(this.value)">
+                            <option value="'Space Grotesk', sans-serif">Space Grotesk (Default)</option>
+                            <option value="'Inter', sans-serif">Inter</option>
+                            <option value="'Rajdhani', sans-serif">Rajdhani</option>
+                            <option value="'Fira Code', monospace">Fira Code (Code)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-box">
+                        <h3>🖼️ Environments</h3>
+                        <label>Stock Wallpapers</label>
+                        <div class="wallpaper-grid">
+                            <button class="wp-btn" onclick="setWallpaper('none')">Void (None)</button>
+                            <button class="wp-btn" onclick="setWallpaper('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1600')">Abstract Tech</button>
+                            <button class="wp-btn" onclick="setWallpaper('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1600')">Neon City</button>
+                            <button class="wp-btn" onclick="setWallpaper('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600')">Deep Space</button>
+                            <button class="wp-btn" onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1600')">Gradient</button>
+                            <button class="wp-btn" onclick="setWallpaper('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600')">Beach</button>
+                        </div>
+                        
+                        <label>Custom Archive Upload</label>
+                        <div class="file-upload-wrapper">
+                            <div class="file-upload-btn">SELECT LOCAL IMAGE...</div>
+                            <input type="file" id="custom-wp-upload" accept="image/*">
+                        </div>
+                        
+                        <label>Remote Image URL</label>
+                        <input type="text" id="custom-wp-url" placeholder="Paste custom URL here..." oninput="setWallpaper(this.value)">
+                    </div>
+
+                    <div class="setting-box">
+                        <h3>🚨 Tab & Panic Config</h3>
+                        <p style="font-size:0.8rem; color:var(--text2); margin-bottom:16px; font-family: 'Fira Code', monospace;">Configure stealth and instant site replacement protocols.</p>
+                        
+                        <label>Quick Tab Cloak Presets</label>
+                        <select id="cloak-preset-select" onchange="applyCloakPreset(this.value)">
+                            <option value="volcanic">Volcanic (Default)</option>
+                            <option value="google">Google</option>
+                            <option value="drive">Google Drive</option>
+                            <option value="classroom">Google Classroom</option>
+                            <option value="teams">Google Teams / Meet</option>
+                            <option value="canvas">Canvas Dashboard</option>
+                            <option value="ixl">IXL</option>
+                        </select>
+
+                        <label>Custom Cloak Title</label>
+                        <input type="text" id="custom-cloak-title" placeholder="E.g., Dashboard" oninput="setCustomCloakTitle(this.value)">
+
+                        <button class="cloak-action-btn" onclick="openAboutBlankCloak()">
+                            🚀 LAUNCH ABOUT:BLANK (BLOB URL)
+                        </button>
+                        <p style="font-size:0.65rem; color:var(--text2); margin-top:8px; font-family: 'Fira Code', monospace; line-height:1.4;">Opens the entire Hub in a new about:blank window via blob URL injection. The current tab WILL appear as "about:blank" in your history.</p>
+
+                        <div style="border-top: 1px dashed var(--border); margin: 24px 0;"></div>
+
+                        <label>Panic Key Trigger</label>
+                        <p style="font-size:0.75rem; color:var(--accent); margin-bottom:8px;">Pressing this instantly REDIRECTS the page to the target site.</p>
+                        <select id="panic-key-select" onchange="setPanicKey(this.value)">
+                            <option value="`">Backtick (`)</option>
+                            <option value="Escape">Escape (Esc)</option>
+                            <option value="Tab">Tab Key</option>
+                            <option value="Backspace">Backspace</option>
+                        </select>
+
+                        <label>Panic Redirect Destination</label>
+                        <select id="panic-dest-preset" onchange="applyPanicPreset(this.value)">
+                            <option value="https://classroom.google.com/">Google Classroom</option>
+                            <option value="https://google.com">Google Search</option>
+                            <option value="https://launchpad.classlink.com">ClassLink</option>
+                            <option value="custom">Custom URL...</option>
+                        </select>
+
+                        <div id="custom-panic-wrap" style="display:none;">
+                            <label>Custom Destination URL</label>
+                            <input type="text" id="cloak-dest-input" value="https://classroom.google.com/" oninput="setPanicUrl(this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-credits" class="view-panel">
+                <div class="credits-container">
+                    <h2 class="credits-header">𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖 // Architecture</h2>
+                    
+                    <div class="credits-row">
+                        <span class="credits-role">OWNERS & VISION</span>
+                        <span class="credits-name">Boxed & Nico</span>
+                    </div>
+                    <div class="credits-row">
+                        <span class="credits-role">LEAD DEVELOPER</span>
+                        <span class="credits-name">Fazade</span>
+                    </div>
+                    <div class="credits-row">
+                        <span class="credits-role">SECONDARY DEVELOPER</span>
+                        <span class="credits-name">Boxed</span>
+                    </div>
+                    
+                    <h2 class="credits-header" style="margin-top: 60px; font-size: 2.2rem;">Data Providers</h2>
+                    
+                    <div class="credits-row">
+                        <span class="credits-role">GAME ARCHIVES</span>
+                        <span class="credits-name">Gn Math, Nocturne, DuckMath</span>
+                    </div>
+                    <div class="credits-row">
+                        <span class="credits-role">PROXY ENGINES</span>
+                        <span class="credits-name">Fern, Nocturne, Arctic, OverClocked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="notifications-container"></div>
+
+    <script>
+        // Store the current preview blob URL so fullscreen can reuse it
+        let fpCurrentBlobUrl = null;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8GtIv2EYd0BLwS2DFSykJTMNAH37qceg",
+            authDomain: "rockend-f08dc.firebaseapp.com",
+            projectId: "rockend-f08dc",
+            storageBucket: "rockend-f08dc.firebasestorage.app",
+            messagingSenderId: "125305985781",
+            appId: "1:125305985781:web:50352434eab10c556083bc",
+            measurementId: "G-TFRCH542VH"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        let rockendCurrentUser = null;
+        let rockendCurrentChatUserId = null;
+        let rockendAllUsers = [];
+        let rockendUnsubscribeMessages = null;
+        let rockendUnsubscribeUsers = null;
+
+        // Generate a random dummy email internally for Firebase Auth
+        function generateDummyEmail() {
+            const domains = ['dummybox.net', 'tempmail.org', 'fakemail.co', 'nomail.xyz', 'rockend.user'];
+            const name = 'user' + Math.floor(Math.random() * 90000 + 10000);
+            const domain = domains[Math.floor(Math.random() * domains.length)];
+            return name + '@' + domain;
+        }
+
+        // Generate a random password internally
+        function generateDummyPassword() {
+            return 'pass' + Math.floor(Math.random() * 900000 + 100000) + '!';
+        }
+        
+        function rockendAuthAction() {
+            const username = document.getElementById('rockend-auth-username').value.trim();
+            
+            if (!username) { notify('Please enter a username.'); return; }
+            if (username.length < 2) { notify('Username must be at least 2 characters.'); return; }
+            
+            // Generate dummy email and password internally
+            const email = generateDummyEmail();
+            const password = generateDummyPassword();
+            
+            // Try to register with the generated credentials
+            auth.createUserWithEmailAndPassword(email, password)
+                .then(cred => {
+                    return db.collection('rockend_users').doc(cred.user.uid).set({
+                        username: username,
+                        email: email,
+                        pfp: '',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                })
+                .then(() => notify('Welcome to Rock-End, ' + username + '!'))
+                .catch(err => {
+                    // If registration fails (e.g., email collision), retry with new dummy credentials
+                    const newEmail = generateDummyEmail();
+                    const newPassword = generateDummyPassword();
+                    return auth.createUserWithEmailAndPassword(newEmail, newPassword)
+                        .then(cred => {
+                            return db.collection('rockend_users').doc(cred.user.uid).set({
+                                username: username,
+                                email: newEmail,
+                                pfp: '',
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        })
+                        .then(() => notify('Welcome to Rock-End, ' + username + '!'))
+                        .catch(retryErr => notify('Error: ' + retryErr.message));
+                });
+        }
+        
+        function rockendLogout() {
+            if (rockendUnsubscribeMessages) rockendUnsubscribeMessages();
+            if (rockendUnsubscribeUsers) rockendUnsubscribeUsers();
+            rockendCurrentUser = null;
+            rockendCurrentChatUserId = null;
+            auth.signOut();
+            document.getElementById('rockend-auth-overlay').style.display = 'flex';
+            document.getElementById('rockend-active-chat').style.display = 'none';
+            document.getElementById('rockend-empty-chat').style.display = 'flex';
+            document.getElementById('rockend-auth-username').value = '';
+            notify('Signed out of Rock-End.');
+        }
+        
+        function uploadPFP(input) {
+            if (!rockendCurrentUser) return;
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                let pfpData = base64;
+                if (base64.length > 500000) {
+                    notify('Image too large, compressing...');
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxSize = 150;
+                        const ratio = Math.min(maxSize / img.width, maxSize / img.height);
+                        canvas.width = img.width * ratio;
+                        canvas.height = img.height * ratio;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        pfpData = canvas.toDataURL('image/jpeg', 0.6);
+                        savePFP(pfpData);
+                    };
+                    img.src = base64;
+                } else {
+                    savePFP(pfpData);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function savePFP(base64) {
+            db.collection('rockend_users').doc(rockendCurrentUser.uid).update({
+                pfp: base64
+            }).then(() => {
+                notify('Profile picture updated!');
+                updateMyPFP(base64);
+            }).catch(err => notify('Failed to save PFP: ' + err.message));
+        }
+        
+        function updateMyPFP(url) {
+            const placeholder = document.getElementById('rockend-my-pfp-placeholder');
+            const img = document.getElementById('rockend-my-pfp');
+            if (url) {
+                img.src = url;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                img.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+        }
+        
+        function getInitials(name) {
+            return name ? name.charAt(0).toUpperCase() : '?';
+        }
+        
+        function selectChatUser(uid) {
+            rockendCurrentChatUserId = uid;
+            
+            if (rockendUnsubscribeMessages) rockendUnsubscribeMessages();
+            
+            const user = rockendAllUsers.find(u => u.id === uid);
+            if (!user) return;
+            
+            document.getElementById('rockend-empty-chat').style.display = 'none';
+            document.getElementById('rockend-active-chat').style.display = 'flex';
+            document.getElementById('rockend-chat-name').textContent = user.username || 'User';
+            
+            const chatPfpContainer = document.getElementById('rockend-chat-pfp-container');
+            if (user.pfp) {
+                chatPfpContainer.innerHTML = `<img class="ch-pfp" src="${user.pfp}" alt="PFP">`;
+            } else {
+                chatPfpContainer.innerHTML = `<div class="ch-pfp-placeholder">${getInitials(user.username)}</div>`;
+            }
+            
+            document.querySelectorAll('.rockend-user-item').forEach(el => el.classList.remove('active'));
+            const activeItem = document.querySelector(`.rockend-user-item[data-uid="${uid}"]`);
+            if (activeItem) activeItem.classList.add('active');
+            
+            const chatId = [rockendCurrentUser.uid, uid].sort().join('_');
+            rockendUnsubscribeMessages = db.collection('rockend_messages')
+                .where('chatId', '==', chatId)
+                .orderBy('timestamp', 'asc')
+                .onSnapshot(snapshot => {
+                    const messagesDiv = document.getElementById('rockend-messages');
+                    messagesDiv.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const msg = doc.data();
+                        renderMessage(msg);
+                    });
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
+            
+            document.getElementById('rockend-msg-input').focus();
+        }
+        
+        function renderMessage(msg) {
+            const messagesDiv = document.getElementById('rockend-messages');
+            const isMine = msg.from === rockendCurrentUser.uid;
+            const senderUser = rockendAllUsers.find(u => u.id === msg.from);
+            const senderName = senderUser ? senderUser.username : 'Unknown';
+            const senderPfp = senderUser ? senderUser.pfp : '';
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'rockend-msg' + (isMine ? ' mine' : '');
+            
+            const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '';
+            
+            msgDiv.innerHTML = `
+                <div>
+                    ${isMine ? '' : (senderPfp ? `<img class="msg-pfp" src="${senderPfp}" alt="">` : `<div class="msg-pfp-placeholder">${getInitials(senderName)}</div>`)}
+                </div>
+                <div>
+                    <div class="msg-bubble">${escapeHtml(msg.text || '')}</div>
+                    <div class="msg-time">${time}</div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(msgDiv);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('rockend-msg-input');
+            const text = input.value.trim();
+            if (!text || !rockendCurrentChatUserId || !rockendCurrentUser) return;
+            
+            const chatId = [rockendCurrentUser.uid, rockendCurrentChatUserId].sort().join('_');
+            
+            db.collection('rockend_messages').add({
+                chatId: chatId,
+                from: rockendCurrentUser.uid,
+                to: rockendCurrentChatUserId,
+                text: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                input.value = '';
+            }).catch(err => notify('Failed to send: ' + err.message));
+        }
+        
+        function filterUsers() {
+            const query = document.getElementById('rockend-user-search').value.toLowerCase();
+            renderUserList(rockendAllUsers.filter(u => 
+                u.id !== rockendCurrentUser.uid && 
+                u.username.toLowerCase().includes(query)
+            ));
+        }
+        
+        function renderUserList(users) {
+            const listDiv = document.getElementById('rockend-user-list');
+            if (users.length === 0) {
+                listDiv.innerHTML = '<div style="padding:20px;color:var(--text2);text-align:center;">No users found</div>';
+                return;
+            }
+            listDiv.innerHTML = users.map(u => `
+                <div class="rockend-user-item" data-uid="${u.id}" onclick="selectChatUser('${u.id}')">
+                    ${u.pfp ? `<img class="ru-pfp" src="${u.pfp}" alt="">` : `<div class="ru-pfp-placeholder">${getInitials(u.username)}</div>`}
+                    <div>
+                        <div class="ru-name">${escapeHtml(u.username)}</div>
+                        <div class="ru-preview">Click to chat</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                rockendCurrentUser = user;
+                document.getElementById('rockend-auth-overlay').style.display = 'none';
+                document.getElementById('rockend-my-username').textContent = 'Loading...';
+                
+                db.collection('rockend_users').doc(user.uid).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.getElementById('rockend-my-username').textContent = data.username || 'Anonymous';
+                        updateMyPFP(data.pfp || '');
+                        const placeholder = document.getElementById('rockend-my-pfp-placeholder');
+                        if (!data.pfp) {
+                            placeholder.textContent = getInitials(data.username);
+                        }
+                    } else {
+                        document.getElementById('rockend-my-username').textContent = 'Anonymous';
+                    }
+                });
+                
+                if (rockendUnsubscribeUsers) rockendUnsubscribeUsers();
+                rockendUnsubscribeUsers = db.collection('rockend_users').onSnapshot(snapshot => {
+                    rockendAllUsers = [];
+                    snapshot.forEach(doc => {
+                        rockendAllUsers.push({ id: doc.id, ...doc.data() });
+                    });
+                    filterUsers();
+                });
+                
+                notify('Connected to Rock-End. Welcome!');
+            } else {
+                rockendCurrentUser = null;
+                document.getElementById('rockend-auth-overlay').style.display = 'flex';
+                document.getElementById('rockend-active-chat').style.display = 'none';
+                document.getElementById('rockend-empty-chat').style.display = 'flex';
+                document.getElementById('rockend-user-list').innerHTML = '<div style="padding:20px;color:var(--text2);text-align:center;">Sign in to see users</div>';
+            }
+        });
+        
+        function switchTab(viewId, navEl) {
+            document.querySelectorAll('.view-panel').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            var target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.style.display = 'flex';
+                void target.offsetWidth;
+                target.classList.add('active');
+            }
+            if (navEl && navEl.classList) navEl.classList.add('active');
+
+            if (viewId === 'paint') setTimeout(resizeCanvas, 100);
+            if (viewId === 'flashpoint') runFlashPointCode();
+        }
+
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
+            sidebar.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.innerHTML = '☰';
+                toggleBtn.title = 'Show Sidebar';
+                notify('SIDEBAR HIDDEN. CLICK ☰ TO SHOW.');
+            } else {
+                toggleBtn.innerHTML = '☰';
+                toggleBtn.title = 'Hide Sidebar';
+                notify('SIDEBAR VISIBLE.');
+            }
+        }
+
+        // Update Popup Functions
+        function dismissUpdatePopup() {
+            document.getElementById('update-popup-overlay').style.display = 'none';
+            localStorage.setItem('volcanic_update_dismissed_v2', 'true');
+        }
+
+        function showUpdatePopupIfNeeded() {
+            const alreadyDismissed = localStorage.getItem('volcanic_update_dismissed_v2');
+            if (!alreadyDismissed) {
+                document.getElementById('update-popup-overlay').style.display = 'flex';
+            }
+        }
+
+        // FlashPoint Fullscreen Functions
+        function openFlashPointFullscreen() {
+            const fullscreenOverlay = document.getElementById('fp-fullscreen-overlay');
+            const fullscreenFrame = document.getElementById('fp-fullscreen-frame');
+            
+            if (!fpCurrentBlobUrl) {
+                notify('Run your code first to generate a preview.');
+                return;
+            }
+            
+            fullscreenFrame.src = fpCurrentBlobUrl;
+            fullscreenOverlay.classList.add('active');
+            notify('PREVIEW FULLSCREEN ACTIVATED. PRESS ESC OR CLICK EXIT.');
+        }
+        
+        function closeFlashPointFullscreen() {
+            const fullscreenOverlay = document.getElementById('fp-fullscreen-overlay');
+            fullscreenOverlay.classList.remove('active');
+            notify('FULLSCREEN CLOSED.');
+        }
+        
+        // Close fullscreen with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const fullscreenOverlay = document.getElementById('fp-fullscreen-overlay');
+                if (fullscreenOverlay.classList.contains('active')) {
+                    closeFlashPointFullscreen();
+                }
+            }
+        });
+
+        function notify(m) {
+            var c = document.getElementById('notifications-container');
+            var e = document.createElement('div');
+            e.className = 'notification'; e.textContent = m;
+            c.appendChild(e); setTimeout(() => e.remove(), 3500);
+        }
+
+        setInterval(function() {
+            var t = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            if (document.getElementById('sidebar-clock')) document.getElementById('sidebar-clock').textContent = t;
+            var t12 = new Date().toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit' });
+            if (document.getElementById('stat-time')) document.getElementById('stat-time').textContent = t12;
+        }, 1000);
+
+        function setTheme(t) { 
+            document.body.className = 'theme-' + t; 
+            localStorage.setItem('volcanic_theme', t);
+            notify('ENVIRONMENT THEME UPDATED: ' + t.toUpperCase()); 
+        }
+
+        function openWebGame(url) {
+            switchTab('browser', document.querySelectorAll('.nav-item')[2]);
+            document.getElementById('browser-frame').src = url;
+            notify('LOADING MEDIA IN PROXY ENGINE...');
+        }
+
+        async function fetchLiveWeather() {
+            const weatherEl = document.getElementById('weather-display');
+            weatherEl.textContent = "SYNCING...";
+            try {
+                if (!navigator.geolocation) throw new Error("Geolocation not supported");
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude; const lon = position.coords.longitude;
+                    const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                    const weatherData = await weatherRes.json();
+                    if(weatherData && weatherData.current_weather) {
+                        const tempC = weatherData.current_weather.temperature;
+                        const tempF = Math.round((tempC * 9/5) + 32);
+                        weatherEl.innerHTML = `${tempF}°F // LOCAL`;
+                    } else weatherEl.textContent = "ERR_NO_DATA";
+                }, () => { weatherEl.textContent = "72°F // CACHED"; }, { timeout: 10000 });
+            } catch (err) { weatherEl.textContent = "OFFLINE"; }
+        }
+
+        let currentBrowserId = 'fern';
+        function initBrowserSystem() {
+            const savedDefault = localStorage.getItem('volcanic_default_browser') || 'fern';
+            updateDefaultUI(savedDefault); selectBrowser(savedDefault);
+        }
+        function selectBrowser(id) {
+            currentBrowserId = id;
+            document.querySelectorAll('.side-browser-pill').forEach(el => el.classList.remove('active'));
+            const selectedPill = document.getElementById('s-bp-' + id);
+            if(selectedPill) {
+                selectedPill.classList.add('active');
+                document.getElementById('browser-frame').src = selectedPill.getAttribute('data-url');
+            }
+        }
+        function makeCurrentBrowserDefault() {
+            localStorage.setItem('volcanic_default_browser', currentBrowserId);
+            updateDefaultUI(currentBrowserId);
+            notify('DEFAULT ENGINE SET: ' + currentBrowserId.toUpperCase());
+        }
+        function updateDefaultUI(defaultId) {
+            document.querySelectorAll('.sb-default-badge').forEach(el => el.style.display = 'none');
+            const badge = document.getElementById('badge-' + defaultId);
+            if(badge) badge.style.display = 'inline-block';
+        }
+
+        // Expanded adjective list - way more words!
+        const adjectives = [
+            "fast", "clean", "modern", "better", "free", "fun", "simple", "easy", 
+            "entertaining", "sleek", "edgy", "private", "secure", "smooth", "bold", 
+            "sharp", "limitless", "powerful", "reliable", "stealthy", "hidden", "uncensored",
+            "agile", "vibrant", "dynamic", "fearless", "unblocked", "unstoppable", "premium",
+            "elite", "untamed", "wild", "blazing", "rapid", "swift", "quick", "silent",
+            "shadow", "phantom", "covert", "secret", "untraceable", "anonymous", "invisible",
+            "encrypted", "locked", "shielded", "protected", "awesome", "epic", "legendary",
+            "ultimate", "supreme", "godly", "divine", "immortal", "eternal", "infinite",
+            "massive", "huge", "mighty", "robust", "solid", "unbreakable", "indestructible",
+            "versatile", "flexible", "adaptable", "scalable", "efficient", "optimized",
+            "polished", "refined", "elegant", "stylish", "classy", "gorgeous", "beautiful",
+            "stunning", "breathtaking", "unreal", "insane", "crazy", "brutal", "savage",
+            "ruthless", "dominant", "alpha", "omega", "celestial", "cosmic", "galactic",
+            "interstellar", "dimensional", "quantum", "atomic", "nuclear", "volcanic",
+            "blazing", "scorching", "burning", "raging", "storming", "thundering"
+        ];
+        
+        const dynWords = document.querySelectorAll('.dyn-word');
+        
+        // Keep track of current words to avoid duplicates
+        let currentWords = ['fast', 'clean', 'modern'];
+        
+        function getUniqueRandomWords(excludeWords, count) {
+            const available = adjectives.filter(word => !excludeWords.includes(word));
+            const result = [];
+            const used = [...excludeWords];
+            
+            // Shuffle the available words
+            for (let i = available.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [available[i], available[j]] = [available[j], available[i]];
+            }
+            
+            for (let i = 0; i < count && i < available.length; i++) {
+                result.push(available[i]);
+                used.push(available[i]);
+            }
+            
+            return result;
+        }
+        
+        // Initial setup - ensure all 3 words are different
+        currentWords = getUniqueRandomWords([], 3);
+        for (let i = 0; i < dynWords.length; i++) {
+            dynWords[i].textContent = currentWords[i];
+        }
+        
+        // Rotate words periodically, ensuring all 3 are always different
+        function rotateWords() {
+            // Pick 3 completely unique words from the list
+            const newWords = getUniqueRandomWords([], 3);
+            
+            dynWords.forEach((span, index) => {
+                span.style.opacity = '0';
+                setTimeout(() => {
+                    span.textContent = newWords[index];
+                    currentWords[index] = newWords[index];
+                    span.style.opacity = '1';
+                }, 300);
+            });
+            
+            // Schedule next rotation
+            setTimeout(rotateWords, 2500 + (Math.random() * 2000));
+        }
+        
+        // Start the rotation after a delay
+        setTimeout(rotateWords, 3000);
+        
+        // Also rotate each word independently with a small chance, but always ensure uniqueness
+        function rotateSingleWord(wordIndex) {
+            const exclude = [...currentWords];
+            const newWord = adjectives.filter(w => !exclude.includes(w))[
+                Math.floor(Math.random() * (adjectives.length - exclude.length))
+            ];
+            if (!newWord) return; // Safety check
+            
+            const span = dynWords[wordIndex];
+            span.style.opacity = '0';
+            setTimeout(() => {
+                span.textContent = newWord;
+                currentWords[wordIndex] = newWord;
+                span.style.opacity = '1';
+            }, 300);
+        }
+
+        function openAboutBlankCloak() {
+            try {
+                const currentHTML = document.documentElement.outerHTML;
+                const blob = new Blob([currentHTML], { type: 'text/html' });
+                const blobUrl = URL.createObjectURL(blob);
+                const win = window.open('about:blank', '_blank');
+                if (win) {
+                    win.document.write(`<!DOCTYPE html><html><head><title>about:blank</title><style>body{margin:0;padding:0;overflow:hidden;}iframe{width:100vw;height:100vh;border:none;position:fixed;top:0;left:0;}</style></head><body><iframe src="${blobUrl}" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-presentation allow-popups-to-escape-sandbox"></iframe></body></html>`);
+                    win.document.close();
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                    notify('ABOUT:BLANK CLOAK ACTIVATED. NEW WINDOW OPENED.');
+                } else {
+                    notify('POPUP BLOCKED! ALLOW POPUPS FOR THIS SITE.');
+                }
+            } catch (err) {
+                notify('CLOAK FAILED: ' + err.message);
+            }
+        }
+
+        function setCustomAccent(color) {
+            document.documentElement.style.setProperty('--accent', color);
+            document.documentElement.style.setProperty('--accent2', color);
+            localStorage.setItem('volcanic_accent', color);
+            if(document.getElementById('custom-color')) document.getElementById('custom-color').value = color;
+        }
+
+        function setBrandFont(fontVal) {
+            document.documentElement.style.setProperty('--font-brand', fontVal);
+            localStorage.setItem('volcanic_brand_font', fontVal);
+        }
+
+        function setUIFont(fontVal) {
+            document.documentElement.style.setProperty('--font-ui', fontVal);
+            localStorage.setItem('volcanic_ui_font', fontVal);
+        }
+
+        function setWallpaper(url) {
+            if(url === 'none' || url === '') {
+                document.body.style.backgroundImage = 'none';
+                localStorage.removeItem('volcanic_wallpaper');
+            } else {
+                document.body.style.backgroundImage = `url('${url}')`;
+                try { localStorage.setItem('volcanic_wallpaper', url); } catch(e) { notify("Notice: File size exceeds local storage cache. Temporary applied."); }
+            }
+        }
+
+        document.getElementById('custom-wp-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) { setWallpaper(event.target.result); notify("LOCAL WALLPAPER APPLIED."); };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const cloakLibrary = {
+            'volcanic': { title: '𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖', icon: 'https://www.volcanic.world/_next/image?url=%2Fnew-logo%2Fvolcanic_logo_no_bg.png&w=3840&q=75' },
+            'google': { title: 'Google', icon: 'https://www.google.com/favicon.ico' },
+            'drive': { title: 'Google Drive', icon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png' },
+            'classroom': { title: 'Classes', icon: 'https://ssl.gstatic.com/classroom/favicon.png' },
+            'teams': { title: 'Meet', icon: 'https://ssl.gstatic.com/s2/oz/images/faviconr2_md.ico' },
+            'canvas': { title: 'Dashboard', icon: 'https://du11hjcvx0uqb.cloudfront.net/br/dist/images/favicon-e10d657a73.ico' },
+            'ixl': { title: 'IXL | Dashboard', icon: 'https://www.ixl.com/favicon.ico' }
+        };
+
+        function setCloak(title, iconUrl) {
+            if(title) { document.title = title; localStorage.setItem('volcanic_cloak_title', title); }
+            if(iconUrl) { document.getElementById('dynamic-favicon').href = iconUrl; try { localStorage.setItem('volcanic_cloak_icon', iconUrl); } catch(e){} }
+            notify("TAB CLOAK SECURED.");
+        }
+
+        function applyCloakPreset(id) {
+            if(!id) return;
+            const preset = cloakLibrary[id];
+            if(preset) { setCloak(preset.title, preset.icon); document.getElementById('custom-cloak-title').value = preset.title; }
+        }
+
+        function setCustomCloakTitle(title) { setCloak(title, null); }
+
+        let panicKeyTrigger = '`';
+        let panicUrlTarget = 'https://classroom.google.com/';
+
+        function setPanicKey(key) { panicKeyTrigger = key; localStorage.setItem('volcanic_panic_key', key); notify('PANIC TRIGGER SET: ' + key); }
+        function applyPanicPreset(val) {
+            if(val === 'custom') { document.getElementById('custom-panic-wrap').style.display = 'block'; }
+            else { document.getElementById('custom-panic-wrap').style.display = 'none'; setPanicUrl(val); document.getElementById('cloak-dest-input').value = val; }
+        }
+        function setPanicUrl(url) { panicUrlTarget = url; localStorage.setItem('volcanic_panic_url', url); }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === panicKeyTrigger && !document.getElementById('fp-fullscreen-overlay').classList.contains('active')) { 
+                window.location.replace(panicUrlTarget); 
+            }
+        });
+
+        function loadSavedSettings() {
+            const savedTheme = localStorage.getItem('volcanic_theme');
+            if (savedTheme) setTheme(savedTheme);
+            const savedAccent = localStorage.getItem('volcanic_accent');
+            if (savedAccent) { setCustomAccent(savedAccent); document.getElementById('accent-color-picker').value = savedAccent; }
+            const savedBrandFont = localStorage.getItem('volcanic_brand_font');
+            if (savedBrandFont) { setBrandFont(savedBrandFont); document.getElementById('brand-font-select').value = savedBrandFont; }
+            const savedUIFont = localStorage.getItem('volcanic_ui_font');
+            if (savedUIFont) { setUIFont(savedUIFont); document.getElementById('ui-font-select').value = savedUIFont; }
+            const savedWp = localStorage.getItem('volcanic_wallpaper');
+            if (savedWp) { document.body.style.backgroundImage = `url('${savedWp}')`; }
+            const savedPanic = localStorage.getItem('volcanic_panic_key');
+            if (savedPanic) { panicKeyTrigger = savedPanic; document.getElementById('panic-key-select').value = savedPanic; }
+            const savedPUrl = localStorage.getItem('volcanic_panic_url');
+            if (savedPUrl) { panicUrlTarget = savedPUrl; document.getElementById('cloak-dest-input').value = savedPUrl; }
+            const cloakTitle = localStorage.getItem('volcanic_cloak_title');
+            const cloakIcon = localStorage.getItem('volcanic_cloak_icon');
+            if(cloakTitle) { document.title = cloakTitle; document.getElementById('custom-cloak-title').value = cloakTitle; }
+            if(cloakIcon) { document.getElementById('dynamic-favicon').href = cloakIcon; }
+        }
+
+        const fpTemplates = {
+            html: `<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: sans-serif; text-align: center; background: #0c0c0f; color: #fff; padding: 40px; }\n    h1 { color: #7a00ff; }\n  </style>\n</head>\n<body>\n  <h1>⚡ Welcome to FlashPoint!</h1>\n  <p>Edit HTML, CSS, JS, Python, or Text and click Run Code.</p>\n</body>\n</html>`,
+            css: `/* CSS Live Sample */\nbody {\n  background: linear-gradient(135deg, #09090b 0%, #1a1a21 100%);\n  color: #ededf3;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  margin: 0;\n  font-family: sans-serif;\n}\n.card {\n  padding: 30px;\n  background: rgba(255,255,255,0.05);\n  border: 1px solid #7a00ff;\n  border-radius: 8px;\n  text-align: center;\n}`,
+            javascript: `// JavaScript DOM Manipulation\ndocument.body.style.background = "#0c0c0f";\ndocument.body.style.color = "#ededf3";\ndocument.body.style.fontFamily = "sans-serif";\ndocument.body.style.padding = "40px";\n\nconst h1 = document.createElement("h1");\nh1.textContent = "⚡ FlashPoint JavaScript Engine";\nh1.style.color = "#7a00ff";\ndocument.body.appendChild(h1);\n\nconst btn = document.createElement("button");\nbtn.textContent = "Click Me";\nbtn.style.padding = "10px 20px";\nbtn.style.background = "#7a00ff";\nbtn.style.color = "#fff";\nbtn.style.border = "none";\nbtn.style.borderRadius = "4px";\nbtn.style.cursor = "pointer";\nbtn.onclick = () => alert("FlashPoint Live Script Executed!");\ndocument.body.appendChild(btn);`,
+            python: `# Python Script Emulator\nprint("=================================")\nprint("⚡ FlashPoint Python Runtime")\nprint("=================================")\n\nfor i in range(1, 6):\n    print(f"Executing step {i}/5... OK")\n\nname = "𝗩𝗢𝗟𝗖𝗔𝗡𝗜𝗖"\nprint(f"\\nWelcome back to {name}!")`,
+            text: `=======================================\n           FLASHPOINT NOTES           \n=======================================\n\nWrite plain text, configurations, or quick scratchpad ideas here.\nClick 'Run Code' to display in the output terminal.`
+        };
+
+        function switchFlashPointLang(lang) {
+            document.getElementById('fp-lang-label').textContent = lang.toUpperCase();
+            document.getElementById('fp-code-editor').value = fpTemplates[lang] || '';
+            runFlashPointCode();
+        }
+
+        function clearFlashPointEditor() {
+            document.getElementById('fp-code-editor').value = '';
+            runFlashPointCode();
+            notify('EDITOR CLEARED.');
+        }
+
+        function runFlashPointCode() {
+            const lang = document.getElementById('fp-lang-selector').value;
+            const code = document.getElementById('fp-code-editor').value;
+            const previewFrame = document.getElementById('fp-live-preview');
+            const consoleView = document.getElementById('fp-console-view');
+            const statusLabel = document.getElementById('fp-output-status');
+
+            // Revoke previous blob URL to free memory
+            if (fpCurrentBlobUrl) {
+                URL.revokeObjectURL(fpCurrentBlobUrl);
+                fpCurrentBlobUrl = null;
+            }
+
+            if (lang === 'html' || lang === 'css' || lang === 'javascript') {
+                previewFrame.style.display = 'block';
+                consoleView.style.display = 'none';
+                statusLabel.textContent = 'WEB PREVIEW';
+
+                let fullDoc = '';
+                if (lang === 'html') {
+                    fullDoc = code;
+                } else if (lang === 'css') {
+                    fullDoc = `<!DOCTYPE html><html><head><style>${code}</style></head><body><div class="card"><h1>CSS Live Preview</h1><p>FlashPoint styling rendered directly.</p></div></body></html>`;
+                } else if (lang === 'javascript') {
+                    fullDoc = `<!DOCTYPE html><html><head><title>JS Execution</title></head><body><script>${code}<\/script></body></html>`;
+                }
+
+                // Create blob URL for the full document
+                const blob = new Blob([fullDoc], { type: 'text/html' });
+                fpCurrentBlobUrl = URL.createObjectURL(blob);
+                previewFrame.src = fpCurrentBlobUrl;
+            } else {
+                previewFrame.style.display = 'none';
+                consoleView.style.display = 'block';
+                statusLabel.textContent = lang === 'python' ? 'PYTHON CONSOLE' : 'PLAIN TEXT';
+
+                if (lang === 'python') {
+                    let simulatedOutput = '';
+                    const lines = code.split('\n');
+                    for (let line of lines) {
+                        const trimmed = line.trim();
+                        if (trimmed.startsWith('print(') && trimmed.endsWith(')')) {
+                            const inner = trimmed.slice(6, -1).replace(/^['"]|['"]$/g, '');
+                            simulatedOutput += inner + '\n';
+                        } else if (trimmed !== '') {
+                            simulatedOutput += `>>> ${trimmed}\n`;
+                        }
+                    }
+                    consoleView.textContent = simulatedOutput || '[No console output produced]';
+                } else {
+                    consoleView.textContent = code || '[Empty text buffer]';
+                }
+            }
+            notify('FLASHPOINT CODE RUNNING: ' + lang.toUpperCase());
+        }
+
+        const canvas = document.getElementById('paint-canvas');
+        const ctx = canvas.getContext('2d');
+        const wrapper = document.getElementById('canvas-wrapper');
+        let isDrawing = false; let currentTool = 'brush'; let currentColor = '#000000'; let brushSize = 5;
+
+        function resizeCanvas() { canvas.width = wrapper.clientWidth; canvas.height = wrapper.clientHeight; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; }
+        window.addEventListener('resize', resizeCanvas);
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tool-' + tool).classList.add('active');
+        }
+
+        function setColor(element, color) {
+            currentColor = color; if(currentTool === 'eraser') setTool('brush');
+            if(element) { document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active')); element.classList.add('active'); }
+        }
+
+        document.getElementById('paint-size').addEventListener('input', function(e) { brushSize = e.target.value; document.getElementById('size-label').textContent = brushSize + 'px'; });
+        canvas.addEventListener('mousedown', (e) => { isDrawing = true; ctx.beginPath(); ctx.moveTo(e.offsetX, e.offsetY); });
+        canvas.addEventListener('mousemove', (e) => { if (!isDrawing) return; ctx.lineWidth = brushSize; ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor; ctx.lineTo(e.offsetX, e.offsetY); ctx.stroke(); });
+        canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.closePath(); });
+        canvas.addEventListener('mouseleave', () => { isDrawing = false; ctx.closePath(); });
+        function clearCanvas() { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); notify('CANVAS PURGED.'); }
+        function fillCanvas() { ctx.fillStyle = currentTool === 'eraser' ? '#ffffff' : currentColor; ctx.fillRect(0, 0, canvas.width, canvas.height); notify('CANVAS FLOODED.'); }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedSettings();
+            initBrowserSystem();
+            fetchLiveWeather();
+            showUpdatePopupIfNeeded();
+            setTimeout(() => {
+                const loader = document.getElementById('boot-loader');
+                if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.remove(), 600); }
+            }, 1800);
+            setTimeout(() => { resizeCanvas(); clearCanvas(); }, 500);
+        });
+    </script>
+</body>
+</html>

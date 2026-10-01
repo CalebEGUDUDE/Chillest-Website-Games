@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Editor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Main page styling */
+        body {
+            background-color: #073763;
+            color: #ffffff;
+            font-family: sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .editor-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-top: 0;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 350px;
+            margin-bottom: 45px;
+            font-family: monospace;
+            font-size: 18px;
+            padding: 20px;
+            background-color: #0b4a85;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            border-radius: 8px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; 
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Standard Button Styling */
+        button {
+            width: 220px; 
+            padding: 18px 0;
+            cursor: pointer;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        /* The Export Button uses the same style but is wider */
+        #exportBtn {
+            width: 460px; /* Spans roughly two buttons wide */
+            margin-top: 10px;
+        }
+
+        .primary-btn {
+            position: relative;
+            z-index: 1;
+            background-color: #ffffff;
+            color: #073763;
+            border: none;
+        }
+
+        .primary-btn:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        /* Gradient Shadow */
+        .primary-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #00f2fe, #4facfe, #f093fb, #f5576c);
+            background-size: 200% 200%;
+            border-radius: 8px;
+            z-index: -1;
+            filter: blur(16px);
+            opacity: 0.8;
+            animation: shadowShift 4s ease infinite;
+        }
+
+        .secondary-btn {
+            background-color: transparent;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+        }
+
+        .secondary-btn:hover {
+            background-color: #ffffff;
+            color: #073763;
+            transform: translateY(-2px);
+        }
+
+        @keyframes shadowShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Mobile fix for the wide export button */
+        @media (max-width: 500px) {
+            #exportBtn { width: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="editor-container">
+        <h2>Type your HTML below:</h2>
+        
+        <textarea id="htmlInput" placeholder="Enter your code here..."></textarea>
+        
+        <div class="button-group">
+            <button id="clearBtn" class="secondary-btn">Clear</button>
+            <button id="openBtn" class="primary-btn">Open in New Tab</button>
+            <button id="copyBtn" class="secondary-btn">Copy</button>
+            <button id="exportBtn" class="secondary-btn">Export as .html</button>
+        </div>
+    </div>
+
+    <script>
+        const htmlInput = document.getElementById('htmlInput');
+
+        document.getElementById('openBtn').addEventListener('click', function() {
+            const userHTML = htmlInput.value;
+            const newWindow = window.open('about:blank', '_blank');
+            newWindow.document.write(userHTML);
+            newWindow.document.close();
+        });
+
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const copyBtn = document.getElementById('copyBtn');
+            navigator.clipboard.writeText(htmlInput.value).then(function() {
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = 'Copied!';
+                setTimeout(() => { copyBtn.innerText = originalText; }, 2000);
+            });
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            htmlInput.value = ''; 
+            htmlInput.focus(); 
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const textToWrite = htmlInput.value;
+            if (!textToWrite) return;
+            
+            const textFileAsBlob = new Blob([textToWrite], { type: 'text/html' });
+            const downloadLink = document.createElement("a");
+            downloadLink.download = "index.html";
+            downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+    </script>
+</body>
+</html>
