@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Splash Text Preview - Chillest Website</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Tiny5&display=swap');
+
+            :root {
+                --background: #06384b;
+                --orange: #ff8c00;
+                --yellow: #ffb000;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                min-width: 320px;
+                min-height: 100vh;
+                margin: 0;
+                background: var(--background);
+                color: var(--orange);
+                font-family: "Tiny5", monospace;
+            }
+
+            .site-header {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                display: flex;
+                height: 100px;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                border-bottom: 4px solid var(--orange);
+                background: var(--background);
+            }
+
+            h1 {
+                margin: 0;
+                color: var(--orange);
+                font-size: 1.8rem;
+                font-weight: 400;
+                text-align: center;
+            }
+
+            #splash-preview {
+                max-width: min(90vw, 900px);
+                margin: 0;
+                padding: 0;
+                overflow-wrap: anywhere;
+                border: 0;
+                background: transparent;
+                color: var(--yellow);
+                font: inherit;
+                font-size: 1.25rem;
+                text-align: center;
+            }
+
+            main {
+                width: min(100% - 32px, 900px);
+                margin: 0 auto;
+                padding: 24px 0 48px;
+            }
+
+            .list-heading {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: 8px 20px;
+                margin-bottom: 16px;
+            }
+
+            h2 {
+                margin: 0;
+                color: var(--orange);
+                font-size: 1.5rem;
+                font-weight: 400;
+            }
+
+            #splash-count {
+                margin: 0;
+                color: var(--yellow);
+            }
+
+            #splash-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+                gap: 8px;
+            }
+
+            .splash-option {
+                min-height: 44px;
+                padding: 8px 12px;
+                border: 2px solid var(--orange);
+                background: transparent;
+                color: var(--yellow);
+                font: inherit;
+                text-align: left;
+                overflow-wrap: anywhere;
+                cursor: pointer;
+            }
+
+            .splash-option:hover,
+            .splash-option:focus-visible,
+            .splash-option[aria-pressed="true"] {
+                background: var(--orange);
+                color: var(--background);
+            }
+
+            .splash-option:focus-visible {
+                outline: 2px solid var(--yellow);
+                outline-offset: 2px;
+            }
+
+            #load-status {
+                color: var(--yellow);
+            }
+        </style>
+    </head>
+    <body>
+        <header class="site-header">
+            <h1>Chillest Website</h1>
+            <p id="splash-preview" aria-live="polite">Loading splash texts...</p>
+        </header>
+        <main>
+            <div class="list-heading">
+                <h2>Choose a splash text to preview</h2>
+                <p id="splash-count"></p>
+            </div>
+            <div id="load-status" role="status" aria-live="polite"></div>
+            <div id="splash-list" aria-label="Splash texts"></div>
+        </main>
+        <script>
+            const preview = document.getElementById('splash-preview');
+            const splashList = document.getElementById('splash-list');
+            const splashCount = document.getElementById('splash-count');
+            const loadStatus = document.getElementById('load-status');
+
+            function getSplashTexts(payload) {
+                const entries = Array.isArray(payload) ? payload : payload?.splashes;
+                return Array.isArray(entries) ? entries.filter(text => typeof text === 'string') : [];
+            }
+
+            function selectSplash(text, selectedButton) {
+                preview.textContent = text;
+                splashList.querySelectorAll('button').forEach(button => {
+                    const isSelected = button === selectedButton;
+                    button.setAttribute('aria-pressed', String(isSelected));
+                });
+            }
+
+            async function loadSplashTexts() {
+                try {
+                    const response = await fetch('assets/text/splashes.json', { cache: 'no-store' });
+                    if (!response.ok) {
+                        throw new Error(`Splash list request failed (${response.status})`);
+                    }
+
+                    const splashes = getSplashTexts(await response.json());
+                    if (splashes.length === 0) {
+                        throw new Error('No splash texts were found in the splash list.');
+                    }
+
+                    splashCount.textContent = `${splashes.length} splash texts`;
+                    const buttons = splashes.map(text => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'splash-option';
+                        button.textContent = text;
+                        button.setAttribute('aria-pressed', 'false');
+                        button.addEventListener('click', () => selectSplash(text, button));
+                        return button;
+                    });
+                    splashList.replaceChildren(...buttons);
+                    selectSplash(splashes[0], buttons[0]);
+                } catch (error) {
+                    console.error('Failed to load splash texts:', error);
+                    preview.textContent = 'Unable to load splash texts';
+                    loadStatus.textContent = 'Could not load assets/text/splashes.json. Open this page from the website or a local web server.';
+                }
+            }
+
+            loadSplashTexts();
+        </script>
+    </body>
+</html>
