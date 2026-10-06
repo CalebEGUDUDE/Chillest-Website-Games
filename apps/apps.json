@@ -1,22 +1,37 @@
 [
-    {
-        "name": "Volcano v4",
-        "html": "apps/html/volcano.html",
-        "icon": "apps/icons/volcano.png"
-    },
-    {
-        "name": "HTML Editor",
-        "html": "apps/html/html-editor.html",
-        "icon": "apps/icons/html-editor.png"
-    },
-    {
-        "name": "Link Checker",
-        "html": "apps/html/link-checker.html",
-        "icon": "apps/icons/link-checker.png"
-    },
-    {
-        "name": "Ultimate Game Stash",
-        "html": "apps/html/ugs.html",
-        "icon": "apps/icons/ugs.png"
-    }
+  {
+    "name": "Astro's Dreamland",
+    "html": "apps/html/astros-dreamland.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Classroommaxxing",
+    "html": "apps/html/classroommaxxing.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "HTML Editor",
+    "html": "apps/html/html-editor.html",
+    "icon": "apps/icons/html-editor.png"
+  },
+  {
+    "name": "Link Checker",
+    "html": "apps/html/link-checker.html",
+    "icon": "apps/icons/link-checker.png"
+  },
+  {
+    "name": "NikeHub",
+    "html": "apps/html/nikehub.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Ultimate Game Stash",
+    "html": "apps/html/ugs.html",
+    "icon": "apps/icons/ugs.png"
+  },
+  {
+    "name": "Volcano v4",
+    "html": "apps/html/volcano.html",
+    "icon": "apps/icons/volcano.png"
+  }
 ]
