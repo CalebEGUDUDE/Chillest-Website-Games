@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Chillest Website</title>
+        <link id="site-favicon" rel="icon" type="image/svg+xml">
+        <script src="preview-app.js" defer></script>
+        <link rel="stylesheet" href="preview-style.css">
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="079762ca-8e26-4875-8616-3d989e17cfe0"></script>
+    </head>
+    <body>
+        <header class="site-header">
+            <h1>Chillest Website</h1>
+            <button id="splash" type="button" aria-label="Show another splash"></button>
+        </header>
+        <div class="site-layout">
+            <aside class="sidebar">
+                <nav class="page-nav" aria-label="Pages">
+                    <button id="games-view-button" class="bar active" type="button" aria-pressed="true">Games</button>
+                    <button id="ugs-view-button" class="bar" type="button" aria-pressed="false">UGS</button>
+                    <button id="apps-view-button" class="bar" type="button" aria-pressed="false">Apps</button>
+                    <button id="settings-view-button" class="bar" type="button" aria-pressed="false">Settings</button>
+                </nav>
+                <div id="game-controls">
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="10.8" cy="10.8" r="6.3" fill="none" stroke="currentColor" stroke-width="2.4"></circle>
+                            <path d="m15.5 15.5 5 5" fill="none" stroke="currentColor" stroke-width="2.4"></path>
+                        </svg>
+                        <input id="search" class="search-input" placeholder="search..." aria-label="Search games">
+                    </div>
+                    <nav id="catagories" class="catagories" aria-label="Game categories"></nav>
+                </div>
+            </aside>
+            <main class="games-area">
+                <div id="games-page">
+                    <br>
+                    <br>
+                    <div class="container" id="container"></div>
+                </div>
+                <section id="ugs-page" hidden aria-label="UGS games">
+                    <div class="ugs-toolbar">
+                        <input id="ugs-search" type="search" placeholder="Search UGS games..." aria-label="Search UGS games">
+                    </div>
+                    <div class="ugs-layout">
+                        <nav id="sidebar" class="ugs-sidebar" aria-label="UGS game letters"></nav>
+                        <div id="sections-container" class="ugs-sections"></div>
+                    </div>
+                </section>
+                <div id="apps-page" hidden>
+                    <br>
+                    <br>
+                    <div class="container" id="apps-container"></div>
+                </div>
+                <section id="settings-page" aria-labelledby="settings-title" hidden>
+                    <h2 id="settings-title">Settings</h2>
+                    <label class="setting-option" for="open-in-new-tab">
+                        <input id="open-in-new-tab" type="checkbox">
+                        <span>Open in new tab</span>
+                    </label>
+                    <label class="setting-option" for="cl0ak">
+                        <input id="cl0ak" type="checkbox">
+                        <span>Cl0ak</span>
+                    </label>
+                    <div class="tab-icon-setting">
+                        <label for="cloak-website">Website to cl0ak as</label>
+                        <input id="cloak-website" type="text" placeholder="example.com" autocomplete="url">
+                        <button id="reset-cloak-website" type="button">Use default</button>
+                    </div>
+                    <div class="game-version-setting">
+                        <label for="game-version">Game version</label>
+                        <select id="game-version">
+                            <option value="latest">Latest</option>
+                        </select>
+                    </div>
+                    <h3 class="settings-subtitle">Theme</h3>
+                    <label class="theme-option" for="theme-background">
+                        <span>Background</span>
+                        <input id="theme-background" type="color" value="#06384b">
+                    </label>
+                    <label class="theme-option" for="theme-text">
+                        <span>Text and borders</span>
+                        <input id="theme-text" type="color" value="#ff8c00">
+                    </label>
+                    <label class="theme-option" for="theme-highlight">
+                        <span>Highlight</span>
+                        <input id="theme-highlight" type="color" value="#ffb000">
+                    </label>
+                    <button id="reset-theme" class="theme-reset" type="button">Reset theme</button>
+                    <h3 class="settings-subtitle">Settings file</h3>
+                    <div class="settings-file-actions">
+                        <button id="export-settings" type="button">Export settings</button>
+                        <button id="import-settings" type="button">Import settings</button>
+                        <input id="settings-file" type="file" accept="application/json,.json" hidden>
+                    </div>
+                    <p id="settings-file-status" class="settings-file-status" role="status" aria-live="polite"></p>
+                </section>
+            </main>
+        </div>
+    </body>
+</html>

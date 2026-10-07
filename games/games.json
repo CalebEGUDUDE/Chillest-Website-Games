@@ -468,5 +468,475 @@
     "name": "Wordle",
     "html": "games/html/Website/wordle.html",
     "icon": "games/icons/Website/wordle.png"
+  },
+  {
+    "name": "Stickman Hook",
+    "html": "games/html/Website/11.html",
+    "icon": "games/icons/Website/11.png"
+  },
+  {
+    "name": "Retro Bowl College",
+    "html": "games/html/Website/34.html",
+    "icon": "games/icons/Website/34.png"
+  },
+  {
+    "name": "Gunspin",
+    "html": "games/html/Website/91.html",
+    "icon": "games/icons/Website/91.png"
+  },
+  {
+    "name": "The World's Hardest Game",
+    "html": "games/html/Flash/103.html",
+    "icon": "games/icons/Flash/103.png"
+  },
+  {
+    "name": "Survival Race",
+    "html": "games/html/Website/122.html",
+    "icon": "games/icons/Website/122.png"
+  },
+  {
+    "name": "Bloxorz",
+    "html": "games/html/Flash/169.html",
+    "icon": "games/icons/Flash/169.png"
+  },
+  {
+    "name": "Run 1",
+    "html": "games/html/Flash/175.html",
+    "icon": "games/icons/Flash/175.png"
+  },
+  {
+    "name": "Run 2",
+    "html": "games/html/Flash/176.html",
+    "icon": "games/icons/Flash/176.png"
+  },
+  {
+    "name": "Run 3",
+    "html": "games/html/Flash/177.html",
+    "icon": "games/icons/Flash/177.png"
+  },
+  {
+    "name": "Minecraft 1.21.4",
+    "html": "games/html/Minecraft/183.html",
+    "icon": "games/icons/Minecraft/183.png"
+  },
+  {
+    "name": "Slope",
+    "html": "games/html/Website/198.html",
+    "icon": "games/icons/Website/198.png"
+  },
+  {
+    "name": "Papa's Bakeria",
+    "html": "games/html/Flash/218.html",
+    "icon": "games/icons/Flash/218.png"
+  },
+  {
+    "name": "Papa's Burgeria",
+    "html": "games/html/Flash/219.html",
+    "icon": "games/icons/Flash/219.png"
+  },
+  {
+    "name": "Papa's Cheeseria",
+    "html": "games/html/Flash/220.html",
+    "icon": "games/icons/Flash/220.png"
+  },
+  {
+    "name": "Papa's Cupcakeria",
+    "html": "games/html/Flash/221.html",
+    "icon": "games/icons/Flash/221.png"
+  },
+  {
+    "name": "Papa's Donuteria",
+    "html": "games/html/Flash/222.html",
+    "icon": "games/icons/Flash/222.png"
+  },
+  {
+    "name": "Papa's Freezeria",
+    "html": "games/html/Flash/223.html",
+    "icon": "games/icons/Flash/223.png"
+  },
+  {
+    "name": "Papa's Hot Doggeria",
+    "html": "games/html/Flash/224.html",
+    "icon": "games/icons/Flash/224.png"
+  },
+  {
+    "name": "Papa's Pancakeria",
+    "html": "games/html/Flash/225.html",
+    "icon": "games/icons/Flash/225.png"
+  },
+  {
+    "name": "Papa's Pastaria",
+    "html": "games/html/Flash/226.html",
+    "icon": "games/icons/Flash/226.png"
+  },
+  {
+    "name": "Papa's Scooperia",
+    "html": "games/html/Flash/228.html",
+    "icon": "games/icons/Flash/228.png"
+  },
+  {
+    "name": "Papa's Sushiria",
+    "html": "games/html/Flash/229.html",
+    "icon": "games/icons/Flash/229.png"
+  },
+  {
+    "name": "Papa's Taco Mia",
+    "html": "games/html/Flash/230.html",
+    "icon": "games/icons/Flash/230.png"
+  },
+  {
+    "name": "Papa's Wingeria",
+    "html": "games/html/Flash/231.html",
+    "icon": "games/icons/Flash/231.png"
+  },
+  {
+    "name": "RE:RUN",
+    "html": "games/html/Website/260.html",
+    "icon": "games/icons/Website/260.png"
+  },
+  {
+    "name": "Drift Boss",
+    "html": "games/html/Website/276.html",
+    "icon": "games/icons/Website/276.png"
+  },
+  {
+    "name": "Sandtris",
+    "html": "games/html/Website/311.html",
+    "icon": "games/icons/Website/311.png"
+  },
+  {
+    "name": "Fancy Pants Adventure",
+    "html": "games/html/Flash/333.html",
+    "icon": "games/icons/Flash/333.png"
+  },
+  {
+    "name": "Fancy Pants Adventure 2",
+    "html": "games/html/Flash/334.html",
+    "icon": "games/icons/Flash/334.png"
+  },
+  {
+    "name": "Fancy Pants Adventure 3",
+    "html": "games/html/Flash/335.html",
+    "icon": "games/icons/Flash/335.png"
+  },
+  {
+    "name": "Fancy Pants Adventure 4 Part 1",
+    "html": "games/html/Flash/336.html",
+    "icon": "games/icons/Flash/336.png"
+  },
+  {
+    "name": "Fancy Pants Adventure 4 Part 2",
+    "html": "games/html/Flash/337.html",
+    "icon": "games/icons/Flash/337.png"
+  },
+  {
+    "name": "Ages of Conflict",
+    "html": "games/html/Website/444.html",
+    "icon": "games/icons/Website/444.png"
+  },
+  {
+    "name": "Kindergarten",
+    "html": "games/html/Ports/445.html",
+    "icon": "games/icons/Ports/445.png"
+  },
+  {
+    "name": "Kindergarten 2",
+    "html": "games/html/Ports/446.html",
+    "icon": "games/icons/Ports/446.png"
+  },
+  {
+    "name": "Spacebar Clicker",
+    "html": "games/html/Website/473.html",
+    "icon": "games/icons/Website/473.png"
+  },
+  {
+    "name": "Friday Night Funkin': V.S. Whitty",
+    "html": "games/html/FNF/474.html",
+    "icon": "games/icons/FNF/474.png"
+  },
+  {
+    "name": "Friday Night Funkin': B-Sides",
+    "html": "games/html/FNF/475.html",
+    "icon": "games/icons/FNF/475.png"
+  },
+  {
+    "name": "Friday Night Funkin': Vs. Hex",
+    "html": "games/html/FNF/476.html",
+    "icon": "games/icons/FNF/476.png"
+  },
+  {
+    "name": "Friday Night Funkin': Vs. Hatsune Miku",
+    "html": "games/html/FNF/477.html",
+    "icon": "games/icons/FNF/477.png"
+  },
+  {
+    "name": "Friday Night Funkin': Neo",
+    "html": "games/html/FNF/478.html",
+    "icon": "games/icons/FNF/478.png"
+  },
+  {
+    "name": "Friday Night Funkin': Sarvente's Mid-Fight Masses",
+    "html": "games/html/FNF/480.html",
+    "icon": "games/icons/FNF/480.png"
+  },
+  {
+    "name": "Friday Night Funkin': vs. Tricky",
+    "html": "games/html/FNF/481.html",
+    "icon": "games/icons/FNF/481.png"
+  },
+  {
+    "name": "Friday Night Funkin': Hit Single Real",
+    "html": "games/html/FNF/483.html",
+    "icon": "games/icons/FNF/483.png"
+  },
+  {
+    "name": "Friday Night Funkin': Creepypasta JP",
+    "html": "games/html/FNF/484.html",
+    "icon": "games/icons/FNF/484.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': vs. Garcello",
+    "html": "games/html/FNF/485.html",
+    "icon": "games/icons/FNF/485.png"
+  },
+  {
+    "name": "Friday Night Funkin': Sonic Legacy",
+    "html": "games/html/FNF/486.html",
+    "icon": "games/icons/FNF/486.png"
+  },
+  {
+    "name": "Friday Night Funkin': vs. QT",
+    "html": "games/html/FNF/487.html",
+    "icon": "games/icons/FNF/487.png"
+  },
+  {
+    "name": "Friday Night Funkin': Mistful Crimson Morning Reboot",
+    "html": "games/html/FNF/488.html",
+    "icon": "games/icons/FNF/488.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': Indie Cross",
+    "html": "games/html/FNF/489.html",
+    "icon": "games/icons/FNF/489.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': Jeffy's Endless Aethos",
+    "html": "games/html/FNF/496.html",
+    "icon": "games/icons/FNF/496.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': vs. BOPCITY",
+    "html": "games/html/FNF/497.html",
+    "icon": "games/icons/FNF/497.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': 17 Bucks: Floor 1",
+    "html": "games/html/FNF/498.html",
+    "icon": "games/icons/FNF/498.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': FIRE IN THE HOLE: Lobotomy Dash Funkin'",
+    "html": "games/html/FNF/499.html",
+    "icon": "games/icons/FNF/499.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': TWIDDLEFINGER",
+    "html": "games/html/FNF/500.html",
+    "icon": "games/icons/FNF/500.jpg"
+  },
+  {
+    "name": "Kindergarten 3",
+    "html": "games/html/Ports/501.html",
+    "icon": "games/icons/Ports/501.png"
+  },
+  {
+    "name": "Friday Night Funkin’ Soft",
+    "html": "games/html/FNF/509.html",
+    "icon": "games/icons/FNF/509.png"
+  },
+  {
+    "name": "Friday Night Funkin': Darkness Takeover",
+    "html": "games/html/FNF/525.html",
+    "icon": "games/icons/FNF/525.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': Pibby: Apocalypse",
+    "html": "games/html/FNF/541.html",
+    "icon": "games/icons/FNF/541.jpg"
+  },
+  {
+    "name": "Friday Night Funkin VS. KAPI",
+    "html": "games/html/FNF/555.html",
+    "icon": "games/icons/FNF/555.jpg"
+  },
+  {
+    "name": "Friday Night Funkin VS. Sky",
+    "html": "games/html/FNF/556.html",
+    "icon": "games/icons/FNF/556.jpg"
+  },
+  {
+    "name": "Friday Night Funkin Vs. Cyber Sensation",
+    "html": "games/html/FNF/558.html",
+    "icon": "games/icons/FNF/558.jpg"
+  },
+  {
+    "name": "Friday Night Funkin vs Shaggy",
+    "html": "games/html/FNF/559.html",
+    "icon": "games/icons/FNF/559.png"
+  },
+  {
+    "name": "Friday Night Funkin': Mario's Madness",
+    "html": "games/html/FNF/582.html",
+    "icon": "games/icons/FNF/582.jpg"
+  },
+  {
+    "name": "Friday Night Funkin' vs Hypno Lullaby",
+    "html": "games/html/FNF/583.html",
+    "icon": "games/icons/FNF/583.jpg"
+  },
+  {
+    "name": "FNF Vs. Hypno's Lullaby v2",
+    "html": "games/html/FNF/600.html",
+    "icon": "games/icons/FNF/600.jpg"
+  },
+  {
+    "name": "FNF Vs. Sonic.EXE 3.0/4.0",
+    "html": "games/html/FNF/601.html",
+    "icon": "games/icons/FNF/601.jpg"
+  },
+  {
+    "name": "Friday Night Funkin VS Impostor v4",
+    "html": "games/html/FNF/608.html",
+    "icon": "games/icons/FNF/608.jpg"
+  },
+  {
+    "name": "Friday Night Funkin vs Sunday Remastered HD",
+    "html": "games/html/FNF/609.html",
+    "icon": "games/icons/FNF/609.jpg"
+  },
+  {
+    "name": "Friday Night Funkin vs Carol V2",
+    "html": "games/html/FNF/610.html",
+    "icon": "games/icons/FNF/610.jpg"
+  },
+  {
+    "name": "Friday Night Funkin' Drop and Roll, but Playable",
+    "html": "games/html/FNF/613.html",
+    "icon": "games/icons/FNF/613.webp"
+  },
+  {
+    "name": "Friday Night Funkin Vs. Dave and Bambi v3",
+    "html": "games/html/FNF/615.html",
+    "icon": "games/icons/FNF/615.jpg"
+  },
+  {
+    "name": "Friday Night Funkin’ Wednesday's Infidelity",
+    "html": "games/html/FNF/616.html",
+    "icon": "games/icons/FNF/616.png"
+  },
+  {
+    "name": "FNF vs Bob v2.0 (Bob’s Onslaught)",
+    "html": "games/html/FNF/618.html",
+    "icon": "games/icons/FNF/618.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': Rev-Mixed",
+    "html": "games/html/FNF/619.html",
+    "icon": "games/icons/FNF/619.webp"
+  },
+  {
+    "name": "Friday Night Funkin': Gumballs",
+    "html": "games/html/FNF/621.html",
+    "icon": "games/icons/FNF/621.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': VS. Impostor: Alternated",
+    "html": "games/html/FNF/633.html",
+    "icon": "games/icons/FNF/633.jpg"
+  },
+  {
+    "name": "Friday Night Funkin': Chaos Nightmare - Sonic Vs. Fleetway",
+    "html": "games/html/FNF/634.html",
+    "icon": "games/icons/FNF/634.jpg"
+  },
+  {
+    "name": "Friday Night Funkin' D-Sides",
+    "html": "games/html/FNF/636.html",
+    "icon": "games/icons/FNF/636.webp"
+  },
+  {
+    "name": "Friday Night Funkin' VS Impostor B-Sides",
+    "html": "games/html/FNF/639.html",
+    "icon": "games/icons/FNF/639.png"
+  },
+  {
+    "name": "Friday Night Funkin' Sunday Night Suicide: Rookies Edition",
+    "html": "games/html/FNF/642.html",
+    "icon": "games/icons/FNF/642.webp"
+  },
+  {
+    "name": "Friday Night Funkin vs Nonsense",
+    "html": "games/html/FNF/644.html",
+    "icon": "games/icons/FNF/644.png"
+  },
+  {
+    "name": "Friday Night Funkin vs Undertale",
+    "html": "games/html/FNF/657.html",
+    "icon": "games/icons/FNF/657.webp"
+  },
+  {
+    "name": "Friday Night Funkin': AKAGE",
+    "html": "games/html/FNF/690.html",
+    "icon": "games/icons/FNF/690.webp"
+  },
+  {
+    "name": "Friday Night Funkin': Heartbreak Havoc [Vs. Sky: REDUX]",
+    "html": "games/html/FNF/691.html",
+    "icon": "games/icons/FNF/691.png"
+  },
+  {
+    "name": "FNF vs Pibby Corrupted",
+    "html": "games/html/FNF/700.html",
+    "icon": "games/icons/FNF/700.jpg"
+  },
+  {
+    "name": "Friday Night Funkin vs Tabi",
+    "html": "games/html/FNF/714.html",
+    "icon": "games/icons/FNF/714.png"
+  },
+  {
+    "name": "Friday Night Funkin vs Zardy",
+    "html": "games/html/FNF/715.html",
+    "icon": "games/icons/FNF/715.png"
+  },
+  {
+    "name": "Minecraft Pocket Edition",
+    "html": "games/html/Minecraft/754.html",
+    "icon": "games/icons/Minecraft/754.png"
+  },
+  {
+    "name": "Friday Night Funkin vs Shucks v2",
+    "html": "games/html/FNF/836.html",
+    "icon": "games/icons/FNF/836.png"
+  },
+  {
+    "name": "Friday Night Funkin': VS. Mario Ultra Rebooted",
+    "html": "games/html/FNF/861.html",
+    "icon": "games/icons/FNF/861.png"
+  },
+  {
+    "name": "Friday Night Funkin': VS. Henry Stickmin V4",
+    "html": "games/html/FNF/862.html",
+    "icon": "games/icons/FNF/862.png"
+  },
+  {
+    "name": "Friday Night Funkin': VS. Super Mario Bros. Funk Mix DX",
+    "html": "games/html/FNF/863.html",
+    "icon": "games/icons/FNF/863.png"
+  },
+  {
+    "name": "Friday Night Funkin': VS. Seek's Cool Deltarune",
+    "html": "games/html/FNF/864.html",
+    "icon": "games/icons/FNF/864.png"
   }
 ]

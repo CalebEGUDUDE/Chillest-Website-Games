@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="https://cdn.jsdelivr.net/gh/bubblfan/cg-rip@ec482ca47fe99da4915b0aa7f80ad3fc0006e11a/space-waves/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Space Waves</title>
+  <style>
+    html,
+    body,
+    canvas {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      background: #000;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      outline: none;
+    }
+
+    #loading-text {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font: 24px sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="loading-text">Loading Space Waves...</div>
+  <canvas id="unity-canvas" tabindex="-1"></canvas>
+  <script>
+    const wasmPath = "Build/9adf8a1aafea4c2333e26d66a8b36d56.wasm";
+    const loaderPath = "Build/81bbae32c7a77bc49304934b19e72883.loader.js";
+    const loadingText = document.getElementById("loading-text");
+    const canvas = document.getElementById("unity-canvas");
+
+    async function getWasmUrl() {
+      const partUrls = [1, 2, 3].map((part) =>
+        new URL(`${wasmPath}.part${part}`, document.baseURI)
+      );
+      const parts = await Promise.all(partUrls.map(async (url) => {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Unable to load Space Waves build part: ${response.status}`);
+        }
+        return response.arrayBuffer();
+      }));
+
+      return URL.createObjectURL(new Blob(parts, { type: "application/wasm" }));
+    }
+
+    async function startGame() {
+      try {
+        const codeUrl = await getWasmUrl();
+        const config = {
+          dataUrl: "Build/e4aa851098e3e5d328e4d879078ad6c5.data",
+          frameworkUrl: "Build/f3dc87e8bc321dd382fbd3fa53e1091f.framework.js",
+          codeUrl,
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "Space Waves",
+          productName: "Space Waves",
+          productVersion: "1.0.0"
+        };
+        const loader = document.createElement("script");
+        loader.src = loaderPath;
+        await new Promise((resolve, reject) => {
+          loader.onload = resolve;
+          loader.onerror = () => reject(new Error("Unable to load the Space Waves game loader."));
+          document.head.appendChild(loader);
+        });
+
+        window.gameInstance = await createUnityInstance(canvas, config);
+        loadingText.remove();
+      } catch (error) {
+        console.error("Space Waves failed to load:", error);
+        loadingText.textContent = "Unable to load Space Waves. Please try again.";
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
