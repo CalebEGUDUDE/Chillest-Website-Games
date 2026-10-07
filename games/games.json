@@ -938,5 +938,45 @@
     "name": "Friday Night Funkin': VS. Seek's Cool Deltarune",
     "html": "games/html/FNF/864.html",
     "icon": "games/icons/FNF/864.png"
+  },
+  {
+    "name": "Paper.io 2",
+    "html": "games/html/Website/102.html",
+    "icon": "games/icons/Website/102.png"
+  },
+  {
+    "name": "Offroad Mountain Bike",
+    "html": "games/html/Flash/116.html",
+    "icon": "games/icons/Flash/116.png"
+  },
+  {
+    "name": "Basket Bros",
+    "html": "games/html/Website/285.html",
+    "icon": "games/icons/Website/285.png"
+  },
+  {
+    "name": "Territorial.io",
+    "html": "games/html/Website/303.html",
+    "icon": "games/icons/Website/303.png"
+  },
+  {
+    "name": "RigBMX",
+    "html": "games/html/Flash/493.html",
+    "icon": "games/icons/Flash/493.png"
+  },
+  {
+    "name": "RigBMX 2",
+    "html": "games/html/Flash/494.html",
+    "icon": "games/icons/Flash/494.jpg"
+  },
+  {
+    "name": "Football Bros",
+    "html": "games/html/Website/548.html",
+    "icon": "games/icons/Website/548.png"
+  },
+  {
+    "name": "Mountain Bike Racer",
+    "html": "games/html/Flash/774.html",
+    "icon": "games/icons/Flash/774.jpg"
   }
 ]
