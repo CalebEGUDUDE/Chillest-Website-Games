@@ -998,5 +998,10 @@
     "name": "Yume Nikki",
     "html": "games/html/Ports/yume-nikki.html",
     "icon": "games/icons/Ports/yume-nikki.png"
+  },
+  {
+    "name": "Flying Gorilla",
+    "html": "games/html/Ports/763.html",
+    "icon": "games/icons/Ports/763.png"
   }
 ]

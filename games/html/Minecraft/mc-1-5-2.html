@@ -1,85 +1,64 @@
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-L7856P3VNT');
-</script><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
+  <base href="https://cdn.jsdelivr.net/gh/EndemansetNEW/eaglercraft1.5.2@main/">
+<title>eagler</title>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft 1.5.2</title>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-64TQKQ7TWQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-64TQKQ7TWQ');
-</script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/genizy/mc@main/shared/loader.js"></script>
+<script type="text/javascript" src="eagswebrtc.js"></script>
+<!--script type="text/javascript" src="music.js"></script-->
+<script type="text/javascript" src="classes.js"></script>
 <script type="text/javascript">
-window.__eaglercraftLoaderClient = {
-	container: "game_frame",
-	name: "Eaglercraft 1.5.2",
-	file: "net.lax1dude.eaglercraft.v1_5_2.client",
-	cid: "bafybeibpvzfne5ztqfbhqv2awgxxe3xodi7bkrgntfdw5bskgsswnpgzju",
-    download: "https://cdn.jsdelivr.net/gh/genizy/mc@main/data/1.5.2.gz",
-	path: "",
-	dlSize: 9214858,
-	gzip: true
-};
+if(document.location.href.startsWith("file:")) {
+alert("You're not supposed to 'open' this file in your browser. Please upload this folder to your HTTP(s) server and access it via the internet. This is not a bug, please read the documentation");
+}else {
+window.addEventListener("load", async function(){
+/*
+let wardUrl = "";
+try {
+  wardUrl = (await (await fetch("https://pipedapi.tokhmi.xyz/streams/5VuDwU4bW8Q")).json()).audioStreams[0].url;
+} catch (e) {}
+*/
+const relayId = Math.floor(Math.random() * 3);
+window.eaglercraftOpts = {
+container: "game_frame", assetsURI: "assets.epk", serverWorkerURI: "worker_bootstrap.js", worldsFolder: "TEST",
+assetOverrides: {
+    // "title/no-pano-blur.flag": "",
+	"records/wait.mp3": "wait.mp3",
+	"records/mellohi.mp3": "https://stream.nightride.fm/chillsynth.m4a",
+	"records/far.mp3": "https://stream.nightride.fm/nightride.m4a",
+	"records/cat.mp3": "http://usa9.fastcast4u.com/proxy/jamz?mp=/1",
+	"records/ward.mp3": "http://fr4.1mix.co.uk:8000/192h",
+	"records/strad.mp3": "http://listen.011fm.com:8028/stream15",
+	"records/blocks.mp3": "https://www.ophanim.net:8444/s/9780",
+	"records/13.mp3": "https://s2.radio.co/s2b2b68744/listen"
+	// "sounds/gta.mp3": "https://invidious.zapashcanon.fr/latest_version?itag=251&id=YRlIl6K6S88"
+	// "records/ward.mp3": wardUrl
+	// "sounds/gta.mp3": ""
+},
+servers: [
+	{ serverName: "Local Test Server", serverAddress: "localhost:25565", hideAddress: false }
+],
+relays: [
+	{ addr: "wss://relay.deev.is/", name: "lax1dude relay #1", primary: relayId == 0 },
+	{ addr: "wss://relay.lax1dude.net/", name: "lax1dude relay #2", primary: relayId == 1 },
+	{ addr: "wss://relay.shhnowisnottheti.me/", name: "ayunami relay #1", primary: relayId == 2 }
+],
+mainMenu: { splashes: [
+"Darviglet!", "eaglerenophile!", "You Eagler!", "Yeeeeeee!", "yeee",
+"EEEEEEEEE!", "You Darvig!", "You Vigg!", ":>", "|>", "You Yumpster!"
+], eaglerLogo: false }};
+(function(){
+var q = window.location.search;
+if(typeof q === 'string' && q.startsWith("?")) {
+	q = new URLSearchParams(q);
+	var s = q.get("server");
+	if(s) window.eaglercraftOpts.joinServer = s;
+}
+})();
+main();
+});}
 </script>
-<link type="image/png" rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/genizy/mc@main/shared/game.png" />
-<style>
-#sidebarad1,
-#sidebarad2 {
-  position: fixed;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 160px;
-  height: 600px;
-  padding: 0;
-  margin: 0;
-  z-index: 999999;
-}
-#sidebarad1 {
-  left: 0;
-}
-#sidebarad2 {
-  right: 0;
-}
-.sidebar-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 22px;
-  height: 22px;
-  line-height: 22px;
-  text-align: center;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
-  user-select: none;
-  z-index: 10;
-}
-.sidebar-frame {
-  width: 160px;
-  height: 600px;
-  border: none;
-  display: block;
-}
-</style>
 </head>
-<body style="margin:0px;width:100vw;height:100vh;overflow:hidden;" id="game_frame">
-<div id="sidebarad1">
-  <div class="sidebar-close" onclick="this.parentElement.style.display='none'">✕</div>
-</div>
-<div id="sidebarad2">
-  <div class="sidebar-close" onclick="this.parentElement.style.display='none'">✕</div>
-</div>
+<body style="margin:0px;width:100vw;height:100vh;" id="game_frame">
 </body>
 </html>
