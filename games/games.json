@@ -15,6 +15,11 @@
     "icon": "games/icons/Flash/8-ball-pool.png"
   },
   {
+    "name": "8 Ball Billiards",
+    "html": "games/html/Website/8-ball-billiards.html",
+    "icon": "games/icons/Website/8-ball-billiards.png"
+  },
+  {
     "name": "60 Seconds Reatomized",
     "html": "games/html/Ports/60-seconds-reatomized.html",
     "icon": "games/icons/Ports/60-seconds-reatomized.png"
@@ -1003,5 +1008,10 @@
     "name": "Flying Gorilla",
     "html": "games/html/Ports/763.html",
     "icon": "games/icons/Ports/763.png"
+  },
+  {
+    "name": "DINGLECRAFT",
+    "html": "games/html/Minecraft/dinglecraft.html",
+    "icon": "games/icons/Minecraft/dinglecraft.png"
   }
 ]
