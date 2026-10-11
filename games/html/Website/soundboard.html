@@ -1,37 +1,45 @@
-<!-- Ultimate Game Stash file-->
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <base href="https://cdn.jsdelivr.net/gh/bubblfan/soundboard@main/" />
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837"
-      crossorigin="anonymous"
-    ></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Soundboard</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+    #soundboard { display: block; width: 100%; height: 100%; border: 0; }
+    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="loading">Loading Soundboard...</div>
+  <iframe id="soundboard" title="Soundboard" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
+  <script>
+    const sourceUrl = "https://cdn.jsdelivr.net/gh/genizymath/soundboard@main/index.html";
+    const frame = document.getElementById("soundboard");
+    const loading = document.getElementById("loading");
 
-    <meta charset="UTF-8" />
-    <title>Soundboard</title>
-    <script src="sounds.js" type="module"></script>
-    <script src="main.js" type="module"></script>
-    <link href="style.css" rel="stylesheet" />
-  </head>
+    function addBaseUrl(html) {
+      if (/<base\s/i.test(html)) return html;
+      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
+      return /<head[^>]*>/i.test(html)
+        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
+        : baseTag + html;
+    }
 
-  <body>
-    <div id="controls">
-      <button id="toggleFavorites" class="control-button favorites-toggle">
-        ⭐ Favorites: OFF
-      </button>
-      <button id="toggleButton" class="control-button overlap-toggle">
-        🔇 Overlap: OFF
-      </button>
-      <button id="stopButton" class="control-button stop-button">
-        ⏹️ Stop All Sounds
-      </button>
-      <input id="searchInput" type="text" placeholder="Search sounds..." />
-    </div>
-    <div id="soundboard"></div>
-  </body>
+    fetch(sourceUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error("Soundboard source returned " + response.status);
+        return response.text();
+      })
+      .then((html) => {
+        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
+        frame.src = URL.createObjectURL(blob);
+        frame.addEventListener("load", () => loading.remove(), { once: true });
+      })
+      .catch((error) => {
+        console.error("Soundboard failed to load:", error);
+        loading.textContent = "Unable to load Soundboard. Please try again.";
+      });
+  </script>
+</body>
 </html>
