@@ -1013,5 +1013,11 @@
     "name": "DINGLECRAFT",
     "html": "games/html/Minecraft/dinglecraft.html",
     "icon": "games/icons/Minecraft/dinglecraft.png"
+  },
+  {
+    "name": "Geometry Dash",
+    "html": "games/html/Ports/geometry-dash.html",
+    "icon": "games/icons/Ports/geometry-dash.png"
+
   }
 ]
