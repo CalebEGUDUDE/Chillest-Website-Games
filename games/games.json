@@ -51,7 +51,8 @@
     "name": "Angry Birds",
     "html": "games/html/Ports/angry-birds.html",
     "icon": "games/icons/Ports/angry-birds.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "angry birds"
   },
   {
     "name": "Anton Blast",
@@ -183,7 +184,8 @@
     "name": "Donkey Kong Country",
     "html": "games/html/Emulation/donkey-kong-country.html",
     "icon": "games/icons/Emulation/donkey-kong-country.png.png",
-    "from": "UGS"
+    "from": "UGS",
+    "suggest": "Sonicthesonic, Guy"
   },
   {
     "name": "DONT YOU LECTURE ME",
@@ -211,6 +213,13 @@
     "from": "GN-Math"
   },
   {
+    "name": "Drive Mad",
+    "html": "games/html/Website/drive-mad.html",
+    "icon": "games/icons/Website/drive-mad.png",
+    "from": "UGS",
+    "suggest": "Bentley"
+  },
+  {
     "name": "Duck Life",
     "html": "games/html/Website/234.html",
     "icon": "games/icons/Website/234.png",
@@ -220,13 +229,15 @@
     "name": "Dune Dash",
     "html": "games/html/Website/dune-dash.html",
     "icon": "games/icons/Website/dune-dash.png",
-    "from": "UGS"
+    "from": "UGS",
+    "suggest": "Steven"
   },
   {
     "name": "Earn to Die 2",
     "html": "games/html/Flash/earn-to-die-2.html",
     "icon": "games/icons/Flash/earn-to-die-2.png",
-    "from": "UGS"
+    "from": "UGS",
+    "suggest": "chase"
   },
   {
     "name": "Emulator.js",
@@ -240,6 +251,13 @@
     "html": "games/html/Ports/endacopia.html",
     "icon": "games/icons/Ports/endacopia.png",
     "from": "GN-Math"
+  },
+  {
+    "name": "Escape Road City 2",
+    "html": "games/html/Website/744.html",
+    "icon": "games/icons/Website/744.png",
+    "from": "GN-Math",
+    "suggest": "chase"
   },
   {
     "name": "Famidash",
@@ -341,7 +359,8 @@
     "name": "FNF Ourple Guy",
     "html": "games/html/FNF/fnf-ourple-guy.html",
     "icon": "games/icons/FNF/fnf-ourple-guy.png",
-    "from": "UGS"
+    "from": "UGS",
+    "suggest": "AKN33A"
   },
   {
     "name": "FNF vs Bob v2.0 (Bob’s Onslaught)",
@@ -635,7 +654,8 @@
     "name": "Friday Night Funkin': vs. Garcello",
     "html": "games/html/FNF/485.html",
     "icon": "games/icons/FNF/485.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "Landon F"
   },
   {
     "name": "Friday Night Funkin': Vs. Hatsune Miku",
@@ -695,7 +715,8 @@
     "name": "Gladihoppers",
     "html": "games/html/Website/gladihoppers.html",
     "icon": "games/icons/Website/gladihoppers.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "jack, idk"
   },
   {
     "name": "Goblin Goopmaxxing",
@@ -740,6 +761,20 @@
     "from": "GN-Math"
   },
   {
+    "name": "Hollow Knight",
+    "html": "games/html/Website/468.html",
+    "icon": "games/icons/Website/468.png",
+    "from": "GN-Math",
+    "suggest": "Aegis"
+  },
+  {
+    "name": "Hollow Knight: Silksong",
+    "html": "games/html/Website/771.html",
+    "icon": "games/icons/Website/771.png",
+    "from": "GN-Math",
+    "suggest": "67morelike67"
+  },
+  {
     "name": "I Wanna Be The Guy",
     "html": "games/html/Ports/i-wanna-be-the-guy.html",
     "icon": "games/icons/Ports/i-wana-be-the-guy.png",
@@ -750,6 +785,13 @@
     "html": "games/html/Website/362.html",
     "icon": "games/icons/Website/362.png",
     "from": "GN-Math"
+  },
+  {
+    "name": "Infinite Craft",
+    "html": "games/html/Website/infinite-craft.html",
+    "icon": "games/icons/Website/infinite-craft.png",
+    "from": "UGS",
+    "suggest": "Bentley"
   },
   {
     "name": "Kart Bros",
@@ -911,7 +953,7 @@
     "html": "games/html/Flash/659.html",
     "icon": "games/icons/Flash/659.webp",
     "from": "GN-Math",
-    "suggest": "Cody"
+    "suggest": "Cody, coty"
   },
   {
     "name": "OvO",
@@ -983,7 +1025,8 @@
     "name": "Papa's Scooperia",
     "html": "games/html/Flash/228.html",
     "icon": "games/icons/Flash/228.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "Vanessa"
   },
   {
     "name": "Papa's Sushiria",
@@ -1041,6 +1084,13 @@
     "from": "GN-Math"
   },
   {
+    "name": "Ragdoll Hit",
+    "html": "games/html/Website/44.html",
+    "icon": "games/icons/Website/44.png",
+    "from": "GN-Math",
+    "suggest": "ej"
+  },
+  {
     "name": "Raldi's Crackhouse",
     "html": "games/html/Ports/raldis-crackhouse.html",
     "icon": "games/icons/Ports/raldis-crackhouse.png",
@@ -1062,7 +1112,8 @@
     "name": "Retro Bowl",
     "html": "games/html/Website/retro-bowl.html",
     "icon": "games/icons/Website/retro-bowl.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "Praful Nemani"
   },
   {
     "name": "Retro Bowl College",
@@ -1110,7 +1161,8 @@
     "name": "Sandboxels",
     "html": "games/html/Website/309.html",
     "icon": "games/icons/Website/309.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "Cooper, not saying"
   },
   {
     "name": "Slope",
@@ -1141,14 +1193,15 @@
     "name": "Sonic Jam",
     "html": "games/html/Emulation/sonic-jam.html",
     "icon": "games/icons/Emulation/sonic-jam.png",
-    "from": "UGS"
+    "from": "UGS",
+    "suggest": "Guy"
   },
   {
     "name": "Sonic R",
     "html": "games/html/Emulation/sonic-r.html",
     "icon": "games/icons/Emulation/sonic-r.png",
     "from": "UGS",
-    "suggest": "Will"
+    "suggest": "Will, Lodgy"
   },
   {
     "name": "Soundboard",
@@ -1198,7 +1251,8 @@
     "name": "Stickman Duel",
     "html": "games/html/Website/stickman-duel.html",
     "icon": "games/icons/Website/stickman-duel.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "bachi"
   },
   {
     "name": "Stickman Hook",
@@ -1216,7 +1270,8 @@
     "name": "Super Mario 64",
     "html": "games/html/Emulation/super-mario-64.html",
     "icon": "games/icons/Emulation/super-mario-64.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "keagan"
   },
   {
     "name": "Survival Race",
@@ -1234,7 +1289,8 @@
     "name": "Tag",
     "html": "games/html/Website/tag.html",
     "icon": "games/icons/Website/tag.png",
-    "from": "GN-Math"
+    "from": "GN-Math",
+    "suggest": "mithun"
   },
   {
     "name": "Territorial.io",
@@ -1292,6 +1348,13 @@
     "from": "GN-Math"
   },
   {
+    "name": "Wrestle Bros",
+    "html": "games/html/Website/wrestle-bros.html",
+    "icon": "games/icons/Website/wrestle-bros.jpg",
+    "from": "Official Website",
+    "suggest": "67skibidirizzler"
+  },
+  {
     "name": "Wordle",
     "html": "games/html/Website/wordle.html",
     "icon": "games/icons/Website/wordle.png",
@@ -1314,8 +1377,7 @@
     "name": "DINGLECRAFT",
     "html": "games/html/Minecraft/dinglecraft.html",
     "icon": "games/icons/Minecraft/dinglecraft.png",
-    "from": "Dan Dingle",
-    "suggest": "Loriff"
+    "from": "Dan Dingle"
   },
   {
     "name": "Geometry Dash",
