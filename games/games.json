@@ -43,8 +43,8 @@
   },
   {
     "name": "Ages of Conflict",
-    "html": "games/html/Website/444.html",
-    "icon": "games/icons/Website/444.png",
+    "html": "games/html/Website/ages-of-conflict.html",
+    "icon": "games/icons/Website/ages-of-conflict.png",
     "from": "GN-Math"
   },
   {
@@ -80,14 +80,14 @@
   },
   {
     "name": "Basket Bros",
-    "html": "games/html/Website/285.html",
-    "icon": "games/icons/Website/285.png",
+    "html": "games/html/Website/basket-bros.html",
+    "icon": "games/icons/Website/basket-bros.png",
     "from": "GN-Math"
   },
   {
     "name": "Basket Random",
-    "html": "games/html/Website/66.html",
-    "icon": "games/icons/Website/66.png",
+    "html": "games/html/Website/basket-random.html",
+    "icon": "games/icons/Website/basket-random.png",
     "from": "GN-Math"
   },
   {
@@ -98,14 +98,14 @@
   },
   {
     "name": "Bloxorz",
-    "html": "games/html/Flash/169.html",
-    "icon": "games/icons/Flash/169.png",
+    "html": "games/html/Flash/bloxorz.html",
+    "icon": "games/icons/Flash/bloxorz.png",
     "from": "GN-Math"
   },
   {
     "name": "Boxing Random",
-    "html": "games/html/Website/77.html",
-    "icon": "games/icons/Website/77.png",
+    "html": "games/html/Website/boxing-random.html",
+    "icon": "games/icons/Website/boxing-random.png",
     "from": "GN-Math"
   },
   {
@@ -183,7 +183,7 @@
   {
     "name": "Donkey Kong Country",
     "html": "games/html/Emulation/donkey-kong-country.html",
-    "icon": "games/icons/Emulation/donkey-kong-country.png.png",
+    "icon": "games/icons/Emulation/donkey-kong-country.png",
     "from": "UGS",
     "suggest": "Sonicthesonic, Guy"
   },
@@ -202,14 +202,14 @@
   {
     "name": "DOS Wasm X",
     "html": "games/html/Emulation/dos-wasm-x.html",
-    "icon": "games/icons/placeholder.png",
+    "icon": "games/icons/Emulation/dos-wasm-x.png",
     "from": "UGS",
-    "suggest": ""
+    "suggest": "Edward"
   },
   {
     "name": "Drift Boss",
-    "html": "games/html/Website/276.html",
-    "icon": "games/icons/Website/276.png",
+    "html": "games/html/Website/drift-boss.html",
+    "icon": "games/icons/Website/drift-boss.png",
     "from": "GN-Math"
   },
   {
@@ -221,8 +221,8 @@
   },
   {
     "name": "Duck Life",
-    "html": "games/html/Website/234.html",
-    "icon": "games/icons/Website/234.png",
+    "html": "games/html/Website/duck-life.html",
+    "icon": "games/icons/Website/duck-life.png",
     "from": "GN-Math"
   },
   {
@@ -254,8 +254,8 @@
   },
   {
     "name": "Escape Road City 2",
-    "html": "games/html/Website/744.html",
-    "icon": "games/icons/Website/744.png",
+    "html": "games/html/Website/escape-road-city-2.html",
+    "icon": "games/icons/Website/escape-road-city-2.png",
     "from": "GN-Math",
     "suggest": "chase"
   },
@@ -267,32 +267,32 @@
   },
   {
     "name": "Fancy Pants Adventure",
-    "html": "games/html/Flash/333.html",
-    "icon": "games/icons/Flash/333.png",
+    "html": "games/html/Flash/fancy-pants-adventure.html",
+    "icon": "games/icons/Flash/fancy-pants-adventure.png",
     "from": "GN-Math"
   },
   {
     "name": "Fancy Pants Adventure 2",
-    "html": "games/html/Flash/334.html",
-    "icon": "games/icons/Flash/334.png",
+    "html": "games/html/Flash/fancy-pants-adventure-2.html",
+    "icon": "games/icons/Flash/fancy-pants-adventure-2.png",
     "from": "GN-Math"
   },
   {
     "name": "Fancy Pants Adventure 3",
-    "html": "games/html/Flash/335.html",
-    "icon": "games/icons/Flash/335.png",
+    "html": "games/html/Flash/fancy-pants-adventure-3.html",
+    "icon": "games/icons/Flash/fancy-pants-adventure-3.png",
     "from": "GN-Math"
   },
   {
     "name": "Fancy Pants Adventure 4 Part 1",
-    "html": "games/html/Flash/336.html",
-    "icon": "games/icons/Flash/336.png",
+    "html": "games/html/Flash/fancy-pants-adventure-4-part-1.html",
+    "icon": "games/icons/Flash/fancy-pants-adventure-4-part-1.png",
     "from": "GN-Math"
   },
   {
     "name": "Fancy Pants Adventure 4 Part 2",
-    "html": "games/html/Flash/337.html",
-    "icon": "games/icons/Flash/337.png",
+    "html": "games/html/Flash/fancy-pants-adventure-4-part-2.html",
+    "icon": "games/icons/Flash/fancy-pants-adventure-4-part-2.png",
     "from": "GN-Math"
   },
   {
@@ -364,32 +364,32 @@
   },
   {
     "name": "FNF vs Bob v2.0 (Bob’s Onslaught)",
-    "html": "games/html/FNF/618.html",
-    "icon": "games/icons/FNF/618.jpg",
+    "html": "games/html/FNF/fnf-vs-bob-v2-0-bob-s-onslaught.html",
+    "icon": "games/icons/FNF/fnf-vs-bob-v2-0-bob-s-onslaught.jpg",
     "from": "GN-Math"
   },
   {
     "name": "FNF vs Pibby Corrupted",
-    "html": "games/html/FNF/700.html",
-    "icon": "games/icons/FNF/700.jpg",
+    "html": "games/html/FNF/fnf-vs-pibby-corrupted.html",
+    "icon": "games/icons/FNF/fnf-vs-pibby-corrupted.jpg",
     "from": "GN-Math"
   },
   {
     "name": "FNF Vs. Hypno's Lullaby v2",
-    "html": "games/html/FNF/600.html",
-    "icon": "games/icons/FNF/600.jpg",
+    "html": "games/html/FNF/fnf-vs-hypno-s-lullaby-v2.html",
+    "icon": "games/icons/FNF/fnf-vs-hypno-s-lullaby-v2.jpg",
     "from": "GN-Math"
   },
   {
     "name": "FNF Vs. Sonic.EXE 3.0/4.0",
-    "html": "games/html/FNF/601.html",
-    "icon": "games/icons/FNF/601.jpg",
+    "html": "games/html/FNF/fnf-vs-sonic-exe-3-0-4-0.html",
+    "icon": "games/icons/FNF/fnf-vs-sonic-exe-3-0-4-0.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Football Bros",
-    "html": "games/html/Website/548.html",
-    "icon": "games/icons/Website/548.png",
+    "html": "games/html/Website/football-bros.html",
+    "icon": "games/icons/Website/football-bros.png",
     "from": "GN-Math"
   },
   {
@@ -400,315 +400,315 @@
   },
   {
     "name": "Friday Night Funkin vs Carol V2",
-    "html": "games/html/FNF/610.html",
-    "icon": "games/icons/FNF/610.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-carol-v2.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-carol-v2.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin VS Impostor v4",
-    "html": "games/html/FNF/608.html",
-    "icon": "games/icons/FNF/608.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-impostor-v4.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-impostor-v4.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Nonsense",
-    "html": "games/html/FNF/644.html",
-    "icon": "games/icons/FNF/644.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-nonsense.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-nonsense.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Shaggy",
-    "html": "games/html/FNF/559.html",
-    "icon": "games/icons/FNF/559.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-shaggy.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-shaggy.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Shucks v2",
-    "html": "games/html/FNF/836.html",
-    "icon": "games/icons/FNF/836.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-shucks-v2.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-shucks-v2.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Sunday Remastered HD",
-    "html": "games/html/FNF/609.html",
-    "icon": "games/icons/FNF/609.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-sunday-remastered-hd.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-sunday-remastered-hd.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Tabi",
-    "html": "games/html/FNF/714.html",
-    "icon": "games/icons/FNF/714.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-tabi.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-tabi.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Undertale",
-    "html": "games/html/FNF/657.html",
-    "icon": "games/icons/FNF/657.webp",
+    "html": "games/html/FNF/friday-night-funkin-vs-undertale.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-undertale.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin vs Zardy",
-    "html": "games/html/FNF/715.html",
-    "icon": "games/icons/FNF/715.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-zardy.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-zardy.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin Vs. Cyber Sensation",
-    "html": "games/html/FNF/558.html",
-    "icon": "games/icons/FNF/558.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-cyber-sensation.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-cyber-sensation.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin Vs. Dave and Bambi v3",
-    "html": "games/html/FNF/615.html",
-    "icon": "games/icons/FNF/615.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-dave-and-bambi-v3.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-dave-and-bambi-v3.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin VS. KAPI",
-    "html": "games/html/FNF/555.html",
-    "icon": "games/icons/FNF/555.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-kapi.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-kapi.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin VS. Sky",
-    "html": "games/html/FNF/556.html",
-    "icon": "games/icons/FNF/556.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-sky.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-sky.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin' D-Sides",
-    "html": "games/html/FNF/636.html",
-    "icon": "games/icons/FNF/636.webp",
+    "html": "games/html/FNF/friday-night-funkin-d-sides.html",
+    "icon": "games/icons/FNF/friday-night-funkin-d-sides.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin' Drop and Roll, but Playable",
-    "html": "games/html/FNF/613.html",
-    "icon": "games/icons/FNF/613.webp",
+    "html": "games/html/FNF/friday-night-funkin-drop-and-roll-but-playable.html",
+    "icon": "games/icons/FNF/friday-night-funkin-drop-and-roll-but-playable.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin’ Soft",
-    "html": "games/html/FNF/509.html",
-    "icon": "games/icons/FNF/509.png",
+    "html": "games/html/FNF/friday-night-funkin-soft.html",
+    "icon": "games/icons/FNF/friday-night-funkin-soft.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin' Sunday Night Suicide: Rookies Edition",
-    "html": "games/html/FNF/642.html",
-    "icon": "games/icons/FNF/642.webp",
+    "html": "games/html/FNF/friday-night-funkin-sunday-night-suicide-rookies-edition.html",
+    "icon": "games/icons/FNF/friday-night-funkin-sunday-night-suicide-rookies-edition.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin' vs Hypno Lullaby",
-    "html": "games/html/FNF/583.html",
-    "icon": "games/icons/FNF/583.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-hypno-lullaby.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-hypno-lullaby.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin' VS Impostor B-Sides",
-    "html": "games/html/FNF/639.html",
-    "icon": "games/icons/FNF/639.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-impostor-b-sides.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-impostor-b-sides.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin’ Wednesday's Infidelity",
-    "html": "games/html/FNF/616.html",
-    "icon": "games/icons/FNF/616.png",
+    "html": "games/html/FNF/friday-night-funkin-wednesday-s-infidelity.html",
+    "icon": "games/icons/FNF/friday-night-funkin-wednesday-s-infidelity.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': 17 Bucks: Floor 1",
-    "html": "games/html/FNF/498.html",
-    "icon": "games/icons/FNF/498.jpg",
+    "html": "games/html/FNF/friday-night-funkin-17-bucks-floor-1.html",
+    "icon": "games/icons/FNF/friday-night-funkin-17-bucks-floor-1.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': AKAGE",
-    "html": "games/html/FNF/690.html",
-    "icon": "games/icons/FNF/690.webp",
+    "html": "games/html/FNF/friday-night-funkin-akage.html",
+    "icon": "games/icons/FNF/friday-night-funkin-akage.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': B-Sides",
-    "html": "games/html/FNF/475.html",
-    "icon": "games/icons/FNF/475.png",
+    "html": "games/html/FNF/friday-night-funkin-b-sides.html",
+    "icon": "games/icons/FNF/friday-night-funkin-b-sides.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Chaos Nightmare - Sonic Vs. Fleetway",
-    "html": "games/html/FNF/634.html",
-    "icon": "games/icons/FNF/634.jpg",
+    "html": "games/html/FNF/friday-night-funkin-chaos-nightmare-sonic-vs-fleetway.html",
+    "icon": "games/icons/FNF/friday-night-funkin-chaos-nightmare-sonic-vs-fleetway.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Creepypasta JP",
-    "html": "games/html/FNF/484.html",
-    "icon": "games/icons/FNF/484.jpg",
+    "html": "games/html/FNF/friday-night-funkin-creepypasta-jp.html",
+    "icon": "games/icons/FNF/friday-night-funkin-creepypasta-jp.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Darkness Takeover",
-    "html": "games/html/FNF/525.html",
-    "icon": "games/icons/FNF/525.jpg",
+    "html": "games/html/FNF/friday-night-funkin-darkness-takeover.html",
+    "icon": "games/icons/FNF/friday-night-funkin-darkness-takeover.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': FIRE IN THE HOLE: Lobotomy Dash Funkin'",
-    "html": "games/html/FNF/499.html",
-    "icon": "games/icons/FNF/499.jpg",
+    "html": "games/html/FNF/friday-night-funkin-fire-in-the-hole-lobotomy-dash-funkin.html",
+    "icon": "games/icons/FNF/friday-night-funkin-fire-in-the-hole-lobotomy-dash-funkin.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Gumballs",
-    "html": "games/html/FNF/621.html",
-    "icon": "games/icons/FNF/621.jpg",
+    "html": "games/html/FNF/friday-night-funkin-gumballs.html",
+    "icon": "games/icons/FNF/friday-night-funkin-gumballs.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Heartbreak Havoc [Vs. Sky: REDUX]",
-    "html": "games/html/FNF/691.html",
-    "icon": "games/icons/FNF/691.png",
+    "html": "games/html/FNF/friday-night-funkin-heartbreak-havoc-vs-sky-redux.html",
+    "icon": "games/icons/FNF/friday-night-funkin-heartbreak-havoc-vs-sky-redux.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Hit Single Real",
-    "html": "games/html/FNF/483.html",
-    "icon": "games/icons/FNF/483.png",
+    "html": "games/html/FNF/friday-night-funkin-hit-single-real.html",
+    "icon": "games/icons/FNF/friday-night-funkin-hit-single-real.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Indie Cross",
-    "html": "games/html/FNF/489.html",
-    "icon": "games/icons/FNF/489.jpg",
+    "html": "games/html/FNF/friday-night-funkin-indie-cross.html",
+    "icon": "games/icons/FNF/friday-night-funkin-indie-cross.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Jeffy's Endless Aethos",
-    "html": "games/html/FNF/496.html",
-    "icon": "games/icons/FNF/496.jpg",
+    "html": "games/html/FNF/friday-night-funkin-jeffy-s-endless-aethos.html",
+    "icon": "games/icons/FNF/friday-night-funkin-jeffy-s-endless-aethos.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Mario's Madness",
-    "html": "games/html/FNF/582.html",
-    "icon": "games/icons/FNF/582.jpg",
+    "html": "games/html/FNF/friday-night-funkin-mario-s-madness.html",
+    "icon": "games/icons/FNF/friday-night-funkin-mario-s-madness.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Mistful Crimson Morning Reboot",
-    "html": "games/html/FNF/488.html",
-    "icon": "games/icons/FNF/488.jpg",
+    "html": "games/html/FNF/friday-night-funkin-mistful-crimson-morning-reboot.html",
+    "icon": "games/icons/FNF/friday-night-funkin-mistful-crimson-morning-reboot.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Neo",
-    "html": "games/html/FNF/478.html",
-    "icon": "games/icons/FNF/478.png",
+    "html": "games/html/FNF/friday-night-funkin-neo.html",
+    "icon": "games/icons/FNF/friday-night-funkin-neo.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Pibby: Apocalypse",
-    "html": "games/html/FNF/541.html",
-    "icon": "games/icons/FNF/541.jpg",
+    "html": "games/html/FNF/friday-night-funkin-pibby-apocalypse.html",
+    "icon": "games/icons/FNF/friday-night-funkin-pibby-apocalypse.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Rev-Mixed",
-    "html": "games/html/FNF/619.html",
-    "icon": "games/icons/FNF/619.webp",
+    "html": "games/html/FNF/friday-night-funkin-rev-mixed.html",
+    "icon": "games/icons/FNF/friday-night-funkin-rev-mixed.webp",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Sarvente's Mid-Fight Masses",
-    "html": "games/html/FNF/480.html",
-    "icon": "games/icons/FNF/480.png",
+    "html": "games/html/FNF/friday-night-funkin-sarvente-s-mid-fight-masses.html",
+    "icon": "games/icons/FNF/friday-night-funkin-sarvente-s-mid-fight-masses.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Sonic Legacy",
-    "html": "games/html/FNF/486.html",
-    "icon": "games/icons/FNF/486.png",
+    "html": "games/html/FNF/friday-night-funkin-sonic-legacy.html",
+    "icon": "games/icons/FNF/friday-night-funkin-sonic-legacy.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': TWIDDLEFINGER",
-    "html": "games/html/FNF/500.html",
-    "icon": "games/icons/FNF/500.jpg",
+    "html": "games/html/FNF/friday-night-funkin-twiddlefinger.html",
+    "icon": "games/icons/FNF/friday-night-funkin-twiddlefinger.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': V.S. Whitty",
-    "html": "games/html/FNF/474.html",
-    "icon": "games/icons/FNF/474.png",
+    "html": "games/html/FNF/friday-night-funkin-v-s-whitty.html",
+    "icon": "games/icons/FNF/friday-night-funkin-v-s-whitty.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': vs. BOPCITY",
-    "html": "games/html/FNF/497.html",
-    "icon": "games/icons/FNF/497.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-bopcity.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-bopcity.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': vs. Garcello",
-    "html": "games/html/FNF/485.html",
-    "icon": "games/icons/FNF/485.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-garcello.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-garcello.png",
     "from": "GN-Math",
     "suggest": "Landon F"
   },
   {
     "name": "Friday Night Funkin': Vs. Hatsune Miku",
-    "html": "games/html/FNF/477.html",
-    "icon": "games/icons/FNF/477.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-hatsune-miku.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-hatsune-miku.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': VS. Henry Stickmin V4",
-    "html": "games/html/FNF/862.html",
-    "icon": "games/icons/FNF/862.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-henry-stickmin-v4.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-henry-stickmin-v4.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': Vs. Hex",
-    "html": "games/html/FNF/476.html",
-    "icon": "games/icons/FNF/476.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-hex.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-hex.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': VS. Impostor: Alternated",
-    "html": "games/html/FNF/633.html",
-    "icon": "games/icons/FNF/633.jpg",
+    "html": "games/html/FNF/friday-night-funkin-vs-impostor-alternated.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-impostor-alternated.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': VS. Mario Ultra Rebooted",
-    "html": "games/html/FNF/861.html",
-    "icon": "games/icons/FNF/861.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-mario-ultra-rebooted.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-mario-ultra-rebooted.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': vs. QT",
-    "html": "games/html/FNF/487.html",
-    "icon": "games/icons/FNF/487.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-qt.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-qt.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': VS. Seek's Cool Deltarune",
-    "html": "games/html/FNF/864.html",
-    "icon": "games/icons/FNF/864.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-seek-s-cool-deltarune.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-seek-s-cool-deltarune.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': VS. Super Mario Bros. Funk Mix DX",
-    "html": "games/html/FNF/863.html",
-    "icon": "games/icons/FNF/863.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-super-mario-bros-funk-mix-dx.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-super-mario-bros-funk-mix-dx.png",
     "from": "GN-Math"
   },
   {
     "name": "Friday Night Funkin': vs. Tricky",
-    "html": "games/html/FNF/481.html",
-    "icon": "games/icons/FNF/481.png",
+    "html": "games/html/FNF/friday-night-funkin-vs-tricky.html",
+    "icon": "games/icons/FNF/friday-night-funkin-vs-tricky.png",
     "from": "GN-Math"
   },
   {
@@ -732,20 +732,20 @@
   },
   {
     "name": "Gun Clone",
-    "html": "games/html/Website/394.html",
-    "icon": "games/icons/Website/394.png",
+    "html": "games/html/Website/gun-clone.html",
+    "icon": "games/icons/Website/gun-clone.png",
     "from": "GN-Math"
   },
   {
     "name": "Gun Runner",
-    "html": "games/html/Website/395.html",
-    "icon": "games/icons/Website/395.png",
+    "html": "games/html/Website/gun-runner.html",
+    "icon": "games/icons/Website/gun-runner.png",
     "from": "GN-Math"
   },
   {
     "name": "Gunspin",
-    "html": "games/html/Website/91.html",
-    "icon": "games/icons/Website/91.png",
+    "html": "games/html/Website/gunspin.html",
+    "icon": "games/icons/Website/gunspin.png",
     "from": "GN-Math"
   },
   {
@@ -762,15 +762,15 @@
   },
   {
     "name": "Hollow Knight",
-    "html": "games/html/Website/468.html",
-    "icon": "games/icons/Website/468.png",
+    "html": "games/html/Website/hollow-knight.html",
+    "icon": "games/icons/Website/hollow-knight.png",
     "from": "GN-Math",
     "suggest": "Aegis"
   },
   {
     "name": "Hollow Knight: Silksong",
-    "html": "games/html/Website/771.html",
-    "icon": "games/icons/Website/771.png",
+    "html": "games/html/Website/hollow-knight-silksong.html",
+    "icon": "games/icons/Website/hollow-knight-silksong.png",
     "from": "GN-Math",
     "suggest": "67morelike67"
   },
@@ -782,8 +782,8 @@
   },
   {
     "name": "Idle Breakout",
-    "html": "games/html/Website/362.html",
-    "icon": "games/icons/Website/362.png",
+    "html": "games/html/Website/idle-breakout.html",
+    "icon": "games/icons/Website/idle-breakout.png",
     "from": "GN-Math"
   },
   {
@@ -801,27 +801,27 @@
   },
   {
     "name": "Kindergarten",
-    "html": "games/html/Ports/445.html",
-    "icon": "games/icons/Ports/445.png",
+    "html": "games/html/Ports/kindergarten.html",
+    "icon": "games/icons/Ports/kindergarten.png",
     "from": "GN-Math"
   },
   {
     "name": "Kindergarten 2",
-    "html": "games/html/Ports/446.html",
-    "icon": "games/icons/Ports/446.png",
+    "html": "games/html/Ports/kindergarten-2.html",
+    "icon": "games/icons/Ports/kindergarten-2.png",
     "from": "GN-Math"
   },
   {
     "name": "Kindergarten 3",
-    "html": "games/html/Ports/501.html",
-    "icon": "games/icons/Ports/501.png",
+    "html": "games/html/Ports/kindergarten-3.html",
+    "icon": "games/icons/Ports/kindergarten-3.png",
     "from": "GN-Math"
   },
   {
     "name": "Little Alchemy 2",
     "html": "games/html/Website/little-alchemy-2.html",
     "icon": "games/icons/Website/little-alchemy-2.png",
-    "from": "Official Website",
+    "from": "UGS",
     "suggest": "Zyaire"
   },
   {
@@ -865,8 +865,8 @@
   },
   {
     "name": "Minecraft 1.21.4",
-    "html": "games/html/Minecraft/183.html",
-    "icon": "games/icons/Minecraft/183.png",
+    "html": "games/html/Minecraft/minecraft-1-21-4.html",
+    "icon": "games/icons/Minecraft/minecraft-1-21-4.png",
     "from": "GN-Math",
     "suggest": "Loriff"
   },
@@ -900,21 +900,15 @@
   },
   {
     "name": "Minecraft Pocket Edition",
-    "html": "games/html/Minecraft/754.html",
-    "icon": "games/icons/Minecraft/754.png",
+    "html": "games/html/Minecraft/minecraft-pocket-edition.html",
+    "icon": "games/icons/Minecraft/minecraft-pocket-edition.png",
     "from": "GN-Math",
     "suggest": "Loriff"
   },
   {
-    "name": "Minus B",
-    "html": "games/html/Ports/minus-b.html",
-    "icon": "games/icons/Ports/minus-b.png",
-    "from": "GN-Math"
-  },
-  {
     "name": "Mountain Bike Racer",
-    "html": "games/html/Flash/774.html",
-    "icon": "games/icons/Flash/774.jpg",
+    "html": "games/html/Flash/mountain-bike-racer.html",
+    "icon": "games/icons/Flash/mountain-bike-racer.jpg",
     "from": "GN-Math"
   },
   {
@@ -932,8 +926,8 @@
   },
   {
     "name": "Offroad Mountain Bike",
-    "html": "games/html/Flash/116.html",
-    "icon": "games/icons/Flash/116.png",
+    "html": "games/html/Flash/offroad-mountain-bike.html",
+    "icon": "games/icons/Flash/offroad-mountain-bike.png",
     "from": "GN-Math"
   },
   {
@@ -950,8 +944,8 @@
   },
   {
     "name": "Orange Roulette",
-    "html": "games/html/Flash/659.html",
-    "icon": "games/icons/Flash/659.webp",
+    "html": "games/html/Flash/orange-roulette.html",
+    "icon": "games/icons/Flash/orange-roulette.webp",
     "from": "GN-Math",
     "suggest": "Cody, coty"
   },
@@ -963,56 +957,56 @@
   },
   {
     "name": "Papa's Bakeria",
-    "html": "games/html/Flash/218.html",
-    "icon": "games/icons/Flash/218.png",
+    "html": "games/html/Flash/papa-s-bakeria.html",
+    "icon": "games/icons/Flash/papa-s-bakeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Burgeria",
-    "html": "games/html/Flash/219.html",
-    "icon": "games/icons/Flash/219.png",
+    "html": "games/html/Flash/papa-s-burgeria.html",
+    "icon": "games/icons/Flash/papa-s-burgeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Cheeseria",
-    "html": "games/html/Flash/220.html",
-    "icon": "games/icons/Flash/220.png",
+    "html": "games/html/Flash/papa-s-cheeseria.html",
+    "icon": "games/icons/Flash/papa-s-cheeseria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Cupcakeria",
-    "html": "games/html/Flash/221.html",
-    "icon": "games/icons/Flash/221.png",
+    "html": "games/html/Flash/papa-s-cupcakeria.html",
+    "icon": "games/icons/Flash/papa-s-cupcakeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Donuteria",
-    "html": "games/html/Flash/222.html",
-    "icon": "games/icons/Flash/222.png",
+    "html": "games/html/Flash/papa-s-donuteria.html",
+    "icon": "games/icons/Flash/papa-s-donuteria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Freezeria",
-    "html": "games/html/Flash/223.html",
-    "icon": "games/icons/Flash/223.png",
+    "html": "games/html/Flash/papa-s-freezeria.html",
+    "icon": "games/icons/Flash/papa-s-freezeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Hot Doggeria",
-    "html": "games/html/Flash/224.html",
-    "icon": "games/icons/Flash/224.png",
+    "html": "games/html/Flash/papa-s-hot-doggeria.html",
+    "icon": "games/icons/Flash/papa-s-hot-doggeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Pancakeria",
-    "html": "games/html/Flash/225.html",
-    "icon": "games/icons/Flash/225.png",
+    "html": "games/html/Flash/papa-s-pancakeria.html",
+    "icon": "games/icons/Flash/papa-s-pancakeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Pastaria",
-    "html": "games/html/Flash/226.html",
-    "icon": "games/icons/Flash/226.png",
+    "html": "games/html/Flash/papa-s-pastaria.html",
+    "icon": "games/icons/Flash/papa-s-pastaria.png",
     "from": "GN-Math"
   },
   {
@@ -1023,33 +1017,33 @@
   },
   {
     "name": "Papa's Scooperia",
-    "html": "games/html/Flash/228.html",
-    "icon": "games/icons/Flash/228.png",
+    "html": "games/html/Flash/papa-s-scooperia.html",
+    "icon": "games/icons/Flash/papa-s-scooperia.png",
     "from": "GN-Math",
     "suggest": "Vanessa"
   },
   {
     "name": "Papa's Sushiria",
-    "html": "games/html/Flash/229.html",
-    "icon": "games/icons/Flash/229.png",
+    "html": "games/html/Flash/papa-s-sushiria.html",
+    "icon": "games/icons/Flash/papa-s-sushiria.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Taco Mia",
-    "html": "games/html/Flash/230.html",
-    "icon": "games/icons/Flash/230.png",
+    "html": "games/html/Flash/papa-s-taco-mia.html",
+    "icon": "games/icons/Flash/papa-s-taco-mia.png",
     "from": "GN-Math"
   },
   {
     "name": "Papa's Wingeria",
-    "html": "games/html/Flash/231.html",
-    "icon": "games/icons/Flash/231.png",
+    "html": "games/html/Flash/papa-s-wingeria.html",
+    "icon": "games/icons/Flash/papa-s-wingeria.png",
     "from": "GN-Math"
   },
   {
     "name": "Paper.io 2",
-    "html": "games/html/Website/102.html",
-    "icon": "games/icons/Website/102.png",
+    "html": "games/html/Website/paper-io-2.html",
+    "icon": "games/icons/Website/paper-io-2.png",
     "from": "GN-Math"
   },
   {
@@ -1085,8 +1079,8 @@
   },
   {
     "name": "Ragdoll Hit",
-    "html": "games/html/Website/44.html",
-    "icon": "games/icons/Website/44.png",
+    "html": "games/html/Website/ragdoll-hit.html",
+    "icon": "games/icons/Website/ragdoll-hit.png",
     "from": "GN-Math",
     "suggest": "ej"
   },
@@ -1098,14 +1092,14 @@
   },
   {
     "name": "RE:RUN",
-    "html": "games/html/Website/260.html",
-    "icon": "games/icons/Website/260.png",
+    "html": "games/html/Website/re-run.html",
+    "icon": "games/icons/Website/re-run.png",
     "from": "GN-Math"
   },
   {
     "name": "Rooftop Snipers",
-    "html": "games/html/Website/283.html",
-    "icon": "games/icons/Website/283.png",
+    "html": "games/html/Website/rooftop-snipers.html",
+    "icon": "games/icons/Website/rooftop-snipers.png",
     "from": "GN-Math"
   },
   {
@@ -1117,57 +1111,57 @@
   },
   {
     "name": "Retro Bowl College",
-    "html": "games/html/Website/34.html",
-    "icon": "games/icons/Website/34.png",
+    "html": "games/html/Website/retro-bowl-college.html",
+    "icon": "games/icons/Website/retro-bowl-college.png",
     "from": "GN-Math"
   },
   {
     "name": "RigBMX",
-    "html": "games/html/Flash/493.html",
-    "icon": "games/icons/Flash/493.png",
+    "html": "games/html/Flash/rigbmx.html",
+    "icon": "games/icons/Flash/rigbmx.png",
     "from": "GN-Math"
   },
   {
     "name": "RigBMX 2",
-    "html": "games/html/Flash/494.html",
-    "icon": "games/icons/Flash/494.jpg",
+    "html": "games/html/Flash/rigbmx-2.html",
+    "icon": "games/icons/Flash/rigbmx-2.jpg",
     "from": "GN-Math"
   },
   {
     "name": "Run 1",
-    "html": "games/html/Flash/175.html",
-    "icon": "games/icons/Flash/175.png",
+    "html": "games/html/Flash/run-1.html",
+    "icon": "games/icons/Flash/run-1.png",
     "from": "GN-Math"
   },
   {
     "name": "Run 2",
-    "html": "games/html/Flash/176.html",
-    "icon": "games/icons/Flash/176.png",
+    "html": "games/html/Flash/run-2.html",
+    "icon": "games/icons/Flash/run-2.png",
     "from": "GN-Math"
   },
   {
     "name": "Run 3",
-    "html": "games/html/Flash/177.html",
-    "icon": "games/icons/Flash/177.png",
+    "html": "games/html/Flash/run-3.html",
+    "icon": "games/icons/Flash/run-3.png",
     "from": "GN-Math"
   },
   {
     "name": "Sandtris",
-    "html": "games/html/Website/311.html",
-    "icon": "games/icons/Website/311.png",
+    "html": "games/html/Website/sandtris.html",
+    "icon": "games/icons/Website/sandtris.png",
     "from": "GN-Math"
   },
   {
     "name": "Sandboxels",
-    "html": "games/html/Website/309.html",
-    "icon": "games/icons/Website/309.png",
+    "html": "games/html/Website/sandboxels.html",
+    "icon": "games/icons/Website/sandboxels.png",
     "from": "GN-Math",
     "suggest": "Cooper, not saying"
   },
   {
     "name": "Slope",
-    "html": "games/html/Website/198.html",
-    "icon": "games/icons/Website/198.png",
+    "html": "games/html/Website/slope.html",
+    "icon": "games/icons/Website/slope.png",
     "from": "GN-Math"
   },
   {
@@ -1185,23 +1179,9 @@
   },
   {
     "name": "Soccer Random",
-    "html": "games/html/Website/739.html",
-    "icon": "games/icons/Website/739.png",
+    "html": "games/html/Website/soccer-random.html",
+    "icon": "games/icons/Website/soccer-random.png",
     "from": "GN-Math"
-  },
-  {
-    "name": "Sonic Jam",
-    "html": "games/html/Emulation/sonic-jam.html",
-    "icon": "games/icons/Emulation/sonic-jam.png",
-    "from": "UGS",
-    "suggest": "Guy"
-  },
-  {
-    "name": "Sonic R",
-    "html": "games/html/Emulation/sonic-r.html",
-    "icon": "games/icons/Emulation/sonic-r.png",
-    "from": "UGS",
-    "suggest": "Will, Lodgy"
   },
   {
     "name": "Soundboard",
@@ -1218,33 +1198,33 @@
   },
   {
     "name": "Spacebar Clicker",
-    "html": "games/html/Website/473.html",
-    "icon": "games/icons/Website/473.png",
+    "html": "games/html/Website/spacebar-clicker.html",
+    "icon": "games/icons/Website/spacebar-clicker.png",
     "from": "GN-Math"
   },
   {
     "name": "Speed Stars",
-    "html": "games/html/Ports/266.html",
-    "icon": "games/icons/Ports/266.png",
+    "html": "games/html/Ports/speed-stars.html",
+    "icon": "games/icons/Ports/speed-stars.png",
     "from": "GN-Math",
     "suggest": "Jamel"
   },
   {
     "name": "Stickman Boost",
-    "html": "games/html/Website/372.html",
-    "icon": "games/icons/Website/372.png",
+    "html": "games/html/Website/stickman-boost.html",
+    "icon": "games/icons/Website/stickman-boost.png",
     "from": "GN-Math"
   },
   {
     "name": "Stickman Climb",
-    "html": "games/html/Website/373.html",
-    "icon": "games/icons/Website/373.png",
+    "html": "games/html/Website/stickman-climb.html",
+    "icon": "games/icons/Website/stickman-climb.png",
     "from": "GN-Math"
   },
   {
     "name": "Stickman Destruction",
-    "html": "games/html/Website/699.html",
-    "icon": "games/icons/Website/699.jpg",
+    "html": "games/html/Website/stickman-destruction.html",
+    "icon": "games/icons/Website/stickman-destruction.jpg",
     "from": "GN-Math"
   },
   {
@@ -1256,8 +1236,8 @@
   },
   {
     "name": "Stickman Hook",
-    "html": "games/html/Website/11.html",
-    "icon": "games/icons/Website/11.png",
+    "html": "games/html/Website/stickman-hook.html",
+    "icon": "games/icons/Website/stickman-hook.png",
     "from": "GN-Math"
   },
   {
@@ -1275,14 +1255,14 @@
   },
   {
     "name": "Survival Race",
-    "html": "games/html/Website/122.html",
-    "icon": "games/icons/Website/122.png",
+    "html": "games/html/Website/survival-race.html",
+    "icon": "games/icons/Website/survival-race.png",
     "from": "GN-Math"
   },
   {
     "name": "Swords and Souls",
-    "html": "games/html/Website/178.html",
-    "icon": "games/icons/Website/178.png",
+    "html": "games/html/Website/swords-and-souls.html",
+    "icon": "games/icons/Website/swords-and-souls.png",
     "from": "GN-Math"
   },
   {
@@ -1294,8 +1274,8 @@
   },
   {
     "name": "Territorial.io",
-    "html": "games/html/Website/303.html",
-    "icon": "games/icons/Website/303.png",
+    "html": "games/html/Website/territorial-io.html",
+    "icon": "games/icons/Website/territorial-io.png",
     "from": "GN-Math"
   },
   {
@@ -1312,8 +1292,8 @@
   },
   {
     "name": "The World's Hardest Game",
-    "html": "games/html/Flash/103.html",
-    "icon": "games/icons/Flash/103.png",
+    "html": "games/html/Flash/the-world-s-hardest-game.html",
+    "icon": "games/icons/Flash/the-world-s-hardest-game.png",
     "from": "GN-Math"
   },
   {
@@ -1336,8 +1316,8 @@
   },
   {
     "name": "Volley Random",
-    "html": "games/html/Website/786.html",
-    "icon": "games/icons/Website/786.png",
+    "html": "games/html/Website/volley-random.html",
+    "icon": "games/icons/Website/volley-random.png",
     "from": "GN-Math",
     "suggest": "Will"
   },
@@ -1350,8 +1330,8 @@
   {
     "name": "Wrestle Bros",
     "html": "games/html/Website/wrestle-bros.html",
-    "icon": "games/icons/Website/wrestle-bros.jpg",
-    "from": "Official Website",
+    "icon": "games/icons/Website/wrestle-bros.png",
+    "from": "UGS",
     "suggest": "67skibidirizzler"
   },
   {
@@ -1368,8 +1348,8 @@
   },
   {
     "name": "Flying Gorilla",
-    "html": "games/html/Ports/763.html",
-    "icon": "games/icons/Ports/763.png",
+    "html": "games/html/Ports/flying-gorilla.html",
+    "icon": "games/icons/Ports/flying-gorilla.png",
     "from": "GN-Math",
     "suggest": "Daniel"
   },
