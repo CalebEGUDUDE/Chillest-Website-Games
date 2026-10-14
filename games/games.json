@@ -1019,5 +1019,15 @@
     "html": "games/html/Ports/geometry-dash.html",
     "icon": "games/icons/Ports/geometry-dash.png"
 
+  },
+  {
+    "name": "Five Nights at Last Breath",
+    "html": "games/html/FNAF/fna-lb.html",
+    "icon": "games/icons/FNAF/fna-lb.png"
+  },
+  {
+    "name": "Five Nights at Freddy's World Refreshed",
+    "html": "games/html/FNAF/fnaf-world-refreshed.html",
+    "icon": "games/icons/FNAF/fnaf-world-refreshed.png"
   }
 ]
