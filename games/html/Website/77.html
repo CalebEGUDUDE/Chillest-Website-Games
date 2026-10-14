@@ -1,45 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Boxing Random</title>
-  <style>
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #game { display: block; width: 100%; height: 100%; border: 0; }
-    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
-  </style>
+<html><head><script>const cancelFrame=window.cancelAnimationFrame.bind(window);window.cancelAnimationFrame=function(value){return typeof value==="function"?window.requestAnimationFrame(value):cancelFrame(value);};</script><base href="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/"><meta charset="utf-8"><title>Boxing Random</title>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
+<meta name="generator" content="Scirra Construct">
+	<meta name="author" content="TwoPlayerGames">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxstyle.css" type="text/css">
+
 </head>
 <body>
-  <div id="loading">Loading Boxing Random...</div>
-  <iframe id="game" title="Boxing Random" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
-  <script>
-    const sourceUrl = "https://cdn.jsdelivr.net/gh/freebuisness/html@main/77.html";
-    const frame = document.getElementById("game");
-    const loading = document.getElementById("loading");
 
-    function addBaseUrl(html) {
-      if (/<base\s/i.test(html)) return html;
-      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
-      return /<head[^>]*>/i.test(html)
-        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
-        : baseTag + html;
-    }
+<script>
+if (location.protocol.substr(0, 4) ==="file")
+{
+	alert("Web exports won't work until you upload them. (When running on the file: protocol, browsers block many features from working for security reasons.)");
+}
+</script>
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxwasm.js"></script>
+	<noscript>
+		<div id="notSupportedWrap">
+			<h2 id="notSupportedTitle">This content requires JavaScript</h2>
+			<p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p>
+		</div>
+	</noscript>
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxcheck.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxclient.js" type="module"></script>
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxmain.js" type="module"></script>
+	<script src="https://cdn.jsdelivr.net/gh/bubbls/ruffle@25f6152ab54ec5409c832c904ed3e5e482600d6a/boxsw.js" type="module"></script>
 
-    fetch(sourceUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error("Game source returned " + response.status);
-        return response.text();
-      })
-      .then((html) => {
-        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
-        frame.src = URL.createObjectURL(blob);
-        frame.addEventListener("load", () => loading.remove(), { once: true });
-      })
-      .catch((error) => {
-        console.error("Boxing Random" + " failed to load:", error);
-        loading.textContent = "Unable to load " + "Boxing Random" + ". Please try again.";
-      });
-  </script>
-</body>
-</html>
+</body></html>
