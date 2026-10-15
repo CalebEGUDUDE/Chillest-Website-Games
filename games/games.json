@@ -1229,7 +1229,7 @@
     "name": "Sandboxels",
     "html": "games/html/Website/309.html",
     "icon": "games/icons/Website/309.png",
-    "from": "gn-math",
+    "from": "Classroommaxxing",
     "suggest": "Cooper"
   },
   {
@@ -1243,5 +1243,24 @@
     "html": "games/html/Flash/234.html",
     "icon": "games/icons/Flash/234.png",
     "from": "gn-math"
+  },
+  {
+    "name": "FISH",
+    "html": "games/html/Ports/fish.html",
+    "icon": "games/icons/Ports/fish.png",
+    "from": "Classroommaxxing"
+  },
+  {
+    "name": "Bitlife",
+    "html": "games/html/Website/bitlife.html",
+    "icon": "games/icons/Website/bitlife.png",
+    "from": "Classroommaxxing"
+  },
+  {
+    "name": "Doge Miner",
+    "html": "games/html/Website/doge-miner.html",
+    "icon": "games/icons/Website/doge-miner.png",
+    "from": "Classroommaxxing",
+    "suggest": "Mason"
   }
 ]

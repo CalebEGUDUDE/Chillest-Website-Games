@@ -1,21 +1,148 @@
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
+<!doctype html>
+<html lang="en"><head>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-L7856P3VNT');
-</script><!DOCTYPE html>
-<html lang="en">
+</script>
 
-<head>
-	<base href="https://cdn.jsdelivr.net/gh/freebuisness/assets@main/309/">
+
+
+	<base href="https://cdn.jsdelivr.net/gh/freebuisness/assets@main/309/"><script data-cmx="ad-block-script">(function() {
+  const blockedHosts = ["doubleclick.net","googleads.g.doubleclick.net","googlesyndication.com","googleadservices.com","googletagmanager.com","google-analytics.com","analytics.google.com","adservice.google.com","adtrafficquality.google","amazon-adsystem.com","adnxs.com","taboola.com","outbrain.com","media.net","nitropay.com","playwire.com","sharethrough.com","adinplay.com","intergient.com","snigelweb.com","snigel.com","static.cloudflareinsights.com","adskeeper.com","adsterra.com"];
+  const blockedSelectors = [".adsbygoogle","[data-ad-client]","[data-ad-slot]","[data-ad-region]","iframe[src*='doubleclick.net']","iframe[src*='googlesyndication.com']","iframe[src*='googleadservices.com']","iframe[src*='googletagmanager.com']","iframe[src*='adnxs.com']","iframe[src*='taboola.com']","iframe[src*='outbrain.com']","iframe[src*='adinplay.com']","iframe[src*='intergient.com']","script[src*='doubleclick.net']","script[src*='googlesyndication.com']","script[src*='googleadservices.com']","script[src*='googletagmanager.com']","script[src*='google-analytics.com']","script[src*='analytics.google.com']","script[src*='adnxs.com']","script[src*='taboola.com']","script[src*='outbrain.com']","script[src*='adinplay.com']","script[src*='intergient.com']","script[src*='playwire.com']","script[src*='nitropay.com']","script[src*='cloudflareinsights.com']","ins.adsbygoogle","[id*='google_ads']","[id*='ad-slot']","[class*='ad-slot']","[id*='taboola']","[class*='taboola']","[id*='outbrain']","[class*='outbrain']","[id*='playwire']","[class*='playwire']","[id*='snigel']","[class*='snigel']","[id*='adinplay']","[class*='adinplay']"];
+  const adHintPattern = /\b(adsbygoogle|google[_-]?ads?|doubleclick|taboola|outbrain|playwire|adinplay|intergient|snigel)\b/i;
+
+  function isBlockedUrl(url) {
+    if (!url) return false;
+    try {
+      const parsed = new URL(url, location.href);
+      return blockedHosts.some(pattern =>
+        parsed.hostname === pattern ||
+        parsed.hostname.endsWith("." + pattern) ||
+        parsed.href.includes(pattern)
+      );
+    } catch (error) {
+      return blockedHosts.some(pattern => String(url).includes(pattern));
+    }
+  }
+
+  function looksLikeAdNode(node) {
+    if (!(node instanceof Element)) return false;
+    if (node.matches(blockedSelectors.join(","))) return true;
+
+    const src = node.getAttribute("src") || node.getAttribute("data-src") || "";
+    if (isBlockedUrl(src)) return true;
+
+    const signature = [
+      node.id,
+      typeof node.className === "string" ? node.className : "",
+      node.getAttribute("name"),
+      node.getAttribute("data-ad-client"),
+      node.getAttribute("data-ad-slot")
+    ].filter(Boolean).join(" ");
+
+    return adHintPattern.test(signature);
+  }
+
+  function scrub(root) {
+    if (!root || !root.querySelectorAll) return;
+
+    root.querySelectorAll("*").forEach(node => {
+      if (looksLikeAdNode(node)) node.remove();
+    });
+  }
+
+  window.adsbygoogle = window.adsbygoogle || [];
+  if (typeof window.adsbygoogle.push !== "function") {
+    window.adsbygoogle.push = function() { return 0; };
+  }
+
+  window.adConfig = window.adConfig || function() {};
+  window.adBreak = window.adBreak || function(config) {
+    try { if (config && typeof config.beforeAd === "function") config.beforeAd(); } catch (error) {}
+    try { if (config && typeof config.afterAd === "function") config.afterAd(); } catch (error) {}
+    try { if (config && typeof config.adBreakDone === "function") config.adBreakDone(); } catch (error) {}
+    return {};
+  };
+
+  const originalOpen = window.open;
+  window.open = function(url, ...args) {
+    if (isBlockedUrl(url)) return null;
+    return originalOpen.call(window, url, ...args);
+  };
+
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (!(node instanceof Element)) return;
+        if (looksLikeAdNode(node)) {
+          node.remove();
+          return;
+        }
+        scrub(node);
+      });
+    });
+  });
+
+  if (document.documentElement) {
+    scrub(document);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      scrub(document);
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    }, { once: true });
+  }
+})();</script><style data-cmx="ad-block-style">.adsbygoogle,
+[data-ad-client],
+[data-ad-slot],
+[data-ad-region],
+iframe[src*='doubleclick.net'],
+iframe[src*='googlesyndication.com'],
+iframe[src*='googleadservices.com'],
+iframe[src*='googletagmanager.com'],
+iframe[src*='adnxs.com'],
+iframe[src*='taboola.com'],
+iframe[src*='outbrain.com'],
+iframe[src*='adinplay.com'],
+iframe[src*='intergient.com'],
+script[src*='doubleclick.net'],
+script[src*='googlesyndication.com'],
+script[src*='googleadservices.com'],
+script[src*='googletagmanager.com'],
+script[src*='google-analytics.com'],
+script[src*='analytics.google.com'],
+script[src*='adnxs.com'],
+script[src*='taboola.com'],
+script[src*='outbrain.com'],
+script[src*='adinplay.com'],
+script[src*='intergient.com'],
+script[src*='playwire.com'],
+script[src*='nitropay.com'],
+script[src*='cloudflareinsights.com'],
+ins.adsbygoogle,
+[id*='google_ads'],
+[id*='ad-slot'],
+[class*='ad-slot'],
+[id*='taboola'],
+[class*='taboola'],
+[id*='outbrain'],
+[class*='outbrain'],
+[id*='playwire'],
+[class*='playwire'],
+[id*='snigel'],
+[class*='snigel'],
+[id*='adinplay'],
+[class*='adinplay'] { display: none !important; visibility: hidden !important; pointer-events: none !important; }</style>
 	<meta charset="utf-8">
-	<title id="titleTag">Sandboxels - Experiment with Pixels</title>
+	<title id="titleTag">Sandboxels</title>
 	
 	<!--Favicons-->
 	<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=2">
-	<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png?v=2">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/freebuisness/covers@main/309.png">
 	<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png?v=2">
 	<link rel="manifest" href="manifest.json">
 	<link rel="mask-icon" href="icons/safari-pinned-tab.svg?v=2" color="#2167ff">
@@ -18657,7 +18784,7 @@ window.onload = function() {
 }
 	</script>
 	<link rel="stylesheet" type="text/css" href="style.css?nocache=4">
-</head>
+<meta property="og:title" content="Sandboxels"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/freebuisness/covers@main/309.png"></head>
 
 <body>
 	<h1 class="pagetitle" id="pagetitle"><a href="https://R74n.com" class="backbutton" target="_blank">&lt;</a></h1>
@@ -18687,14 +18814,14 @@ window.onload = function() {
 			document.getElementById('elementButton-'+currentElement).style.background = currentColorMap[currentElement];" oninput="currentColorMap[currentElement]=this.value;
 			document.getElementById('elementButton-'+currentElement).style.removeProperty('background-image');
 			document.getElementById('elementButton-'+currentElement).style.background = currentColorMap[currentElement];">
-			<label for="colorSelector" hidden>Custom color</label>
+			<label for="colorSelector" hidden="">Custom color</label>
 			<div id="logDiv"><span id="logText"></span></div>
 		</div>
 		<div id="underDiv">
 			<div id="stats"></div>
 			<div id="controls">
 				<div id="toolControls">
-					<button id="shiftButton" title="Toggle Shift key" class="controlButton" onclick='toggleShift();focusGame();' on="false" style="display:none">↑</button><button id="pauseButton" title="Pause/play the simulation" class="controlButton" onclick='togglePause();focusGame();' on="false">Pause</button><button id="frameButton" title="Pause and play one frame" class="controlButton" onclick='doFrame();focusGame();' on="false">&gt;</button><button id="sizeDownButton" title="Decrease the brush size" class="controlButton" onclick="mouseSize -= shiftDown?mouseSize-1:2;checkMouseSize(true);centerMouse();focusGame();">-</button><button id="sizeUpButton" title="Increase the brush size" class="controlButton" onclick="mouseSize += shiftDown?14:2;checkMouseSize(true);centerMouse();focusGame();">+</button><button id="resetButton" title="Clear the entire scene" class="controlButton" onclick="resetPrompt();">Reset</button><button id="replaceButton" title="Override existing pixels when placing" class="controlButton" onclick='if (mode == "replace") {mode = null;this.setAttribute("on","false");}else {mode = "replace";this.setAttribute("on","true");};focusGame();' on="false">Replace</button><button id="elemSelectButton" title="Select an element by name" class="controlButton" onclick='chooseElementPrompt();'>E</button><button id="tpsButton" title="Change the simulation Ticks Per Second (TPS)" class="controlButton" onclick='tpsPrompt()'>Tps</button><!--<button id="hideButton" title="Stops updating the scene to allow more resources towards simulation" class="controlButton" onclick='if (hiding) {hiding = false;this.setAttribute("on","false");}else {hiding = true;this.setAttribute("on","true");};focusGame();' on="false">Hide</button>--><button id="infoButton" title="Brings up the element info screen" class="controlButton" onclick='if (showingMenu!="info"){closeMenu();showInfo("")}else{closeMenu()};' on="false">Info</button><button id="savesButton" title="Brings up the Save & Load menu" class="controlButton" onclick='if (showingMenu!="saves"){closeMenu();showSaves()}else{closeMenu()};' on="false">Saves</button><button id="modsButton" title="Brings up the Mod Manager" class="controlButton" onclick='if (showingMenu!="mods"){closeMenu();showModManager()}else{closeMenu()};' on="false">Mods</button><button id="settingsButton" title="Brings up the settings screen" class="controlButton" onclick='if (showingMenu!="settings"){closeMenu();showSettings()}else{closeMenu()};' on="false">Settings</button>
+					<button id="shiftButton" title="Toggle Shift key" class="controlButton" onclick="toggleShift();focusGame();" on="false" style="display:none">↑</button><button id="pauseButton" title="Pause/play the simulation" class="controlButton" onclick="togglePause();focusGame();" on="false">Pause</button><button id="frameButton" title="Pause and play one frame" class="controlButton" onclick="doFrame();focusGame();" on="false">&gt;</button><button id="sizeDownButton" title="Decrease the brush size" class="controlButton" onclick="mouseSize -= shiftDown?mouseSize-1:2;checkMouseSize(true);centerMouse();focusGame();">-</button><button id="sizeUpButton" title="Increase the brush size" class="controlButton" onclick="mouseSize += shiftDown?14:2;checkMouseSize(true);centerMouse();focusGame();">+</button><button id="resetButton" title="Clear the entire scene" class="controlButton" onclick="resetPrompt();">Reset</button><button id="replaceButton" title="Override existing pixels when placing" class="controlButton" onclick="if (mode == &quot;replace&quot;) {mode = null;this.setAttribute(&quot;on&quot;,&quot;false&quot;);}else {mode = &quot;replace&quot;;this.setAttribute(&quot;on&quot;,&quot;true&quot;);};focusGame();" on="false">Replace</button><button id="elemSelectButton" title="Select an element by name" class="controlButton" onclick="chooseElementPrompt();">E</button><button id="tpsButton" title="Change the simulation Ticks Per Second (TPS)" class="controlButton" onclick="tpsPrompt()">Tps</button><!--<button id="hideButton" title="Stops updating the scene to allow more resources towards simulation" class="controlButton" onclick='if (hiding) {hiding = false;this.setAttribute("on","false");}else {hiding = true;this.setAttribute("on","true");};focusGame();' on="false">Hide</button>--><button id="infoButton" title="Brings up the element info screen" class="controlButton" onclick="if (showingMenu!=&quot;info&quot;){closeMenu();showInfo(&quot;&quot;)}else{closeMenu()};" on="false">Info</button><button id="savesButton" title="Brings up the Save &amp; Load menu" class="controlButton" onclick="if (showingMenu!=&quot;saves&quot;){closeMenu();showSaves()}else{closeMenu()};" on="false">Saves</button><button id="modsButton" title="Brings up the Mod Manager" class="controlButton" onclick="if (showingMenu!=&quot;mods&quot;){closeMenu();showModManager()}else{closeMenu()};" on="false">Mods</button><button id="settingsButton" title="Brings up the settings screen" class="controlButton" onclick="if (showingMenu!=&quot;settings&quot;){closeMenu();showSettings()}else{closeMenu()};" on="false">Settings</button>
 				</div>
 				<script>
 					// if it is the 1st of April, add a rainbow-colored button
@@ -18760,10 +18887,10 @@ window.onload = function() {
 		<div id="infoParent">
 			<div id="infoScreen"> <!--Element Info Page-->
 				<button class="XButton" onclick="closeMenu();">-</button>
-				<span class='infoLink noselect' id="infoBackButton" onclick='infoBack()' style='text-decoration:none!important;display:none'>←&nbsp;</span><span class="menuTitle" id="infoTitle">Title</span>
+				<span class="infoLink noselect" id="infoBackButton" onclick="infoBack()" style="text-decoration:none!important;display:none">←&nbsp;</span><span class="menuTitle" id="infoTitle">Title</span>
 				<div class="menuText" id="infoText">Text</div>
 			</div>
-			<input type="text" id="infoSearch" placeholder="Element..." oninput="showInfo(this.value);" enterkeyhint="done"></input>
+			<input type="text" id="infoSearch" placeholder="Element..." oninput="showInfo(this.value);" enterkeyhint="done">
 		</div>
 	
 		<!--Mod Manager Page with the list of current mods and a url input box with a plus button to add it-->
@@ -18789,7 +18916,7 @@ window.onload = function() {
 					}
 				</script>
 				See the <a href="https://sandboxels.R74n.com/mod-list" target="_blank">Mod List</a> or <a href="https://github.com/R74nCom/sandboxels/" target="_blank">GitHub</a>.
-				<input type="text" id="modManagerUrl" placeholder=".JS or URL..." onkeydown="if (event.keyCode == 13) {addMod(this.value);this.value = '';};this.focus();" enterkeyhint="done"></input>
+				<input type="text" id="modManagerUrl" placeholder=".JS or URL..." onkeydown="if (event.keyCode == 13) {addMod(this.value);this.value = '';};this.focus();" enterkeyhint="done">
 			</div>
 			<!-- <button id="modManagerAdd" onclick="addMod(document.getElementById('modManagerUrl').value); document.getElementById('modManagerUrl').value = '';">+</button> -->
 		</div>
@@ -18797,7 +18924,7 @@ window.onload = function() {
 		<div id="savesParent" class="menuParent">
 			<div id="savesMenu" class="menuScreen">
 				<button class="XButton" onclick="closeMenu();">-</button>
-				<span class="menuTitle" id="savesMenuTitle">Save & Load</span>
+				<span class="menuTitle" id="savesMenuTitle">Save &amp; Load</span>
 				<div class="menuText" style="padding-top:1em; height:70%; overflow-y:scroll" id="saveSlotList">
 				</div>
 				<span id="saveFile" onclick="saveToFile()">Save to File</span>
@@ -18836,7 +18963,7 @@ window.onload = function() {
 					<span id="promptOK" class="promptOK" onclick="handlePrompt()" style="display:none">OK</span>
 					<span id="promptCancel" onclick="handlePrompt(false)" style="display:none">Cancel</span>
 					<span id="promptConfirm" onclick="handlePrompt(true)" style="display:none">Confirm</span>
-					<input type="text" id="promptInput" placeholder="Input..." onkeydown="if (event.keyCode == 13) {handlePrompt(this.value || null);}" enterkeyhint="done" style="display:none" autocomplete="off"></input>
+					<input type="text" id="promptInput" placeholder="Input..." onkeydown="if (event.keyCode == 13) {handlePrompt(this.value || null);}" enterkeyhint="done" style="display:none" autocomplete="off">
 				</div>
 			</div>
 		</div>
@@ -18860,7 +18987,7 @@ window.onload = function() {
 				<div class="menuText" style="padding-top:1em">
 					<span setting="units" class="setting-span multisetting" title="Default: Metric">
 						<span id="settingLabel-units">Units</span> <select onchange="setSetting('units',this.value);">
-							<option value="m" id="setting-units-m" selected>Metric</option>
+							<option value="m" id="setting-units-m" selected="">Metric</option>
 							<option value="i" id="setting-units-i">Imperial</option>
 							<option value="s" id="setting-units-s">SI</option>
 						</select>
@@ -18871,7 +18998,7 @@ window.onload = function() {
 					</span>
 					<span setting="theme" class="setting-span multisetting" title="Default: Dark">
 						<span id="settingLabel-theme">Theme</span> <select onchange="setSetting('theme',this.value); setThemeElement(this.value)">
-							<option value="" id="setting-theme-default" selected>Dark</option>
+							<option value="" id="setting-theme-default" selected="">Dark</option>
 							<option value="brick" id="setting-theme-brick">Brick</option>
 							<option value="fire" id="setting-theme-fire">Fire</option>
 							<option value="juice" id="setting-theme-juice">Juice</option>
@@ -18886,7 +19013,7 @@ window.onload = function() {
 					<br>
 					<span setting="unhide" class="setting-span multisetting" title="Default: Hide Some Elements">
 						<span id="settingLabel-unhide">Hiding</span> <select onchange="setSetting('unhide',parseInt(this.value));this.nextElementSibling.innerText='Refresh Page'">
-							<option value="0" id="setting-unhide-0" selected>Hide Some Elements</option>
+							<option value="0" id="setting-unhide-0" selected="">Hide Some Elements</option>
 							<option value="1" id="setting-unhide-1">Unhide All Elements</option>
 							<option value="2" id="setting-unhide-2">Unlock as Discovered</option>
 						</select>
@@ -18895,14 +19022,14 @@ window.onload = function() {
 					</span>
 					<span setting="view" class="setting-span multisetting" title="Default: Unset">
 						<span id="settingLabel-view">Default View</span> <select id="viewSelect" onchange="setSetting('view',parseInt(this.value));setView(parseInt(this.value))">
-							<option value="0" id="setting-view-0" selected>Unset</option>
+							<option value="0" id="setting-view-0" selected="">Unset</option>
 						</select>
 					</span><br>
 					<span setting="pixelsize" class="setting-span multisetting" title="Default: Medium">
 						<span id="settingLabel-pixelsize">Canvas Size</span> <select onchange="setSetting('pixelsize',this.value);this.nextElementSibling.innerText='Reset Scene'">
 							<option value="12" id="setting-pixelsize-12">Tiny</option>
 							<option value="8" id="setting-pixelsize-8">Small</option>
-							<option value="6" id="setting-pixelsize-6" selected>Medium</option>
+							<option value="6" id="setting-pixelsize-6" selected="">Medium</option>
 							<option value="6w" id="setting-pixelsize-6w">Wide</option>
 							<option value="4" id="setting-pixelsize-4">Large</option>
 						</select>
@@ -18911,7 +19038,7 @@ window.onload = function() {
 					</span>
 					<span setting="border" class="setting-span multisetting" title="Default: Solid">
 						<span id="settingLabel-border">Border</span> <select onchange="setSetting('border',isNaN(this.value) ? this.value : parseInt(this.value));updateBorder();">
-							<option value="0" id="setting-border-0" selected>Solid</option>
+							<option value="0" id="setting-border-0" selected="">Solid</option>
 							<option value="1" id="setting-border-1">Void</option>
 							<option value="2" id="setting-border-2">Loop All</option>
 							<option value="3" id="setting-border-3">Loop Horizontal</option>
@@ -18952,7 +19079,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 					</span>
 					<span setting="events" class="setting-span" title="Default: Disabled">
 						<span id="settingLabel-events">Random Events</span> <select onchange="setSetting('events',parseFloat(this.value));">
-							<option value="0" id="setting-events-0" selected>Disabled</option>
+							<option value="0" id="setting-events-0" selected="">Disabled</option>
 							<option value="0.005" id="setting-events-0.005">Rare (For casual play)</option>
 							<option value="0.025" id="setting-events-0.025">Common</option>
 							<option value="0.05" id="setting-events-0.05">Annoying</option>
@@ -18969,14 +19096,14 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 						<span id="settingLabel-abszero">Abs Zero</span> <input type="number" value="-273.15" placeholder="-273.15" onchange="if(this.value===''){this.value=-273.15} absoluteZero=parseFloat(this.value); setSetting('abszero',absoluteZero)">&nbsp;
 					</span>
 					<span class="setting-span" style="text-align:center">
-						<input type="button" value="Reset Discovered" id="resetDiscovered" onclick="promptConfirm('This action will RESET ALL DISCOVERED ELEMENTS and refresh the page.', (r)=>{if (!r)return;settings.unlocked={};saveSettings();location.reload()}, 'WARNING')" class="settingsButton">
-						<input type="button" value="Reset All" id="resetAll" onclick="promptConfirm('This action will RESET ALL YOUR DATA, not including save slots, and refresh the page.', (r)=>{if (!r)return;localStorage.removeItem('settings');location.reload()}, 'WARNING')" class="settingsButton">
-						<input type="button" value="Clear Mods" id="clearMods" onclick="promptConfirm('This action will remove all enabled mods and refresh the page.', (r)=>{if (!r)return;localStorage.removeItem('enabledMods');location.reload()}, 'WARNING')" class="settingsButton">
-						<input type="button" value="Clear Saves" id="clearSaves" onclick="promptConfirm('This action will PERMANENTLY ERASE all local save slots.', (r)=>{if (!r)return;for (var i = 1; i <= 12; i++) {localStorage.removeItem('SandboxelsSaves/'+i)}}, 'WARNING')" class="settingsButton">
+						<input type="button" value="Reset Discovered" id="resetDiscovered" onclick="promptConfirm('This action will RESET ALL DISCOVERED ELEMENTS and refresh the page.', (r)=&gt;{if (!r)return;settings.unlocked={};saveSettings();location.reload()}, 'WARNING')" class="settingsButton">
+						<input type="button" value="Reset All" id="resetAll" onclick="promptConfirm('This action will RESET ALL YOUR DATA, not including save slots, and refresh the page.', (r)=&gt;{if (!r)return;localStorage.removeItem('settings');location.reload()}, 'WARNING')" class="settingsButton">
+						<input type="button" value="Clear Mods" id="clearMods" onclick="promptConfirm('This action will remove all enabled mods and refresh the page.', (r)=&gt;{if (!r)return;localStorage.removeItem('enabledMods');location.reload()}, 'WARNING')" class="settingsButton">
+						<input type="button" value="Clear Saves" id="clearSaves" onclick="promptConfirm('This action will PERMANENTLY ERASE all local save slots.', (r)=&gt;{if (!r)return;for (var i = 1; i &lt;= 12; i++) {localStorage.removeItem('SandboxelsSaves/'+i)}}, 'WARNING')" class="settingsButton">
 					</span>
 					<span setting="worldgen" style="padding-bottom:0" class="setting-span" title="Default: Disabled">
 						<span id="settingLabel-worldgen">World Gen</span> <small>[Beta]</small> <select id="worldgenselect" onchange="setSetting('worldgen',this.value);this.nextElementSibling.innerText='Reset Scene'">
-							<option value="off" id="setting-worldgen-off" selected>Disabled</option>
+							<option value="off" id="setting-worldgen-off" selected="">Disabled</option>
 						</select>
 						<span onclick="clearAll();" style="font-style:italic;cursor:pointer"></span>
 					</span>
@@ -19015,7 +19142,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 			affRequest.send();
 		</script> -->
 		<p id="langSelectP">🌐 <span id="langSelectLabel">Language</span> <a href="https://sandboxels.R74n.com/translate" target="_blank">[BETA]</a>: <select onchange="if (this.value === 'en'){setSetting('lang',null)}else{setSetting('lang',this.value)}window.location.reload()" id="langSelect">
-			<option selected value="en">English (American)</option>
+			<option selected="" value="en">English (American)</option>
 			<option value="en_gb">English (British)</option>
 			<option value="en_ca">English (Canadian)</option>
 			<option value="en_au">English (Australian)</option>
@@ -19056,8 +19183,8 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 			<div>
 				<div id="newsletterFrame">Be notified when Sandboxels and other R74n projects are updated, along with ramblings from the developer!<br><br>
 					<form action="https://news.r74n.com/api/v1/free?nojs=true" method="post" class="form _form_1mxvn_6" novalidate="" target="_blank"><input type="hidden" name="first_url" value="https://news.r74n.com/embed"><input type="hidden" name="first_referrer"><input type="hidden" name="current_url" value="https://news.r74n.com/embed"><input type="hidden" name="current_referrer"><input type="hidden" name="referral_code"><input type="hidden" name="source" value="embed"><input type="hidden" name="referring_pub_id"><input type="hidden" name="additional_referring_pub_ids">
-					<input type="email" placeholder="Type your email..." name="email" style="padding:15px"><input type="submit" value="Subscribe" style="background: rgb(23, 166, 255); padding:15px; border-radius: 20px"></input>
-				</div>
+					<input type="email" placeholder="Type your email..." name="email" style="padding:15px"><input type="submit" value="Subscribe" style="background: rgb(23, 166, 255); padding:15px; border-radius: 20px">
+				</form></div>
 			</div>
 			<div>
 				<p>Try our NEW GAME: <a href="https://R74n.com/cook/" target="_blank">Infinite Chef</a></p>
@@ -19130,7 +19257,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 	<div id="bottomRightBox">
 		<h2>Controls</h2>
 		<table id="controlsTable">
-			<tr><td>Draw pixels</td>   <td><kbd>Left Click</kbd></td></tr>
+			<tbody><tr><td>Draw pixels</td>   <td><kbd>Left Click</kbd></td></tr>
 			<tr><td>Erase pixels</td>   <td><kbd>Right Click</kbd></td></tr>
 			<tr><td>Pick element</td>   <td><kbd>Middle Click</kbd></td></tr>
 			<tr><td>Pause simulation</td>   <td><kbd>Space</kbd> or <kbd>P</kbd></td></tr>
@@ -19148,7 +19275,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 			<tr><td>Toggle GUI</td>   <td><kbd>F1</kbd></td></tr>
 			<tr><td>Capture screenshot</td>   <td><kbd>C</kbd> or <kbd>F2</kbd></td></tr>
 			<tr><td colspan="2" style="text-align:center"><strong><a href="https://sandboxels.r74n.com/controls" target="_blank" title="Open the controls file">More controls</a></strong></td></tr>
-		</table>
+		</tbody></table>
 	</div>
 </div>
 </div>
@@ -19219,7 +19346,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 </script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93720349-9"></script>
+
 <script>
 	window.dataLayer = window.dataLayer || [];
 	function gtag(){dataLayer.push(arguments);}
@@ -19229,6 +19356,7 @@ Cancer, Landmine, Grenade, Smoke Grenade">?</span>
 
 
 
-</body>
 
-</html>
+
+
+</body></html>
