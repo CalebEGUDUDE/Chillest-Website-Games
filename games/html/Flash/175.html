@@ -1,45 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L7856P3VNT');
+</script><html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Run 1</title>
-  <style>
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #game { display: block; width: 100%; height: 100%; border: 0; }
-    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
-  </style>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-"></script>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AndreajnRcm4/b398dl2h74v@9a23fbb2373d743a564873251cbb57736ebc1f73/style.css" type="text/css" />
+    
+
 </head>
 <body>
-  <div id="loading">Loading Run 1...</div>
-  <iframe id="game" title="Run 1" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
-  <script>
-    const sourceUrl = "https://cdn.jsdelivr.net/gh/freebuisness/html@main/175.html";
-    const frame = document.getElementById("game");
-    const loading = document.getElementById("loading");
+<script>window.RufflePlayer = window.RufflePlayer || {}; window.RufflePlayer.config = {...window.RufflePlayer.config, publicPath: "https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/"};</script>
+<script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/ruffle.min.js"></script>
 
-    function addBaseUrl(html) {
-      if (/<base\s/i.test(html)) return html;
-      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
-      return /<head[^>]*>/i.test(html)
-        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
-        : baseTag + html;
-    }
+<object width="100%" height="100%">
+    <param name="movie" value="https://cdn.jsdelivr.net/gh/freebuisness/assets/175/Run.swf">
+    <embed src="https://cdn.jsdelivr.net/gh/freebuisness/assets/175/Run.swf" width="100%" height="100%">
 
-    fetch(sourceUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error("Game source returned " + response.status);
-        return response.text();
-      })
-      .then((html) => {
-        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
-        frame.src = URL.createObjectURL(blob);
-        frame.addEventListener("load", () => loading.remove(), { once: true });
-      })
-      .catch((error) => {
-        console.error("Run 1" + " failed to load:", error);
-        loading.textContent = "Unable to load " + "Run 1" + ". Please try again.";
-      });
-  </script>
+
 </body>
 </html>

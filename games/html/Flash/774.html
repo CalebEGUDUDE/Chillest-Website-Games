@@ -1,45 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mountain Bike Racer</title>
-  <style>
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #game { display: block; width: 100%; height: 100%; border: 0; }
-    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
-  </style>
-</head>
-<body>
-  <div id="loading">Loading Mountain Bike Racer...</div>
-  <iframe id="game" title="Mountain Bike Racer" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
-  <script>
-    const sourceUrl = "https://cdn.jsdelivr.net/gh/freebuisness/html@main/774.html";
-    const frame = document.getElementById("game");
-    const loading = document.getElementById("loading");
 
-    function addBaseUrl(html) {
-      if (/<base\s/i.test(html)) return html;
-      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
-      return /<head[^>]*>/i.test(html)
-        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
-        : baseTag + html;
-    }
+                                 
+                                                                                                                              
 
-    fetch(sourceUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error("Game source returned " + response.status);
-        return response.text();
-      })
-      .then((html) => {
-        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
-        frame.src = URL.createObjectURL(blob);
-        frame.addEventListener("load", () => loading.remove(), { once: true });
-      })
-      .catch((error) => {
-        console.error("Mountain Bike Racer" + " failed to load:", error);
-        loading.textContent = "Unable to load " + "Mountain Bike Racer" + ". Please try again.";
-      });
-  </script>
-</body>
-</html>
+ <html> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"> <title>Mountain Bike Racer</title> <script async src="https://www.googletagmanager.com/gtag/js?id=G-MENBM6GSNY"></script><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-MENBM6GSNY")</script> <link rel="stylesheet" href="https://63345095-642850127579431232.preview.editmysite.com/uploads/b/150548818-566885687184884645/files/style.css" type="text/css"> <script type="text/javascript"> document.addEventListener('DOMContentLoaded', (event) => { function preventDefaultTouchActions(event) { event.preventDefault(); } document.addEventListener('touchstart', preventDefaultTouchActions, { passive: false }); document.addEventListener('touchmove', preventDefaultTouchActions, { passive: false }); document.addEventListener('touchend', preventDefaultTouchActions, { passive: false }); document.addEventListener('touchcancel', preventDefaultTouchActions, { passive: false }); }); </script> </head> <body> <div id="fb-root"></div> <noscript> <div id="notSupportedWrap"> <h2 id="notSupportedTitle">This content requires JavaScript</h2> <p class="notSupportedMessage">JavaScript appears to be disabled. Please enable it to view this content.</p> </div> </noscript> <script src="https://63345095-642850127579431232.preview.editmysite.com/uploads/b/150548818-566885687184884645/files/scripts/supportcheck.js"</script> <script src="https://63345095-642850127579431232.preview.editmysite.com/uploads/b/150548818-566885687184884645/files/scripts/offlineclient.js" type="module"></script> <script src="https://63345095-642850127579431232.preview.editmysite.com/uploads/b/150548818-566885687184884645/files/scripts/main.js" type="module"></script> <script src="https://63345095-642850127579431232.preview.editmysite.com/uploads/b/150548818-566885687184884645/files/scripts/register-sw.js" type="module"></script>  </body> </html>

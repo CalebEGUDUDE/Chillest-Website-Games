@@ -1,45 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Offroad Mountain Bike</title>
-  <style>
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #game { display: block; width: 100%; height: 100%; border: 0; }
-    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
-  </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-L7856P3VNT');
+</script><!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    
+    
+    <base href="https://cdn.jsdelivr.net/gh/freebuisness/assets@main/116/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MX OffRoad Mountain Bike</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  
 </head>
-<body>
-  <div id="loading">Loading Offroad Mountain Bike...</div>
-  <iframe id="game" title="Offroad Mountain Bike" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
-  <script>
-    const sourceUrl = "https://cdn.jsdelivr.net/gh/freebuisness/html@main/116.html";
-    const frame = document.getElementById("game");
-    const loading = document.getElementById("loading");
+  <body class="light">
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas"></canvas>
+    </div>
+    <div id="loading-cover" style="display:none;">
+      <div id="unity-loading-bar">
+        <div id="unity-logo"><img src="logo.png"></div>
+        <div id="unity-progress-bar-empty" style="display: none;">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div id="unity-fullscreen-button" style="display: none;"></div>
+    <script>
+      const hideFullScreenButton = "1";
+      const buildUrl = "Build";
+      const loaderUrl = buildUrl + "/bike.loader.js";
+      const config = {
+        dataUrl: buildUrl + "/bike.data.unityweb",
+        frameworkUrl: buildUrl + "/bike.framework.js.unityweb",
+        codeUrl: buildUrl + "/bike.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "RHM",
+        productName: "MX OffRoad Mountain Bike",
+        productVersion: "1",
+      };
 
-    function addBaseUrl(html) {
-      if (/<base\s/i.test(html)) return html;
-      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
-      return /<head[^>]*>/i.test(html)
-        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
-        : baseTag + html;
-    }
+      const container = document.querySelector("#unity-container");
+      const canvas = document.querySelector("#unity-canvas");
+      const loadingCover = document.querySelector("#loading-cover");
+      const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+      const progressBarFull = document.querySelector("#unity-progress-bar-full");
+      const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      const spinner = document.querySelector('.spinner');
 
-    fetch(sourceUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error("Game source returned " + response.status);
-        return response.text();
-      })
-      .then((html) => {
-        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
-        frame.src = URL.createObjectURL(blob);
-        frame.addEventListener("load", () => loading.remove(), { once: true });
-      })
-      .catch((error) => {
-        console.error("Offroad Mountain Bike" + " failed to load:", error);
-        loading.textContent = "Unable to load " + "Offroad Mountain Bike" + ". Please try again.";
-      });
-  </script>
+      const canFullscreen = (function() {
+        for (const key of [
+            'exitFullscreen',
+            'webkitExitFullscreen',
+            'webkitCancelFullScreen',
+            'mozCancelFullScreen',
+            'msExitFullscreen',
+          ]) {
+          if (key in document) {
+            return true;
+          }
+        }
+        return false;
+      }());
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        container.className = "unity-mobile";
+        config.devicePixelRatio = 1;
+      }
+      canvas.style.background = "url('" + buildUrl + "/bike.jpg') center / cover";
+      loadingCover.style.display = "";
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          spinner.style.display = "none";
+          progressBarEmpty.style.display = "";
+          progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+          loadingCover.style.display = "none";
+          if (canFullscreen) {
+            if (!hideFullScreenButton) {
+              fullscreenButton.style.display = "";
+            }
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          }
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  
 </body>
 </html>

@@ -1,45 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bloxorz</title>
-  <style>
-    html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
-    #game { display: block; width: 100%; height: 100%; border: 0; }
-    #loading { position: fixed; inset: 0; z-index: 1; display: grid; place-items: center; color: #fff; font: 16px sans-serif; }
-  </style>
-</head>
-<body>
-  <div id="loading">Loading Bloxorz...</div>
-  <iframe id="game" title="Bloxorz" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
-  <script>
-    const sourceUrl = "https://cdn.jsdelivr.net/gh/freebuisness/html@main/169.html";
-    const frame = document.getElementById("game");
-    const loading = document.getElementById("loading");
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7856P3VNT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-    function addBaseUrl(html) {
-      if (/<base\s/i.test(html)) return html;
-      const baseTag = '<base href="' + new URL(".", sourceUrl).href + '">';
-      return /<head[^>]*>/i.test(html)
-        ? html.replace(/<head[^>]*>/i, (head) => head + baseTag)
-        : baseTag + html;
-    }
+  gtag('config', 'G-L7856P3VNT');
+</script><!DOCTYPE HTML> 
+<html>
+  <head>
+    
+    
+    
+    <meta charset='utf8'>
+    <style> html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; } #ruffle { width: 100%; height: 100%; } 
 
-    fetch(sourceUrl)
-      .then((response) => {
-        if (!response.ok) throw new Error("Game source returned " + response.status);
-        return response.text();
-      })
-      .then((html) => {
-        const blob = new Blob([addBaseUrl(html)], { type: "text/html;charset=utf-8" });
-        frame.src = URL.createObjectURL(blob);
-        frame.addEventListener("load", () => loading.remove(), { once: true });
-      })
-      .catch((error) => {
-        console.error("Bloxorz" + " failed to load:", error);
-        loading.textContent = "Unable to load " + "Bloxorz" + ". Please try again.";
-      });
-  </script>
+
+
+
+</style>
+  </head>
+  <body>
+    <div id='ruffle'></div>
+    <script src='https://unpkg.com/@ruffle-rs/ruffle'></script> <script>  var swfobject = {};
+swfobject.embedSWF = function (url, containerId) {
+  var ruffle = window.RufflePlayer.newest();
+  var container = document.getElementById(containerId);
+  var player = ruffle.createPlayer();
+  container.appendChild(player);
+  if (url) {
+    player.load({
+      url: url
+    });
+  } else {
+    console.error("No SWF file specified in the URL parameters.");
+  }
+  const resizePlayer = () => {
+    container.style.width = window.innerWidth + 'px';
+    container.style.height = window.innerHeight + 'px';
+    player.style.width = '100%';
+    player.style.height = '100%';
+  };
+  resizePlayer();
+  window.addEventListener('resize', resizePlayer);
+};
+swfobject.embedSWF("https://cdn.jsdelivr.net/gh/illusionTBA/React-Ruffle@f37551ff7c55cc61002445a0f1e334742f6832e4/public/swf/Bloxors.swf", 'ruffle'); </script> 
+  
+
 </body>
 </html>

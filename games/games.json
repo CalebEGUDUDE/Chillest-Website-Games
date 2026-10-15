@@ -580,7 +580,7 @@
     "icon": "games/icons/Ports/goblin-goopmaxxing.png"
   },
   {
-    "name": "Grand Theft Auto",
+    "name": "Grand Theft Auto III",
     "html": "games/html/Emulation/gta.html",
     "icon": "games/icons/Emulation/gta.png"
   },
@@ -1027,7 +1027,7 @@
   },
   {
     "name": "Five Nights at Freddy's World Refreshed",
-    "html": "games/html/FNAF/fnaf-world-refreshed.html",
-    "icon": "games/icons/FNAF/fnaf-world-refreshed.png"
+    "html": "games/html/FNAF/fnaf-world-refresh.html",
+    "icon": "games/icons/FNAF/fnaf-world-refresh.png"
   }
 ]
