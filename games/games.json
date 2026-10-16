@@ -1262,5 +1262,40 @@
     "icon": "games/icons/Website/doge-miner.png",
     "from": "Classroommaxxing",
     "suggest": "Mason"
+  },
+  {
+    "name": "Astro's Dreamland",
+    "html": "games/html/Apps/astros-dreamland.html",
+    "icon": "games/icons/Apps/astros-dreamland.png"
+  },
+  {
+    "name": "Classroommaxxing",
+    "html": "games/html/Apps/classroommaxxing.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "HTML Editor",
+    "html": "games/html/Tools/html-editor.html",
+    "icon": "games/icons/Tools/html-editor.png"
+  },
+  {
+    "name": "Link Checker",
+    "html": "games/html/Tools/link-checker.html",
+    "icon": "games/icons/Tools/link-checker.png"
+  },
+  {
+    "name": "NikeHub",
+    "html": "games/html/Apps/nikehub.html",
+    "icon": "games/icons/placeholder.png"
+  },
+  {
+    "name": "Ultimate Game Stash",
+    "html": "games/html/Apps/ugs.html",
+    "icon": "games/icons/Apps/ugs.png"
+  },
+  {
+    "name": "Volcano v4",
+    "html": "games/html/Apps/volcano.html",
+    "icon": "games/icons/Apps/volcano.png"
   }
 ]
