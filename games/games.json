@@ -1297,5 +1297,52 @@
     "name": "Volcano v4",
     "html": "games/html/Apps/volcano.html",
     "icon": "games/icons/Apps/volcano.png"
-  }
+  },
+  {
+    "name": "Doge Miner 2",
+    "html": "games/html/Website/doge-miner-2.html",
+    "icon": "games/icons/Website/doge-miner-2.png"
+  },
+  {
+    "name": "Funny Shooter 2",
+    "raw-name": "funny-shooter-2",
+    "catagory": "Website",
+    "html": "games/html/Website/funny-shooter-2.html",
+    "icon": "games/icons/Website/funny-shooter-2.png"
+  },
+  {
+    "name": "Get Yoked",
+    "raw-name": "get-yoked",
+    "catagory": "Website",
+    "html": "games/html/Website/get-yoked.html",
+    "icon": "games/icons/Website/get-yoked.png"
+  },
+  {
+    "name": "Infinite Craft",
+    "raw-name": "infinite-craft",
+    "catagory": "Website",
+    "html": "games/html/Website/infinite-craft.html",
+    "icon": "games/icons/Website/infinite-craft.png"
+  },
+  {
+    "name": "Little Alchemy 2",
+    "raw-name": "little-alchemy-2",
+    "catagory": "Website",
+    "html": "games/html/Website/little-alchemy-2.html",
+    "icon": "games/icons/Website/little-alchemy-2.png"
+  },
+  {
+    "name": "Get Yoked",
+    "raw-name": "get-yoked",
+    "catagory": "Website",
+    "html": "games/html/Website/get-yoked.html",
+    "icon": "games/icons/Website/get-yoked.png"
+  },
+  {
+    "name": "Super Smash Flash 2",
+    "raw-name": "super-smash-flash-2",
+    "catagory": "Flash",
+    "html": "games/html/Flash/super-smash-flash-2.html",
+    "icon": "games/icons/Flash/super-smash-flash-2.png"
+  },
 ]
