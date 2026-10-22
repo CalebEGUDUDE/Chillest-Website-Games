@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Metadata JSON Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.2/jszip.min.js"></script>
+  <style>
+    .code-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
+    .code-scroll::-webkit-scrollbar-track { background: #1f2937; }
+    .code-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans flex flex-col">
+
+  <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-gamepad text-indigo-500 text-2xl font-bold"></i>
+        <h1 class="font-bold text-xl tracking-tight text-white">Game Metadata Studio</h1>
+      </div>
+      <nav class="flex space-x-2 bg-gray-950 p-1 rounded-lg border border-gray-800 text-sm font-medium">
+        <button onclick="switchTab('single')" id="tab-single" class="px-4 py-2 rounded-md transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-plus mr-2"></i>Single Generator
+        </button>
+        <button onclick="switchTab('batch')" id="tab-batch" class="px-4 py-2 rounded-md transition text-gray-400 hover:text-white">
+          <i class="fa-solid fa-layer-group mr-2"></i>Batch Manager
+        </button>
+        <button onclick="switchTab('rename')" id="tab-rename" class="px-4 py-2 rounded-md transition bg-indigo-600 text-white shadow">
+          <i class="fa-solid fa-wand-magic-sparkles mr-2 text-yellow-400"></i>Path & Rename Fixer
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6">
+
+    <!-- TAB 1: SINGLE GENERATOR -->
+    <div id="view-single" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-5">
+        <h2 class="text-lg font-semibold text-indigo-400 border-b border-gray-800 pb-2">Entry Properties</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs uppercase font-bold text-gray-400 mb-1">Game Name</label>
+            <input type="text" id="input-name" placeholder="e.g. Doge Miner 2" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs uppercase font-bold text-gray-400">Raw Name (Slug)</label>
+                <label class="text-xs text-indigo-400 flex items-center cursor-pointer">
+                  <input type="checkbox" id="auto-slug" checked class="mr-1 rounded bg-gray-950 border-gray-800 text-indigo-600 focus:ring-0"> Auto
+                </label>
+              </div>
+              <input type="text" id="input-raw" placeholder="doge-miner-2" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-xs uppercase font-bold text-gray-400 mb-1">Category</label>
+              <select id="input-cat" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                <option value="Emulation">Emulation</option>
+                <option value="Website" selected>Website</option>
+                <option value="App">App</option>
+                <option value="Tool">Tool</option>
+                <option value="Flash">Flash</option>
+                <option value="FNAF">FNAF</option>
+                <option value="FNF">FNF</option>
+                <option value="Minecraft">Minecraft</option>
+                <option value="Ports">Ports</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs uppercase font-bold text-gray-400 mb-1">From / Source</label>
+              <input type="text" id="input-from" placeholder="e.g. gn-math" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs uppercase font-bold text-gray-400 mb-1">Suggest / Submitter</label>
+              <input type="text" id="input-suggest" placeholder="e.g. Mason" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase font-bold text-gray-400 mb-1">HTML File Path</label>
+            <input type="text" id="input-html" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 font-mono text-xs">
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase font-bold text-gray-400 mb-1">Icon File Path</label>
+            <input type="text" id="input-icon" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 font-mono text-xs">
+          </div>
+        </div>
+
+        <button onclick="addToBatchFromSingle()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-lg transition shadow-lg flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add To Batch Array</span>
+        </button>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex justify-between items-center border-b border-gray-800 pb-2 mb-4">
+            <h2 class="text-lg font-semibold text-indigo-400">JSON Output Preview</h2>
+            <button onclick="copySingleJSON()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded transition">
+              <span id="copy-single-txt">Copy JSON</span>
+            </button>
+          </div>
+          <pre id="single-preview" class="bg-gray-950 p-4 rounded-lg text-emerald-400 font-mono text-xs overflow-x-auto border border-gray-800 min-h-[300px] code-scroll"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: BATCH MANAGER -->
+    <div id="view-batch" class="hidden space-y-6">
+      <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <h2 class="text-lg font-semibold text-indigo-400">Import Existing JSON Array</h2>
+          <div class="flex space-x-2">
+            <input type="file" id="file-import" accept=".json" class="hidden" onchange="handleFileUpload(event)">
+            <button onclick="document.getElementById('file-import').click()" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-2 rounded-lg transition">
+              <i class="fa-solid fa-file-import mr-1"></i> Upload .json
+            </button>
+          </div>
+        </div>
+        <textarea id="import-text" placeholder="Paste JSON array here..." class="w-full h-32 bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs font-mono focus:outline-none focus:border-indigo-500 code-scroll"></textarea>
+        <button onclick="importJSONText()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">
+          Process & Import
+        </button>
+      </div>
+
+      <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-4">
+        <div class="flex flex-wrap justify-between items-center gap-4 border-b border-gray-800 pb-3">
+          <h2 class="text-lg font-semibold text-indigo-400">Current Batch (<span id="batch-count">0</span> items)</h2>
+          <div class="flex space-x-2">
+            <button onclick="copyBatchJSON()" class="bg-gray-800 hover:bg-gray-700 text-xs px-3 py-2 rounded-lg transition">Copy All JSON</button>
+            <button onclick="downloadJSON()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-lg transition font-semibold">Download games.json</button>
+          </div>
+        </div>
+        <div id="batch-list" class="space-y-2 max-h-[500px] overflow-y-auto code-scroll pr-1"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: RENAME & FIXER -->
+    <div id="view-rename" class="space-y-6">
+      <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-4">
+        <h2 class="text-lg font-semibold text-indigo-400">Path Repair & File Exporter</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs uppercase font-bold text-gray-400 mb-1">1. Paste YOUR games.json Array</label>
+            <textarea id="rename-input" placeholder="Paste your exact JSON array here..." class="w-full h-32 bg-gray-950 border border-gray-800 rounded-lg p-3 text-xs font-mono focus:outline-none focus:border-indigo-500 code-scroll"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase font-bold text-gray-400 mb-1">2. Select HTML/Icons Folder</label>
+            <div class="bg-gray-950 border border-gray-800 rounded-lg p-4 h-32 flex flex-col justify-center items-center space-y-3">
+              <div class="flex space-x-2">
+                <input type="file" id="folder-upload" webkitdirectory directory multiple class="hidden" onchange="handleHtmlFolderUpload(event)">
+                <button onclick="document.getElementById('folder-upload').click()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-2 rounded-lg transition font-medium">
+                  <i class="fa-solid fa-folder-open mr-1.5"></i> Select Folder
+                </button>
+                <input type="file" id="files-upload" multiple accept=".html,.htm,.png,.jpg,.jpeg,.webp" class="hidden" onchange="handleHtmlFolderUpload(event)">
+                <button onclick="document.getElementById('files-upload').click()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs px-3 py-2 rounded-lg transition font-medium">
+                  Select Files
+                </button>
+              </div>
+              <span id="uploaded-files-status" class="text-xs text-gray-400">0 files loaded</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3">
+          <button onclick="runPathFixer()" class="bg-yellow-500 hover:bg-yellow-400 text-gray-950 text-xs px-4 py-2 rounded-lg font-bold transition">Fix Paths from User JSON</button>
+          <button onclick="downloadRenamedZip()" id="btn-zip" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-2 rounded-lg font-bold transition shadow">Download Renamed Files (.zip)</button>
+        </div>
+      </div>
+
+      <div id="rename-results" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-4">
+          <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+            <h3 class="text-sm font-semibold text-emerald-400">Fixed User JSON Output</h3>
+            <button onclick="copyFixedJSON()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded transition">Copy Fixed JSON</button>
+          </div>
+          <pre id="fixed-json-out" class="bg-gray-950 p-4 rounded-lg text-emerald-400 font-mono text-xs overflow-x-auto border border-gray-800 h-96 code-scroll"></pre>
+        </div>
+
+        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-xl space-y-4">
+          <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+            <h3 class="text-sm font-semibold text-indigo-400">Match & Export Status Log</h3>
+            <button onclick="copyShellScript()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded transition">Copy Log</button>
+          </div>
+          <pre id="shell-script-out" class="bg-gray-950 p-4 rounded-lg text-indigo-300 font-mono text-xs overflow-x-auto border border-gray-800 h-96 code-scroll"></pre>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let batchArray = [];
+    let uploadedFileList = [];
+    let userRawJSONList = [];
+
+    function slugify(text) {
+      return text.toString().toLowerCase().trim()
+        .replace(/[\s\W-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+
+    function updateSinglePaths() {
+      const name = document.getElementById('input-name').value;
+      const autoSlug = document.getElementById('auto-slug').checked;
+      let rawName = document.getElementById('input-raw').value;
+
+      if (autoSlug && name) {
+        rawName = slugify(name);
+        document.getElementById('input-raw').value = rawName;
+      }
+
+      const cat = document.getElementById('input-cat').value;
+      if (rawName && cat) {
+        document.getElementById('input-html').value = `games/html/${cat}/${rawName}.html`;
+        document.getElementById('input-icon').value = `games/icons/${cat}/${rawName}.png`;
+      }
+      renderSinglePreview();
+    }
+
+    function getSingleObject() {
+      const obj = {
+        name: document.getElementById('input-name').value || "Sample Game",
+        "raw-name": document.getElementById('input-raw').value || "sample-game",
+        catagory: document.getElementById('input-cat').value,
+        html: document.getElementById('input-html').value || "games/html/Website/sample-game.html",
+        icon: document.getElementById('input-icon').value || "games/icons/Website/sample-game.png"
+      };
+
+      const fromVal = document.getElementById('input-from').value;
+      const sugVal = document.getElementById('input-suggest').value;
+      if (fromVal) obj.from = fromVal;
+      if (sugVal) obj.suggest = sugVal;
+
+      return obj;
+    }
+
+    function renderSinglePreview() {
+      document.getElementById('single-preview').textContent = JSON.stringify(getSingleObject(), null, 4);
+    }
+
+    function switchTab(tab) {
+      ['single', 'batch', 'rename'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+        document.getElementById(`tab-${t}`).className = "px-4 py-2 rounded-md transition text-gray-400 hover:text-white";
+      });
+      document.getElementById(`view-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).className = "px-4 py-2 rounded-md transition bg-indigo-600 text-white shadow";
+    }
+
+    function handleFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        document.getElementById('import-text').value = evt.target.result;
+        importJSONText();
+      };
+      reader.readAsText(file);
+    }
+
+    function handleHtmlFolderUpload(e) {
+      uploadedFileList = Array.from(e.target.files);
+      document.getElementById('uploaded-files-status').textContent = `${uploadedFileList.length} file(s) loaded`;
+    }
+
+    // Directly process the user's uploaded JSON without overriding categories unless missing
+    function runPathFixer() {
+      const raw = document.getElementById('rename-input').value;
+      if (!raw) return alert("Please paste your JSON first!");
+
+      try {
+        const parsed = JSON.parse(raw);
+        userRawJSONList = Array.isArray(parsed) ? parsed : [parsed];
+        const usedSlugs = new Set();
+        const fixedJSON = [];
+
+        userRawJSONList.forEach(item => {
+          // Keep original category if present, or infer from path
+          let cat = item.catagory;
+          if (!cat && item.html) {
+            const parts = item.html.split('/');
+            if (parts.length >= 3) cat = parts[2];
+          }
+          if (!cat) cat = "Website";
+
+          // Generate or preserve clean raw-name slug
+          let slug = item['raw-name'];
+          if (!slug) {
+            if (item.html) {
+              const filename = item.html.split('/').pop().replace(/\.[^/.]+$/, "");
+              slug = isNaN(filename) ? filename : slugify(item.name || 'game');
+            } else {
+              slug = slugify(item.name || 'game');
+            }
+          }
+
+          let uniqueSlug = slug;
+          let counter = 1;
+          while (usedSlugs.has(uniqueSlug)) {
+            uniqueSlug = `${slug}-${counter++}`;
+          }
+          usedSlugs.add(uniqueSlug);
+
+          let ext = 'png';
+          if (item.icon) {
+            const m = item.icon.match(/\.(png|jpg|jpeg|webp)$/i);
+            if (m) ext = m[1].toLowerCase();
+          }
+
+          const targetHtml = `games/html/${cat}/${uniqueSlug}.html`;
+          const targetIcon = `games/icons/${cat}/${uniqueSlug}.${ext}`;
+
+          // Create explicit copy preserving all user keys
+          const jsonItem = {
+            name: item.name || "",
+            "raw-name": uniqueSlug,
+            catagory: cat,
+            html: targetHtml,
+            icon: targetIcon
+          };
+
+          if (item.from) jsonItem.from = item.from;
+          if (item.suggest) jsonItem.suggest = item.suggest;
+
+          // Attach internal original reference to map uploaded files directly
+          jsonItem._origHtmlFile = item.html ? item.html.split('/').pop() : '';
+          jsonItem._origIconFile = item.icon ? item.icon.split('/').pop() : '';
+
+          fixedJSON.push(jsonItem);
+        });
+
+        const displayJSON = fixedJSON.map(item => {
+          const clone = { ...item };
+          delete clone._origHtmlFile;
+          delete clone._origIconFile;
+          return clone;
+        });
+
+        document.getElementById('fixed-json-out').textContent = JSON.stringify(displayJSON, null, 2);
+        document.getElementById('rename-results').classList.remove('hidden');
+        return fixedJSON;
+      } catch(e) {
+        alert("Invalid user JSON format");
+        return null;
+      }
+    }
+
+    async function downloadRenamedZip() {
+      if (uploadedFileList.length === 0) return alert("Please select files or folder first!");
+      const userFixedList = runPathFixer();
+      if (!userFixedList) return;
+
+      const zip = new JSZip();
+      let logText = "================ MATCHING LOG ================\n";
+      let matchedCount = 0;
+
+      // Clean output version without internal tracking fields
+      const cleanOutputJSON = userFixedList.map(item => {
+        const clone = { ...item };
+        delete clone._origHtmlFile;
+        delete clone._origIconFile;
+        return clone;
+      });
+
+      zip.file("games.json", JSON.stringify(cleanOutputJSON, null, 2));
+
+      uploadedFileList.forEach(file => {
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!['html', 'htm', 'png', 'jpg', 'jpeg', 'webp'].includes(ext)) return;
+
+        const fileBasename = file.name.replace(/\.[^/.]+$/, "").toLowerCase();
+        const fileSlug = slugify(fileBasename);
+        const isHtml = ['html', 'htm'].includes(ext);
+
+        // Strict match against user's uploaded JSON entries
+        const match = userFixedList.find(item => {
+          const origHtmlBase = item._origHtmlFile ? item._origHtmlFile.replace(/\.[^/.]+$/, "").toLowerCase() : '';
+          const origIconBase = item._origIconFile ? item._origIconFile.replace(/\.[^/.]+$/, "").toLowerCase() : '';
+
+          if (isHtml) {
+            return origHtmlBase === fileBasename || item['raw-name'] === fileBasename || slugify(item.name) === fileSlug;
+          } else {
+            return origIconBase === fileBasename || item['raw-name'] === fileBasename || slugify(item.name) === fileSlug;
+          }
+        });
+
+        if (match) {
+          matchedCount++;
+          const targetPath = isHtml ? match.html : match.icon;
+          zip.file(targetPath, file);
+          logText += `[OK] "${file.name}"  -->  "${targetPath}"\n`;
+        } else {
+          logText += `[SKIP] Could not match user file: "${file.name}"\n`;
+        }
+      });
+
+      document.getElementById('shell-script-out').textContent = logText;
+
+      if (matchedCount === 0) {
+        return alert("No uploaded files matched your JSON input! Check the log on the right.");
+      }
+
+      const btn = document.getElementById('btn-zip');
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Zipping...`;
+
+      const content = await zip.generateAsync({ type: "blob" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(content);
+      a.download = "renamed_games_bundle.zip";
+      a.click();
+
+      btn.innerHTML = `Download Renamed Files (.zip)`;
+    }
+
+    function copyFixedJSON() {
+      navigator.clipboard.writeText(document.getElementById('fixed-json-out').textContent);
+      alert("Fixed JSON copied!");
+    }
+
+    function copyShellScript() {
+      navigator.clipboard.writeText(document.getElementById('shell-script-out').textContent);
+      alert("Log copied!");
+    }
+
+    ['input-name', 'input-raw', 'input-cat', 'input-from', 'input-suggest'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateSinglePaths);
+    });
+    document.getElementById('input-cat').addEventListener('change', updateSinglePaths);
+    renderSinglePreview();
+  </script>
+</body>
+</html>
