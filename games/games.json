@@ -1703,7 +1703,7 @@
     "raw-name": "classroommaxxing",
     "catagory": "Apps",
     "html": "games/html/Apps/classroommaxxing.html",
-    "icon": "games/icons/Apps/classroommaxxing.png",
+    "icon": "games/icons/placeholder.png",
     "from": "UGS"
   },
   {
@@ -1727,7 +1727,7 @@
     "raw-name": "nikehub",
     "catagory": "Apps",
     "html": "games/html/Apps/nikehub.html",
-    "icon": "games/icons/Apps/nikehub.png",
+    "icon": "games/icons/placeholder.png",
     "from": "UGS"
   },
   {
@@ -1800,14 +1800,6 @@
     "catagory": "Emulation",
     "html": "games/html/Emulation/famidash-b-sides.html",
     "icon": "games/icons/Emulation/famidash-b-sides.png",
-    "from": "UGS"
-  },
-  {
-    "name": "Famidash B-sides",
-    "raw-name": "famidash-b-sides-1",
-    "catagory": "Emulation",
-    "html": "games/html/Emulation/famidash-b-sides-1.html",
-    "icon": "games/icons/Emulation/famidash-b-sides-1.png",
     "from": "UGS"
   },
   {
@@ -2021,9 +2013,9 @@
   {
     "name": "Metadata",
     "raw-name": "metadata",
-    "catagory": "Tool",
-    "html": "games/html/Tool/metadata.html",
-    "icon": "games/icons/Tool/metadata.png"
+    "catagory": "Tools",
+    "html": "games/html/Tools/metadata.html",
+    "icon": "games/icons/Tools/metadata.png"
   },
   {
     "name": "LSD - Dream Emulator",
@@ -2096,5 +2088,23 @@
     "icon": "games/icons/Website/wrestle-bros.png",
     "from": "UGS",
     "suggest": ""
+  },
+  {
+    "name": "Ragdoll Hit",
+    "raw-name": "ragdoll-hit",
+    "catagory": "Website",
+    "html": "games/html/Website/ragdoll-hit.html",
+    "icon": "games/icons/Website/ragdoll-hit.png",
+    "from": "UGS",
+    "suggest": "Nelynson"
+  },
+    {
+    "name": "House of Hazards",
+    "raw-name": "house-of-hazards",
+    "catagory": "Website",
+    "html": "games/html/Website/house-of-hazards.html",
+    "icon": "games/icons/Website/house-of-hazards.png",
+    "from": "UGS",
+    "suggest": "Gideon"
   }
 ]
