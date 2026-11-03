@@ -2133,5 +2133,12 @@
     "icon": "games/icons/Flash/learn-to-fly-2.png",
     "from": "UGS",
     "suggest": "Raylin/liopel"
+  },
+  {
+    "name": "Storm v6",
+    "raw-name": "storm",
+    "html": "games/html/Apps/storm.html",
+    "icon": "games/icons/placeholder.png",
+    "from": "Unkown"
   }
 ]
