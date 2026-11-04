@@ -2140,5 +2140,11 @@
     "html": "games/html/Apps/storm.html",
     "icon": "games/icons/placeholder.png",
     "from": "Unkown"
+  },
+  {
+    "name": "Best Game Awards",
+    "raw-name": "best-game",
+    "html": "games/html/PINNED/best-game.html",
+    "icon": "games/icons/PINNED/best-game.png"
   }
 ]
