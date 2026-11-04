@@ -2108,11 +2108,11 @@
     "suggest": "Gideon"
   },
   {
-    "name": "Super Liquid Soccar",
-    "raw-name": "super-liquid-soccar",
+    "name": "Super Liquid Soccer",
+    "raw-name": "super-liquid-soccer",
     "catagory": "Website",
-    "html": "games/html/Website/super-liquid-soccar.html",
-    "icon": "games/icons/Website/super-liquid-soccar.png",
+    "html": "games/html/Website/super-liquid-soccer.html",
+    "icon": "games/icons/Website/super-liquid-soccer.png",
     "from": "UGS",
     "suggest": "Emiliano"
   },
