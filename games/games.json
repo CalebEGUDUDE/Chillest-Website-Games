@@ -1603,8 +1603,8 @@
     "name": "Geometry Dash",
     "raw-name": "geometry-dash",
     "catagory": "Ports",
-    "html": "games/html/Ports/geometry-dash.html",
-    "icon": "games/icons/Ports/geometry-dash.png",
+    "html": "games/html/PINNED/geometry-dash.html",
+    "icon": "games/icons/PINNED/geometry-dash.png",
     "from": "Classroommaxxing"
   },
   {
@@ -2140,11 +2140,5 @@
     "html": "games/html/Apps/storm.html",
     "icon": "games/icons/placeholder.png",
     "from": "Unkown"
-  },
-  {
-    "name": "Best Game Awards",
-    "raw-name": "best-game",
-    "html": "games/html/PINNED/best-game.html",
-    "icon": "games/icons/PINNED/best-game.png"
   }
 ]
