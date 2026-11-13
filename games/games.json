@@ -2140,5 +2140,26 @@
     "html": "games/html/Apps/storm.html",
     "icon": "games/icons/placeholder.png",
     "from": "Unkown"
+  },
+  {
+    "name": "Parry Road",
+    "raw-name": "parry-road",
+    "html": "games/html/Slop/parry-road.html",
+    "icon": "games/icons/Slop/parry-road.png",
+    "from": "ai"
+  },
+  {
+    "name": "Chroma Extermination",
+    "raw-name": "chroma-extermination",
+    "html": "games/html/Slop/chroma-extermination.html",
+    "icon": "games/icons/Slop/chroma-extermination.png",
+    "from": "ai"
+  },
+  {
+    "name": "Nextbot Chase",
+    "raw-name": "nextbot-chase",
+    "html": "games/html/Slop/nextbot_chase_pac_man_arena.html",
+    "icon": "games/icons/placeholder.png",
+    "from": "ai"
   }
 ]
