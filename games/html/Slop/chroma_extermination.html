@@ -1,0 +1,3031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chroma Extermination — Every Hex Color</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #080c17;
+            font-family: 'Inter', sans-serif;
+            color: #f8fafc;
+        }
+        .font-display {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23000000' stroke-width='3.5'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3Cline x1='16' y1='1' x2='16' y2='8' stroke='%23000000' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='1' x2='16' y2='8' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='31' stroke='%23000000' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='31' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='1' y1='16' x2='8' y2='16' stroke='%23000000' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='1' y1='16' x2='8' y2='16' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Cline x1='24' y1='16' x2='31' y2='16' stroke='%23000000' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='24' y1='16' x2='31' y2='16' stroke='%23ffffff' stroke-width='2' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23ffffff' stroke='%23000000' stroke-width='1'/%3E%3C/svg%3E") 16 16, crosshair;
+            touch-action: none;
+        }
+        .glass-panel {
+            background: rgba(12, 18, 34, 0.86);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+        .upgrade-card {
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .upgrade-card:hover {
+            transform: translateY(-6px) scale(1.015);
+        }
+        .rainbow-text {
+            background: linear-gradient(90deg, #ff3b5c, #ff9f1c, #ffe600, #2ec4b6, #3a86ff, #c77dff, #ff3b5c);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: hueShift 5s linear infinite;
+        }
+        @keyframes hueShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 9999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="relative w-screen h-screen overflow-hidden select-none">
+
+    <!-- Main Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Top HUD Overlay -->
+    <div id="hudContainer" class="fixed top-0 left-0 right-0 z-20 pointer-events-none p-3 sm:p-4 flex flex-col gap-2">
+        <div class="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-between gap-2">
+            <!-- Left: Health & Combat Stats -->
+            <div class="glass-panel rounded-2xl px-3.5 py-2 flex items-center gap-3 sm:gap-4 pointer-events-auto shadow-lg">
+                <div class="flex flex-col min-w-[125px] sm:min-w-[165px]">
+                    <div class="flex items-center justify-between text-xs font-bold tracking-wider uppercase mb-1">
+                        <span class="text-rose-400 flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+                            Hull
+                        </span>
+                        <span id="hpText" class="text-slate-200 font-mono-code">100 / 100</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800/90 rounded-full overflow-hidden p-0.5 border border-slate-700/70">
+                        <div id="hpBar" class="h-full bg-gradient-to-r from-rose-500 via-pink-500 to-emerald-400 rounded-full transition-all duration-150" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="h-7 w-px bg-slate-700/70"></div>
+
+                <div class="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm font-semibold">
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400">ATK</span>
+                        <span id="statAtk" class="text-amber-300 font-mono-code font-bold">10</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400">SPD</span>
+                        <span id="statSpd" class="text-sky-300 font-mono-code font-bold">320</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400">SHOTS</span>
+                        <span id="statMultishot" class="text-purple-300 font-mono-code font-bold">1</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400">DASH</span>
+                        <span id="statDash" class="text-emerald-300 font-mono-code font-bold">READY</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Wave & Hex Spectrum Counter -->
+            <div class="glass-panel rounded-2xl px-4 py-2 flex flex-col items-center justify-center pointer-events-auto shadow-lg min-w-[230px] sm:min-w-[300px]">
+                <div class="flex items-center gap-2.5">
+                    <span id="waveBadge" class="font-display text-xs sm:text-sm font-extrabold tracking-widest uppercase text-indigo-300">WAVE 1</span>
+                    <span class="text-slate-600">•</span>
+                    <span id="waveRemainingText" class="text-xs font-semibold text-slate-300">10 Hexes Left</span>
+                </div>
+                <div class="w-full mt-1.5 flex items-center gap-2">
+                    <div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700/70">
+                        <div id="spectrumProgressBar" class="h-full rounded-full transition-all duration-300" style="width: 0%; background: linear-gradient(90deg, #ff0055, #ff9900, #ffee00, #00ff88, #00bbff, #aa55ff);"></div>
+                    </div>
+                    <span id="totalColorsText" class="text-[11px] font-mono-code font-bold text-slate-200 whitespace-nowrap">0 / 16,777,216</span>
+                </div>
+            </div>
+
+            <!-- Right: Utility Buttons -->
+            <div class="flex items-center gap-2 pointer-events-auto">
+                <button id="btnAutoFire" class="glass-panel hover:bg-slate-800/90 active:scale-95 transition rounded-xl px-3 py-2 text-xs font-bold tracking-wide text-slate-200 border border-slate-700/80 flex items-center gap-1.5 shadow-lg" title="Toggle Auto-Fire (E)">
+                    <span id="autoFireDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                    <span>AUTO: OFF</span>
+                </button>
+                <button id="btnOpenDex" class="glass-panel hover:bg-slate-800/90 active:scale-95 transition rounded-xl px-3 py-2 text-xs font-bold tracking-wide text-amber-300 border border-amber-500/30 flex items-center gap-1.5 shadow-lg" title="Inspect Hex Spectrum Dex (Tab)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/></svg>
+                    <span>Hex Dex</span>
+                </button>
+                <button id="btnOpenHelpHud" class="glass-panel hover:bg-slate-800/90 active:scale-95 transition rounded-xl px-3 py-2 text-xs font-bold tracking-wide text-sky-300 border border-sky-500/30 flex items-center gap-1.5 shadow-lg" title="Field Guide & Intel (H)">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Guide</span>
+                </button>
+                <button id="btnSoundToggle" class="glass-panel hover:bg-slate-800/90 active:scale-95 transition rounded-xl p-2 text-slate-200 border border-slate-700/80 shadow-lg" title="Toggle Sound">
+                    <svg id="iconSoundOn" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    <svg id="iconSoundOff" class="w-4 h-4 text-rose-400 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Active Upgrade Badges Strip -->
+        <div id="activeUpgradesBar" class="max-w-7xl mx-auto w-full flex flex-wrap items-center justify-center gap-1.5 pointer-events-none"></div>
+    </div>
+
+    <!-- Mobile Dual Joystick Overlay (Touch Devices) -->
+    <div id="mobileControls" class="fixed inset-0 z-10 pointer-events-none md:hidden">
+        <div id="touchMoveZone" class="absolute bottom-6 left-6 w-32 h-32 rounded-full bg-slate-900/50 border border-slate-600/40 pointer-events-auto flex items-center justify-center">
+            <div id="touchMoveStick" class="w-12 h-12 rounded-full bg-indigo-400/50 border border-indigo-200/70"></div>
+        </div>
+        <button id="btnMobileDash" class="absolute bottom-8 right-8 w-20 h-20 rounded-full bg-emerald-500/30 border-2 border-emerald-400/70 text-emerald-200 font-display text-xs font-bold tracking-wider pointer-events-auto active:scale-90">
+            DASH
+        </button>
+    </div>
+
+    <!-- Start Screen Overlay -->
+    <div id="startOverlay" class="fixed inset-0 z-30 flex items-center justify-center p-3 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+        <div class="glass-panel rounded-3xl max-w-3xl w-full p-5 sm:p-7 text-center shadow-2xl border border-slate-700/70 my-auto">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 text-xs font-mono-code font-bold tracking-wider uppercase mb-2">
+                <span class="w-2 h-2 rounded-full bg-pink-400 animate-ping"></span>
+                <span>#000000 → #FFFFFF</span>
+            </div>
+            <h1 class="font-display text-3xl sm:text-5xl font-black tracking-tight mb-2 rainbow-text">
+                CHROMA EXTERMINATION
+            </h1>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed mb-4">
+                Every enemy is a unique hexadecimal color (<span class="font-mono-code text-pink-400">#FF00FF</span>, <span class="font-mono-code text-cyan-400">#00FFFF</span>, <span class="font-mono-code text-amber-300">#FFD700</span>…).
+                Eradicate <strong class="text-white">10 unique hexes per wave</strong>, draft upgrades, and wipe out the entire RGB spectrum.
+            </p>
+
+            <!-- Ship Class Selector -->
+            <div class="mb-4 text-left">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Select Ship Chassis</span>
+                    <span id="selectedClassTag" class="font-mono-code text-[11px] text-indigo-300 font-bold">VANGUARD • BALANCED</span>
+                </div>
+                <div id="classSelectorGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <button type="button" data-class="vanguard" class="class-btn rounded-xl p-2.5 bg-indigo-500/20 border-2 border-indigo-400 text-left transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base">🛡️</span>
+                            <span class="font-mono-code text-[10px] text-indigo-300 font-bold">BALANCED</span>
+                        </div>
+                        <div class="font-display text-xs font-bold text-white">Vanguard</div>
+                        <div class="text-[10px] text-slate-300 mt-0.5 leading-tight">100 HP • 10 ATK • Magnet Core</div>
+                    </button>
+
+                    <button type="button" data-class="glass_cannon" class="class-btn rounded-xl p-2.5 bg-slate-900/85 border border-slate-700/80 text-left transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base">💥</span>
+                            <span class="font-mono-code text-[10px] text-rose-400 font-bold">LETHAL</span>
+                        </div>
+                        <div class="font-display text-xs font-bold text-rose-300">Glass Cannon</div>
+                        <div class="text-[10px] text-slate-300 mt-0.5 leading-tight">45 HP • 24 ATK • +25% Crit</div>
+                    </button>
+
+                    <button type="button" data-class="juggernaut" class="class-btn rounded-xl p-2.5 bg-slate-900/85 border border-slate-700/80 text-left transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base">🔥</span>
+                            <span class="font-mono-code text-[10px] text-amber-400 font-bold">TANK</span>
+                        </div>
+                        <div class="font-display text-xs font-bold text-amber-300">Juggernaut</div>
+                        <div class="text-[10px] text-slate-300 mt-0.5 leading-tight">200 HP • 25% Armor • Fire Ring</div>
+                    </button>
+
+                    <button type="button" data-class="swarm_weaver" class="class-btn rounded-xl p-2.5 bg-slate-900/85 border border-slate-700/80 text-left transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base">🔱</span>
+                            <span class="font-mono-code text-[10px] text-cyan-400 font-bold">SEEKER</span>
+                        </div>
+                        <div class="font-display text-xs font-bold text-cyan-300">Swarm Weaver</div>
+                        <div class="text-[10px] text-slate-300 mt-0.5 leading-tight">85 HP • 2 Shots • Gentle Homing</div>
+                    </button>
+
+                    <button type="button" data-class="arc_striker" class="class-btn col-span-2 sm:col-span-1 rounded-xl p-2.5 bg-slate-900/85 border border-slate-700/80 text-left transition hover:bg-slate-800/80">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base">⚡</span>
+                            <span class="font-mono-code text-[10px] text-yellow-300 font-bold">TESLA</span>
+                        </div>
+                        <div class="font-display text-xs font-bold text-yellow-300">Arc Striker</div>
+                        <div class="text-[10px] text-slate-300 mt-0.5 leading-tight">80 HP • 390 SPD • Tesla & Chain</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Spectrum Bit-Depth Selector -->
+            <div class="mb-4 text-left">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Select Hex Spectrum Size</span>
+                    <span class="font-mono-code text-[11px] text-cyan-400">10 Hexes / Wave</span>
+                </div>
+                <div id="bitModeGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <button type="button" data-bits="24" class="bit-mode-btn rounded-xl p-2.5 bg-indigo-500/20 border-2 border-indigo-400 text-left transition">
+                        <div class="font-mono-code text-xs font-extrabold text-white">24-BIT TRUE</div>
+                        <div class="font-mono-code text-[11px] text-indigo-300">16,777,216</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">Every hex ever</div>
+                    </button>
+                    <button type="button" data-bits="12" class="bit-mode-btn rounded-xl p-2.5 bg-slate-900/80 border border-slate-700/80 hover:border-slate-500 text-left transition">
+                        <div class="font-mono-code text-xs font-extrabold text-slate-200">12-BIT WEB</div>
+                        <div class="font-mono-code text-[11px] text-cyan-300">4,096 Hexes</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">410 waves</div>
+                    </button>
+                    <button type="button" data-bits="9" class="bit-mode-btn rounded-xl p-2.5 bg-slate-900/80 border border-slate-700/80 hover:border-slate-500 text-left transition">
+                        <div class="font-mono-code text-xs font-extrabold text-slate-200">9-BIT ARCADE</div>
+                        <div class="font-mono-code text-[11px] text-emerald-300">512 Hexes</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">52 waves</div>
+                    </button>
+                    <button type="button" data-bits="6" class="bit-mode-btn rounded-xl p-2.5 bg-slate-900/80 border border-slate-700/80 hover:border-slate-500 text-left transition">
+                        <div class="font-mono-code text-xs font-extrabold text-slate-200">6-BIT BLITZ</div>
+                        <div class="font-mono-code text-[11px] text-amber-300">64 Hexes</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">7 waves (Fast Win)</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Difficulty Slider -->
+            <div class="mb-4 text-left bg-slate-900/75 rounded-2xl p-3 border border-slate-800">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Threat Difficulty</span>
+                    <span id="difficultyLabelBadge" class="font-mono-code text-xs font-extrabold text-emerald-300">STANDARD (1.0x)</span>
+                </div>
+                <input id="difficultySlider" type="range" min="0.6" max="2.0" step="0.1" value="1.0"
+                    class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-400">
+                <div class="flex justify-between text-[10px] font-mono-code text-slate-500 mt-1">
+                    <span>0.6x Chill</span>
+                    <span>1.0x Standard</span>
+                    <span>1.5x Veteran</span>
+                    <span>2.0x Nightmare</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-left mb-4 text-xs">
+                <div class="bg-slate-900/75 rounded-xl p-2.5 border border-slate-800">
+                    <div class="font-bold text-indigo-300 mb-0.5">MOVE & AIM</div>
+                    <div class="text-slate-400"><span class="text-slate-200 font-semibold">WASD</span> + <span class="text-slate-200 font-semibold">Mouse</span></div>
+                </div>
+                <div class="bg-slate-900/75 rounded-xl p-2.5 border border-slate-800">
+                    <div class="font-bold text-emerald-300 mb-0.5">PHASE DASH</div>
+                    <div class="text-slate-400"><span class="text-slate-200 font-semibold">Spacebar</span> (i-Frames)</div>
+                </div>
+                <div class="bg-slate-900/75 rounded-xl p-2.5 border border-slate-800">
+                    <div class="font-bold text-amber-300 mb-0.5">HEX DEX & HELP</div>
+                    <div class="text-slate-400"><span class="text-slate-200 font-semibold">Tab</span> Dex • <span class="text-slate-200 font-semibold">H</span> Guide</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button id="btnStartGame" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-display font-extrabold text-sm sm:text-base tracking-wider uppercase bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-xl shadow-indigo-500/25 active:scale-95 transition">
+                    Launch Extermination
+                </button>
+                <button id="btnOpenHelpStart" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl font-display font-bold text-xs sm:text-sm tracking-wider uppercase bg-slate-800/90 hover:bg-slate-700/90 text-sky-300 border border-sky-500/40 active:scale-95 transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>Field Guide & Intel</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Between-Wave Upgrade Card Selection Overlay -->
+    <div id="upgradeOverlay" class="fixed inset-0 z-30 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
+        <div class="max-w-5xl w-full flex flex-col items-center">
+            <div class="text-center mb-5">
+                <div id="waveClearBadge" class="inline-block px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-mono-code font-bold tracking-widest uppercase mb-2">
+                    WAVE 1 CLEARED
+                </div>
+                <h2 class="font-display text-2xl sm:text-4xl font-black text-white tracking-tight">
+                    CHOOSE CHROMA AUGMENTATION
+                </h2>
+                <div class="flex items-center justify-center gap-3 mt-1.5">
+                    <p class="text-slate-400 text-xs sm:text-sm">Select a module to prepare for the next 10 hexes</p>
+                    <button id="btnRerollCards" class="px-3 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-300 text-xs font-mono-code font-bold transition flex items-center gap-1.5">
+                        <span>🎲 Reroll</span>
+                        <span id="rerollCountBadge" class="px-1.5 py-0.2 bg-amber-400/20 rounded">2 Left</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"></div>
+        </div>
+    </div>
+
+    <!-- Hex Spectrum Dex Modal -->
+    <div id="colorDexOverlay" class="fixed inset-0 z-40 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+        <div class="glass-panel rounded-3xl max-w-5xl w-full max-h-[88vh] flex flex-col p-5 sm:p-6 border border-slate-700/80 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+                <div>
+                    <h3 class="font-display text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+                        <span>HEX SPECTRUM DEX</span>
+                        <span id="dexCountBadge" class="text-xs font-mono-code font-bold px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">0 / 16,777,216</span>
+                    </h3>
+                    <p id="dexSubtitle" class="text-xs text-slate-400 mt-0.5">Live registry of every hexadecimal color eradicated during this run</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input id="dexSearchInput" type="text" placeholder="Search #HEX..." class="bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono-code text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 w-32 sm:w-40">
+                    <select id="dexSortSelect" class="bg-slate-900/90 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-200 focus:outline-none focus:border-indigo-400">
+                        <option value="recent">Newest Killed</option>
+                        <option value="hue">Sort by Hue</option>
+                        <option value="hex">Sort by #HEX</option>
+                    </select>
+                    <button id="btnCloseDex" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-600 transition">
+                        Close
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live RGB Spectrum Coverage Bar -->
+            <div class="mt-3 mb-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                    <span>Spectrum Hue Coverage Map (0° – 360°)</span>
+                    <span id="dexPercentBadge" class="font-mono-code text-emerald-300 font-bold">0.00000%</span>
+                </div>
+                <canvas id="spectrumMapCanvas" width="800" height="36" class="w-full h-9 rounded-xl border border-slate-700/80 bg-slate-900"></canvas>
+            </div>
+
+            <div id="dexGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2.5 overflow-y-auto custom-scroll pt-2 pr-1"></div>
+        </div>
+    </div>
+
+    <!-- Field Guide & Intel (Help) Modal -->
+    <div id="helpOverlay" class="fixed inset-0 z-40 hidden items-center justify-center p-3 sm:p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="glass-panel rounded-3xl max-w-5xl w-full max-h-[88vh] flex flex-col p-5 sm:p-6 border border-slate-700/80 shadow-2xl">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+                <div>
+                    <h3 class="font-display text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
+                        <span class="text-sky-400">◈</span>
+                        <span>CHROMA FIELD GUIDE & TACTICAL INTEL</span>
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Complete breakdown of modules, enemy archetypes, hex bosses, and ship chassis</p>
+                </div>
+                <button id="btnCloseHelp" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 border border-slate-600 transition">
+                    Close [H]
+                </button>
+            </div>
+
+            <!-- Help Navigation Tabs -->
+            <div class="flex flex-wrap gap-2 mt-3 pb-3 border-b border-slate-800/80">
+                <button type="button" data-helptab="abilities" class="help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-500/25 border border-indigo-400 text-white transition">
+                    ⚡ Abilities & Modules
+                </button>
+                <button type="button" data-helptab="enemies" class="help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900/80 border border-slate-700 text-slate-300 hover:border-slate-500 transition">
+                    👾 Enemy Archetypes
+                </button>
+                <button type="button" data-helptab="bosses" class="help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900/80 border border-slate-700 text-slate-300 hover:border-slate-500 transition">
+                    👑 Hex Bosses
+                </button>
+                <button type="button" data-helptab="classes" class="help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900/80 border border-slate-700 text-slate-300 hover:border-slate-500 transition">
+                    🚀 Classes & Scaling
+                </button>
+            </div>
+
+            <!-- Help Content Scroll Area -->
+            <div id="helpContentArea" class="overflow-y-auto custom-scroll pt-4 pr-1 space-y-3 text-left"></div>
+        </div>
+    </div>
+
+    <!-- Victory / Game Over Modal -->
+    <div id="endOverlay" class="fixed inset-0 z-40 hidden items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
+        <div class="glass-panel rounded-3xl max-w-lg w-full p-6 sm:p-8 text-center border border-slate-700/80 shadow-2xl">
+            <div id="endBadge" class="inline-block px-3.5 py-1 rounded-full text-xs font-display font-bold tracking-widest uppercase mb-3 bg-rose-500/20 text-rose-300 border border-rose-400/30">
+                HULL BREACHED
+            </div>
+            <h2 id="endTitle" class="font-display text-3xl sm:text-4xl font-black text-white mb-2">
+                SPECTRUM SURVIVED
+            </h2>
+            <p id="endSubtitle" class="text-slate-300 text-sm mb-6">
+                The hex spectrum overwhelmed your hull, but your discoveries remain logged.
+            </p>
+
+            <div class="grid grid-cols-3 gap-2.5 mb-6">
+                <div class="bg-slate-900/80 rounded-2xl p-3 border border-slate-800">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400">Wave</div>
+                    <div id="endWave" class="font-display text-xl font-extrabold text-indigo-300 mt-0.5">1</div>
+                </div>
+                <div class="bg-slate-900/80 rounded-2xl p-3 border border-slate-800">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400">Hexes Slain</div>
+                    <div id="endKilled" class="font-mono-code text-base sm:text-lg font-extrabold text-emerald-300 mt-0.5">0</div>
+                </div>
+                <div class="bg-slate-900/80 rounded-2xl p-3 border border-slate-800">
+                    <div class="text-[11px] uppercase tracking-wider text-slate-400">Upgrades</div>
+                    <div id="endUpgrades" class="font-display text-xl font-extrabold text-amber-300 mt-0.5">0</div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button id="btnRestartGame" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl font-display font-extrabold text-sm tracking-wider uppercase bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-indigo-400 hover:to-pink-400 text-white shadow-xl shadow-indigo-500/25 active:scale-95 transition">
+                    Play Again
+                </button>
+                <button id="btnMainMenu" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl font-display font-bold text-sm tracking-wider uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 active:scale-95 transition">
+                    Main Menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. TRUE HEXADECIMAL COLOR SPECTRUM ENGINE (#000000 - #FFFFFF)
+        // =========================================================================
+        const COLORS_PER_WAVE = 10;
+
+        const BIT_MODES = {
+            24: {
+                bits: 24,
+                totalColors: 16777216,
+                label: '24-Bit True Hex',
+                generateUnique(usedSet) {
+                    let id;
+                    do {
+                        id = Math.floor(Math.random() * 16777216);
+                    } while (usedSet.has(id));
+                    usedSet.add(id);
+                    const r = (id >> 16) & 255;
+                    const g = (id >> 8) & 255;
+                    const b = id & 255;
+                    return buildColorRecord(id, r, g, b);
+                }
+            },
+            12: {
+                bits: 12,
+                totalColors: 4096,
+                label: '12-Bit Web Hex',
+                generateUnique(usedSet) {
+                    let idx;
+                    do {
+                        idx = Math.floor(Math.random() * 4096);
+                    } while (usedSet.has(idx));
+                    usedSet.add(idx);
+                    const r = ((idx >> 8) & 0xF) * 17;
+                    const g = ((idx >> 4) & 0xF) * 17;
+                    const b = (idx & 0xF) * 17;
+                    return buildColorRecord(idx, r, g, b);
+                }
+            },
+            9: {
+                bits: 9,
+                totalColors: 512,
+                label: '9-Bit Arcade Hex',
+                generateUnique(usedSet) {
+                    const steps = [0, 36, 73, 109, 146, 182, 219, 255];
+                    let idx;
+                    do {
+                        idx = Math.floor(Math.random() * 512);
+                    } while (usedSet.has(idx));
+                    usedSet.add(idx);
+                    const r = steps[(idx >> 6) & 7];
+                    const g = steps[(idx >> 3) & 7];
+                    const b = steps[idx & 7];
+                    return buildColorRecord(idx, r, g, b);
+                }
+            },
+            6: {
+                bits: 6,
+                totalColors: 64,
+                label: '6-Bit Blitz Hex',
+                generateUnique(usedSet) {
+                    const steps = [0, 85, 170, 255];
+                    let idx;
+                    do {
+                        idx = Math.floor(Math.random() * 64);
+                    } while (usedSet.has(idx));
+                    usedSet.add(idx);
+                    const r = steps[(idx >> 4) & 3];
+                    const g = steps[(idx >> 2) & 3];
+                    const b = steps[idx & 3];
+                    return buildColorRecord(idx, r, g, b);
+                }
+            }
+        };
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h = 0, s = 0;
+            const l = (max + min) / 2;
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        function buildColorRecord(id, r, g, b) {
+            const hex = '#' +
+                r.toString(16).padStart(2, '0') +
+                g.toString(16).padStart(2, '0') +
+                b.toString(16).padStart(2, '0');
+            const hexUpper = hex.toUpperCase();
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+            const hsl = rgbToHsl(r, g, b);
+            return {
+                id,
+                hex: hexUpper,
+                r, g, b,
+                hsl,
+                isDark: luminance < 75,
+                textColor: luminance > 155 ? '#0f172a' : '#f8fafc'
+            };
+        }
+
+        // =========================================================================
+        // 2. WEB AUDIO SYNTHESIZER (NO EXTERNAL SOUND URLS)
+        // =========================================================================
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = true;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playShoot(pitchMult = 1) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(520 * pitchMult, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.085);
+            }
+
+            playHit(isCrit = false) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = isCrit ? 'sawtooth' : 'sine';
+                osc.frequency.setValueAtTime(isCrit ? 460 : 260, now);
+                osc.frequency.exponentialRampToValueAtTime(90, now + 0.05);
+                gain.gain.setValueAtTime(isCrit ? 0.08 : 0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.055);
+            }
+
+            playKill(isBoss = false) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = isBoss ? 'sawtooth' : 'square';
+                osc.frequency.setValueAtTime(isBoss ? 180 : 320, now);
+                osc.frequency.exponentialRampToValueAtTime(isBoss ? 520 : 680, now + (isBoss ? 0.35 : 0.14));
+                gain.gain.setValueAtTime(isBoss ? 0.14 : 0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + (isBoss ? 0.36 : 0.15));
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + (isBoss ? 0.37 : 0.16));
+            }
+
+            playDash() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(190, now);
+                osc.frequency.exponentialRampToValueAtTime(620, now + 0.12);
+                gain.gain.setValueAtTime(0.09, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.14);
+            }
+
+            playUpgrade() {
+                if (!this.enabled || !this.ctx) return;
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, idx) => {
+                    const now = this.ctx.currentTime + idx * 0.055;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.19);
+                });
+            }
+
+            playHurt() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(65, now + 0.18);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+        }
+
+        const sfx = new SoundEngine();
+
+        // =========================================================================
+        // 3. STARTING SHIP CLASSES
+        // =========================================================================
+        const SHIP_CLASSES = {
+            vanguard: {
+                id: 'vanguard',
+                name: 'Vanguard',
+                tag: 'VANGUARD • BALANCED',
+                hp: 100,
+                damage: 10,
+                speed: 320,
+                armor: 0,
+                fireRate: 0.21,
+                primaryColor: '#38bdf8',
+                accentColor: '#818cf8',
+                applyPassive(p) {
+                    p.magnetRadius = 185;
+                }
+            },
+            glass_cannon: {
+                id: 'glass_cannon',
+                name: 'Glass Cannon',
+                tag: 'GLASS CANNON • 45 HP / 24 ATK',
+                hp: 45,
+                damage: 24,
+                speed: 352,
+                armor: 0,
+                fireRate: 0.19,
+                primaryColor: '#fb7185',
+                accentColor: '#fda4af',
+                applyPassive(p) {
+                    p.critChance = 0.25;
+                    p.bulletSpeedMult = 1.25;
+                    p.bulletSizeMult = 1.15;
+                }
+            },
+            juggernaut: {
+                id: 'juggernaut',
+                name: 'Juggernaut',
+                tag: 'JUGGERNAUT • 200 HP / FIRE RING',
+                hp: 200,
+                damage: 12,
+                speed: 275,
+                armor: 0.25,
+                fireRate: 0.24,
+                primaryColor: '#f59e0b',
+                accentColor: '#fcd34d',
+                applyPassive(p) {
+                    p.fireRingCount = 2;
+                    p.bulletSizeMult = 1.35;
+                    p.upgrades['fire_ring'] = 1;
+                    p.upgrades['big_bullets'] = 1;
+                }
+            },
+            swarm_weaver: {
+                id: 'swarm_weaver',
+                name: 'Swarm Weaver',
+                tag: 'SWARM WEAVER • TWIN SEEKERS',
+                hp: 85,
+                damage: 9,
+                speed: 335,
+                armor: 0,
+                fireRate: 0.21,
+                primaryColor: '#22d3ee',
+                accentColor: '#67e8f9',
+                applyPassive(p) {
+                    p.multishot = 2;
+                    p.homingStrength = 1.35;
+                    p.homingRadius = 210;
+                    p.upgrades['multishot'] = 1;
+                    p.upgrades['homing'] = 1;
+                }
+            },
+            arc_striker: {
+                id: 'arc_striker',
+                name: 'Arc Striker',
+                tag: 'ARC STRIKER • TESLA & DASH EMP',
+                hp: 80,
+                damage: 10,
+                speed: 390,
+                armor: 0,
+                fireRate: 0.20,
+                primaryColor: '#facc15',
+                accentColor: '#fef08a',
+                applyPassive(p) {
+                    p.teslaLevel = 1;
+                    p.chainLightning = 1;
+                    p.dashEmpLevel = 1;
+                    p.dashCooldown *= 0.78;
+                    p.upgrades['tesla_aura'] = 1;
+                    p.upgrades['chain_lightning'] = 1;
+                    p.upgrades['dash_overdrive'] = 1;
+                }
+            }
+        };
+
+        // =========================================================================
+        // 4. ROGUELIKE UPGRADE CARDS POOL
+        // =========================================================================
+        const UPGRADE_POOL = [
+            {
+                id: 'atk_plus_2',
+                name: 'Chroma Caliber (+2 ATK)',
+                rarity: 'Common',
+                rarityColor: 'text-slate-300 border-slate-500/40 bg-slate-500/10',
+                icon: '⚔️',
+                desc: 'Increases base projectile damage by +2 and slightly boosts bullet velocity.',
+                apply(p) {
+                    p.damage += 2;
+                    p.bulletSpeedMult += 0.05;
+                }
+            },
+            {
+                id: 'atk_plus_5',
+                name: 'Prism Overcharge (+5 ATK)',
+                rarity: 'Rare',
+                rarityColor: 'text-sky-300 border-sky-400/40 bg-sky-500/15',
+                icon: '💎',
+                desc: 'Infuses rounds with concentrated spectrum energy, granting +5 ATK.',
+                apply(p) {
+                    p.damage += 5;
+                }
+            },
+            {
+                id: 'atk_plus_8',
+                name: 'Gamma Annihilator (+8 ATK)',
+                rarity: 'Epic',
+                rarityColor: 'text-purple-300 border-purple-400/40 bg-purple-500/15',
+                icon: '☢️',
+                desc: 'Massive +8 ATK boost that obliterates high-HP hexes.',
+                apply(p) {
+                    p.damage += 8;
+                }
+            },
+            {
+                id: 'homing',
+                name: 'Seeker Rounds (Homing)',
+                rarity: 'Rare',
+                rarityColor: 'text-cyan-300 border-cyan-400/40 bg-cyan-500/15',
+                icon: '🎯',
+                desc: 'Bullets gently curve toward nearby hexes. Stacks tighten turn rate & range.',
+                apply(p) {
+                    p.homingStrength = p.homingStrength === 0 ? 1.45 : p.homingStrength + 1.25;
+                    p.homingRadius = Math.max(220, p.homingRadius + 60);
+                }
+            },
+            {
+                id: 'fast_bullets',
+                name: 'Hyper Velocity (+35% Bullet Spd)',
+                rarity: 'Common',
+                rarityColor: 'text-sky-200 border-sky-400/40 bg-sky-500/10',
+                icon: '💨',
+                desc: 'Increases projectile speed by +35% with high-velocity tracer streaks and +2 ATK.',
+                apply(p) {
+                    p.bulletSpeedMult += 0.35;
+                    p.damage += 2;
+                }
+            },
+            {
+                id: 'big_bullets',
+                name: 'Titan Shells (+35% Bullet Size)',
+                rarity: 'Rare',
+                rarityColor: 'text-amber-300 border-amber-400/40 bg-amber-500/15',
+                icon: '☄️',
+                desc: 'Enlarges projectile radius by +35%, boosts knockback, and adds +4 ATK.',
+                apply(p) {
+                    p.bulletSizeMult += 0.35;
+                    p.damage += 4;
+                }
+            },
+            {
+                id: 'crit_shatter',
+                name: 'Spectrum Shatter (+15% Crit)',
+                rarity: 'Rare',
+                rarityColor: 'text-yellow-300 border-yellow-400/40 bg-yellow-500/15',
+                icon: '💥',
+                desc: 'Grants +15% Critical Strike chance for 2.2x golden burst damage.',
+                apply(p) {
+                    p.critChance = Math.min(0.95, p.critChance + 0.15);
+                }
+            },
+            {
+                id: 'fire_ring',
+                name: 'Solar Fire Ring',
+                rarity: 'Epic',
+                rarityColor: 'text-orange-300 border-orange-400/50 bg-orange-500/15',
+                icon: '🔥',
+                desc: 'Summons orbiting solar fireballs around your ship that scorch nearby hexes. Stacks add more orbs & radius.',
+                apply(p) {
+                    p.fireRingCount += 2;
+                    p.fireRingRadius = Math.min(165, p.fireRingRadius + 10);
+                }
+            },
+            {
+                id: 'multishot',
+                name: 'Split Barrel (+1 Shot)',
+                rarity: 'Epic',
+                rarityColor: 'text-fuchsia-300 border-fuchsia-400/50 bg-fuchsia-500/15',
+                icon: '🔱',
+                desc: 'Fires an additional projectile in a tight spread fan with every trigger pull.',
+                apply(p) {
+                    p.multishot += 1;
+                }
+            },
+            {
+                id: 'rear_cannon',
+                name: 'Tail Gunner (+1 Rear Shot)',
+                rarity: 'Common',
+                rarityColor: 'text-indigo-200 border-indigo-400/40 bg-indigo-500/10',
+                icon: '🔙',
+                desc: 'Fires +1 backward shot every time you shoot to clear flanking hexes.',
+                apply(p) {
+                    p.rearCannon += 1;
+                }
+            },
+            {
+                id: 'fire_rate',
+                name: 'Rapid Trigger (+22% Fire Rate)',
+                rarity: 'Common',
+                rarityColor: 'text-amber-300 border-amber-400/40 bg-amber-500/10',
+                icon: '⚡',
+                desc: 'Reduces weapon cooldown by 22% for sustained bullet streams.',
+                apply(p) {
+                    p.fireRate *= 0.78;
+                }
+            },
+            {
+                id: 'chain_lightning',
+                name: 'Arc Lightning',
+                rarity: 'Epic',
+                rarityColor: 'text-cyan-300 border-cyan-400/50 bg-cyan-500/15',
+                icon: '🌩️',
+                desc: 'Hits arc high-voltage lightning to nearby hexes. Stacks increase bounces & arc damage.',
+                apply(p) {
+                    p.chainLightning += 1;
+                }
+            },
+            {
+                id: 'tesla_aura',
+                name: 'Static Field (Tesla Aura)',
+                rarity: 'Rare',
+                rarityColor: 'text-yellow-300 border-yellow-400/40 bg-yellow-500/15',
+                icon: '🔋',
+                desc: 'Projects a static shock ring around your hull that periodically zaps nearby hexes.',
+                apply(p) {
+                    p.teslaLevel += 1;
+                }
+            },
+            {
+                id: 'death_nova',
+                name: 'Chroma Nova (Death Burst)',
+                rarity: 'Epic',
+                rarityColor: 'text-pink-300 border-pink-400/50 bg-pink-500/15',
+                icon: '🎆',
+                desc: 'Slain hexes detonate into radial mini-bolts that tear into nearby enemies.',
+                apply(p) {
+                    p.deathNovaLevel += 1;
+                }
+            },
+            {
+                id: 'explosive_rounds',
+                name: 'Hex Detonator',
+                rarity: 'Epic',
+                rarityColor: 'text-rose-300 border-rose-400/50 bg-rose-500/15',
+                icon: '💣',
+                desc: 'Bullets detonate on impact, dealing splash damage to nearby hexes.',
+                apply(p) {
+                    p.explosiveRadius = p.explosiveRadius === 0 ? 68 : p.explosiveRadius + 24;
+                }
+            },
+            {
+                id: 'piercing',
+                name: 'Spectral Pierce (+1 Pierce)',
+                rarity: 'Rare',
+                rarityColor: 'text-emerald-300 border-emerald-400/40 bg-emerald-500/15',
+                icon: '🏹',
+                desc: 'Projectiles slice straight through +1 additional hex enemy.',
+                apply(p) {
+                    p.pierce += 1;
+                }
+            },
+            {
+                id: 'ricochet',
+                name: 'Prism Ricochet (+1 Bounce)',
+                rarity: 'Rare',
+                rarityColor: 'text-indigo-300 border-indigo-400/40 bg-indigo-500/15',
+                icon: '🎱',
+                desc: 'Bullets bounce off arena edges +1 extra time.',
+                apply(p) {
+                    p.ricochet += 1;
+                }
+            },
+            {
+                id: 'frost_aura',
+                name: 'Cryo Nova Aura',
+                rarity: 'Rare',
+                rarityColor: 'text-blue-300 border-blue-400/40 bg-blue-500/15',
+                icon: '❄️',
+                desc: 'Projects a chilling field around you that slows enemies by 40% and deals frost ticks.',
+                apply(p) {
+                    p.slowAuraRadius = p.slowAuraRadius === 0 ? 135 : p.slowAuraRadius + 35;
+                }
+            },
+            {
+                id: 'orbital_drone',
+                name: 'Laser Sentinel Drone',
+                rarity: 'Epic',
+                rarityColor: 'text-teal-300 border-teal-400/50 bg-teal-500/15',
+                icon: '🛰️',
+                desc: 'Deploys an autonomous orbiting turret that auto-targets nearby hexes.',
+                apply(p) {
+                    p.drones += 1;
+                }
+            },
+            {
+                id: 'dash_overdrive',
+                name: 'Phase Overdrive (Dash EMP)',
+                rarity: 'Rare',
+                rarityColor: 'text-emerald-300 border-emerald-400/40 bg-emerald-500/15',
+                icon: '🌀',
+                desc: 'Cuts Dash cooldown by 25% and unleashes a knockback EMP shockwave after dashing.',
+                apply(p) {
+                    p.dashCooldown *= 0.75;
+                    p.dashEmpLevel += 1;
+                }
+            },
+            {
+                id: 'vampirism',
+                name: 'Chroma Leech (+Heal)',
+                rarity: 'Rare',
+                rarityColor: 'text-rose-300 border-rose-400/40 bg-rose-500/15',
+                icon: '🩸',
+                desc: 'Each eradicated hex restores +2 HP and boosts Max HP by +15.',
+                apply(p) {
+                    p.lifesteal += 2;
+                    p.maxHp += 15;
+                    p.hp = Math.min(p.maxHp, p.hp + 15);
+                }
+            },
+            {
+                id: 'hull_plating',
+                name: 'Titanium Hull (+35 Max HP)',
+                rarity: 'Common',
+                rarityColor: 'text-emerald-200 border-emerald-400/40 bg-emerald-500/10',
+                icon: '🛡️',
+                desc: 'Reinforces hull integrity by +35 Max HP, repairs 40 HP, and adds +8% speed.',
+                apply(p) {
+                    p.maxHp += 35;
+                    p.hp = Math.min(p.maxHp, p.hp + 40);
+                    p.speed = Math.round(p.speed * 1.08);
+                }
+            },
+            {
+                id: 'extra_card_choice',
+                name: 'Expanded Matrix (+1 Choice)',
+                rarity: 'Rare',
+                rarityColor: 'text-violet-300 border-violet-400/50 bg-violet-500/15',
+                icon: '🃏',
+                desc: 'Adds +1 module card option to every future wave draft (up to 5 choices).',
+                maxStacks: 2,
+                apply(p) {
+                    p.bonusCardChoices = Math.min(2, p.bonusCardChoices + 1);
+                }
+            },
+            {
+                id: 'extra_rerolls',
+                name: 'Quantum Reroll (+2 Rerolls)',
+                rarity: 'Rare',
+                rarityColor: 'text-amber-300 border-amber-400/50 bg-amber-500/15',
+                icon: '🎲',
+                desc: 'Grants +2 immediate module rerolls plus +1 bonus reroll every 3 waves.',
+                apply(p) {
+                    gameState.rerollsLeft += 2;
+                    p.bonusRerollRate += 1;
+                }
+            }
+        ];
+
+        // =========================================================================
+        // 5. CANVAS, INPUT & GAME STATE
+        // =========================================================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Offscreen persistent paint-splatter layer
+        const paintCanvas = document.createElement('canvas');
+        paintCanvas.width = Math.max(800, window.innerWidth || 800);
+        paintCanvas.height = Math.max(600, window.innerHeight || 600);
+        const paintCtx = paintCanvas.getContext('2d');
+
+        let width = window.innerWidth || 800;
+        let height = window.innerHeight || 600;
+        canvas.width = width;
+        canvas.height = height;
+
+        function resizeCanvas() {
+            const newW = Math.max(320, window.innerWidth || 800);
+            const newH = Math.max(240, window.innerHeight || 600);
+            const temp = document.createElement('canvas');
+            temp.width = Math.max(1, paintCanvas.width);
+            temp.height = Math.max(1, paintCanvas.height);
+            temp.getContext('2d').drawImage(paintCanvas, 0, 0);
+
+            width = canvas.width = paintCanvas.width = newW;
+            height = canvas.height = paintCanvas.height = newH;
+
+            paintCtx.fillStyle = '#080c17';
+            paintCtx.fillRect(0, 0, width, height);
+            paintCtx.drawImage(temp, 0, 0);
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        const input = {
+            keys: {},
+            mouseX: width / 2,
+            mouseY: height / 2,
+            mouseDown: false,
+            autoFire: false,
+            touchMoveX: 0,
+            touchMoveY: 0,
+            touchActive: false
+        };
+
+        const gameState = {
+            status: 'START', // START | PLAYING | UPGRADE | DEX | HELP | GAMEOVER | VICTORY
+            previousStatus: 'START',
+            selectedBits: 24,
+            selectedClass: 'vanguard',
+            difficultyMult: 1.0,
+            wave: 1,
+            rerollsLeft: 2,
+            usedColorIds: new Set(),
+            killedColors: [],
+            player: null,
+            bullets: [],
+            enemyBullets: [],
+            enemies: [],
+            particles: [],
+            floatingTexts: [],
+            killBanners: [],
+            screenShake: 0,
+            lastTime: 0
+        };
+
+        // =========================================================================
+        // 6. START SCREEN SELECTORS & HELP / DEX CONTROLS
+        // =========================================================================
+        document.querySelectorAll('.class-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const clsKey = btn.dataset.class;
+                if (!SHIP_CLASSES[clsKey]) return;
+                gameState.selectedClass = clsKey;
+                document.getElementById('selectedClassTag').textContent = SHIP_CLASSES[clsKey].tag;
+                document.querySelectorAll('.class-btn').forEach(b => {
+                    const active = b.dataset.class === clsKey;
+                    b.className = active
+                        ? 'class-btn rounded-xl p-2.5 bg-indigo-500/20 border-2 border-indigo-400 text-left transition hover:bg-slate-800/80'
+                        : 'class-btn rounded-xl p-2.5 bg-slate-900/85 border border-slate-700/80 text-left transition hover:bg-slate-800/80';
+                });
+            });
+        });
+
+        document.querySelectorAll('.bit-mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const bits = parseInt(btn.dataset.bits, 10);
+                if (!BIT_MODES[bits]) return;
+                gameState.selectedBits = bits;
+                document.querySelectorAll('.bit-mode-btn').forEach(b => {
+                    const active = parseInt(b.dataset.bits, 10) === bits;
+                    b.className = active
+                        ? 'bit-mode-btn rounded-xl p-2.5 bg-indigo-500/20 border-2 border-indigo-400 text-left transition'
+                        : 'bit-mode-btn rounded-xl p-2.5 bg-slate-900/80 border border-slate-700/80 hover:border-slate-500 text-left transition';
+                });
+                updateHUD();
+            });
+        });
+
+        // Keyboard & Mouse Listeners
+        window.addEventListener('keydown', (e) => {
+            input.keys[e.code] = true;
+            if (e.code === 'Space' && gameState.status === 'PLAYING') {
+                e.preventDefault();
+                triggerDash();
+            }
+            if (e.code === 'KeyE' && gameState.status === 'PLAYING') {
+                toggleAutoFire();
+            }
+            if (e.code === 'Tab') {
+                e.preventDefault();
+                if (gameState.status === 'DEX') {
+                    closeDex();
+                } else if (gameState.status === 'PLAYING' || gameState.status === 'UPGRADE') {
+                    openDex();
+                }
+            }
+            if (e.code === 'KeyH') {
+                if (gameState.status === 'HELP') {
+                    closeHelp();
+                } else if (['START', 'PLAYING', 'UPGRADE'].includes(gameState.status)) {
+                    openHelp();
+                }
+            }
+            if (e.code === 'Escape') {
+                if (gameState.status === 'DEX') closeDex();
+                if (gameState.status === 'HELP') closeHelp();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            input.keys[e.code] = false;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            input.mouseX = e.clientX - rect.left;
+            input.mouseY = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 0) {
+                sfx.init();
+                input.mouseDown = true;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            input.mouseDown = false;
+        });
+
+        // Mobile Touch Controls
+        const touchMoveZone = document.getElementById('touchMoveZone');
+        const touchMoveStick = document.getElementById('touchMoveStick');
+        touchMoveZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            sfx.init();
+            input.touchActive = true;
+            handleTouchMove(e.touches[0]);
+        }, { passive: false });
+
+        touchMoveZone.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handleTouchMove(e.touches[0]);
+        }, { passive: false });
+
+        touchMoveZone.addEventListener('touchend', () => {
+            input.touchActive = false;
+            input.touchMoveX = 0;
+            input.touchMoveY = 0;
+            touchMoveStick.style.transform = 'translate(0px, 0px)';
+        });
+
+        function handleTouchMove(touch) {
+            const rect = touchMoveZone.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dx = touch.clientX - cx;
+            const dy = touch.clientY - cy;
+            const maxR = 40;
+            const dist = Math.hypot(dx, dy);
+            const clamped = Math.min(dist, maxR);
+            const angle = Math.atan2(dy, dx);
+            input.touchMoveX = dist > 6 ? (Math.cos(angle) * clamped) / maxR : 0;
+            input.touchMoveY = dist > 6 ? (Math.sin(angle) * clamped) / maxR : 0;
+            touchMoveStick.style.transform = `translate(${Math.cos(angle) * clamped}px, ${Math.sin(angle) * clamped}px)`;
+        }
+
+        document.getElementById('btnMobileDash').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (gameState.status === 'PLAYING') triggerDash();
+        }, { passive: false });
+
+        function toggleAutoFire() {
+            input.autoFire = !input.autoFire;
+            const btn = document.getElementById('btnAutoFire');
+            const dot = document.getElementById('autoFireDot');
+            btn.querySelector('span:last-child').textContent = input.autoFire ? 'AUTO: ON' : 'AUTO: OFF';
+            dot.className = input.autoFire ? 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse' : 'w-2 h-2 rounded-full bg-slate-500';
+        }
+
+        document.getElementById('btnAutoFire').addEventListener('click', toggleAutoFire);
+        document.getElementById('btnSoundToggle').addEventListener('click', () => {
+            sfx.enabled = !sfx.enabled;
+            document.getElementById('iconSoundOn').classList.toggle('hidden', !sfx.enabled);
+            document.getElementById('iconSoundOff').classList.toggle('hidden', sfx.enabled);
+        });
+
+        // =========================================================================
+        // 7. CORE PLAYER, WAVE SPAWNING & COMBAT LOGIC
+        // =========================================================================
+        function resetGame() {
+            gameState.wave = 1;
+            gameState.rerollsLeft = 2;
+            gameState.usedColorIds.clear();
+            gameState.killedColors = [];
+            gameState.bullets = [];
+            gameState.enemyBullets = [];
+            gameState.enemies = [];
+            gameState.particles = [];
+            gameState.floatingTexts = [];
+            gameState.killBanners = [];
+            gameState.screenShake = 0;
+
+            paintCtx.fillStyle = '#080c17';
+            paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+
+            const cls = SHIP_CLASSES[gameState.selectedClass] || SHIP_CLASSES.vanguard;
+            const p = {
+                x: width / 2,
+                y: height / 2,
+                radius: 17,
+                speed: cls.speed,
+                hp: cls.hp,
+                maxHp: cls.hp,
+                damage: cls.damage,
+                armor: cls.armor,
+                primaryColor: cls.primaryColor,
+                accentColor: cls.accentColor,
+                fireRate: cls.fireRate,
+                fireTimer: 0,
+                multishot: 1,
+                spreadAngle: 0.14,
+                pierce: 0,
+                ricochet: 0,
+                bulletSpeedMult: 1.0,
+                bulletSizeMult: 1.0,
+                homingStrength: 0,
+                homingRadius: 0,
+                critChance: 0,
+                critMult: 2.2,
+                fireRingCount: 0,
+                fireRingRadius: 72,
+                fireRingAngle: 0,
+                chainLightning: 0,
+                explosiveRadius: 0,
+                slowAuraRadius: 0,
+                teslaLevel: 0,
+                teslaTimer: 0,
+                deathNovaLevel: 0,
+                rearCannon: 0,
+                drones: 0,
+                droneAngle: 0,
+                droneFireTimer: 0,
+                lifesteal: 0,
+                magnetRadius: 120,
+                dashCooldown: 2.2,
+                dashTimer: 0,
+                dashActiveTimer: 0,
+                dashEmpLevel: 0,
+                dashDirX: 0,
+                dashDirY: 0,
+                invulnTimer: 0,
+                bonusCardChoices: 0,
+                bonusRerollRate: 0,
+                upgrades: {}
+            };
+
+            if (cls.applyPassive) {
+                cls.applyPassive(p);
+            }
+
+            gameState.player = p;
+            gameState.status = 'PLAYING';
+            updateHUD();
+            spawnWave(1);
+        }
+
+        function spawnWave(wave) {
+            const mode = BIT_MODES[gameState.selectedBits] || BIT_MODES[24];
+            const remainingSpectrum = mode.totalColors - gameState.usedColorIds.size;
+            if (remainingSpectrum <= 0) {
+                endGame(true);
+                return;
+            }
+
+            const count = Math.min(COLORS_PER_WAVE, remainingSpectrum);
+            const isBossWave = wave % 5 === 0;
+            const diff = gameState.difficultyMult || 1.0;
+
+            // Gentle opening waves 1-2, then exponential scaling multiplied by Threat Difficulty
+            const expSteps = Math.max(0, wave - 2);
+            const hpScale = (wave === 1 ? 0.75 : wave === 2 ? 0.95 : Math.pow(1.18, expSteps)) * diff;
+            const speedScale = (wave === 1 ? 0.85 : Math.min(2.4, Math.pow(1.045, expSteps))) * (0.85 + diff * 0.15);
+            const damageScale = (wave === 1 ? 0.8 : Math.pow(1.10, expSteps)) * diff;
+
+            for (let i = 0; i < count; i++) {
+                const colorRec = mode.generateUnique(gameState.usedColorIds);
+                const isBoss = isBossWave && i === count - 1;
+
+                // Spawn around arena edges away from player
+                let sx, sy;
+                const edge = Math.floor(Math.random() * 4);
+                const pad = 42;
+                if (edge === 0) { sx = Math.random() * width; sy = pad; }
+                else if (edge === 1) { sx = width - pad; sy = Math.random() * height; }
+                else if (edge === 2) { sx = Math.random() * width; sy = height - pad; }
+                else { sx = pad; sy = Math.random() * height; }
+
+                // Progressive archetype unlocks
+                let archetype = 'chaser';
+                if (isBoss) {
+                    const bossCycle = (wave / 5) % 4;
+                    if (bossCycle === 1) archetype = 'star_boss';
+                    else if (bossCycle === 2) archetype = 'cube_boss';
+                    else if (bossCycle === 3) archetype = 'void_boss';
+                    else archetype = 'cross_boss';
+                } else if (wave === 1) {
+                    archetype = 'chaser';
+                } else if (wave === 2) {
+                    archetype = Math.random() < 0.30 ? 'dasher' : 'chaser';
+                } else if (wave === 3) {
+                    const r = Math.random();
+                    if (r < 0.22) archetype = 'tank';
+                    else if (r < 0.42) archetype = 'orbiter';
+                    else if (r < 0.62) archetype = 'dasher';
+                    else archetype = 'chaser';
+                } else {
+                    const r = Math.random();
+                    if (r < 0.14) archetype = 'star';
+                    else if (r < 0.28) archetype = 'orbiter';
+                    else if (r < 0.42) archetype = 'splitter';
+                    else if (r < 0.58) archetype = 'tank';
+                    else if (r < 0.76) archetype = 'dasher';
+                    else archetype = 'chaser';
+                }
+
+                const baseHpMap = {
+                    chaser: 20,
+                    dasher: 16,
+                    tank: 46,
+                    orbiter: 24,
+                    star: 30,
+                    splitter: 28,
+                    star_boss: 260,
+                    cube_boss: 290,
+                    void_boss: 320,
+                    cross_boss: 300
+                };
+
+                const baseSpeedMap = {
+                    chaser: 95,
+                    dasher: 145,
+                    tank: 62,
+                    orbiter: 125,
+                    star: 78,
+                    splitter: 88,
+                    star_boss: 68,
+                    cube_boss: 215,
+                    void_boss: 74,
+                    cross_boss: 72
+                };
+
+                const radiusMap = {
+                    chaser: 19,
+                    dasher: 17,
+                    tank: 25,
+                    orbiter: 18,
+                    star: 22,
+                    splitter: 21,
+                    star_boss: 44,
+                    cube_boss: 42,
+                    void_boss: 46,
+                    cross_boss: 44
+                };
+
+                const maxHp = Math.max(10, Math.round((baseHpMap[archetype] || 20) * hpScale));
+                const moveSpeed = (baseSpeedMap[archetype] || 95) * speedScale;
+                const diagAngle = (Math.floor(Math.random() * 4) * Math.PI / 2) + Math.PI / 4;
+
+                gameState.enemies.push({
+                    color: colorRec,
+                    archetype,
+                    isBoss,
+                    isMiniSplit: false,
+                    x: sx,
+                    y: sy,
+                    vx: archetype === 'cube_boss' ? Math.cos(diagAngle) * moveSpeed : 0,
+                    vy: archetype === 'cube_boss' ? Math.sin(diagAngle) * moveSpeed : 0,
+                    radius: radiusMap[archetype] || 19,
+                    hp: maxHp,
+                    maxHp,
+                    speed: moveSpeed,
+                    damage: Math.max(5, Math.round((isBoss ? 18 : 9) * damageScale)),
+                    angle: Math.random() * Math.PI * 2,
+                    spinAngle: Math.random() * Math.PI * 2,
+                    fireTimer: 1.0 + Math.random() * 1.4,
+                    dashTimer: 1.8 + Math.random() * 1.2,
+                    dashBurst: 0,
+                    hitFlash: 0,
+                    orbitDir: Math.random() < 0.5 ? 1 : -1
+                });
+            }
+
+            updateHUD();
+        }
+
+        function triggerDash() {
+            const p = gameState.player;
+            if (!p || p.dashTimer > 0 || p.dashActiveTimer > 0) return;
+            let dx = 0, dy = 0;
+            if (input.keys['KeyW'] || input.keys['ArrowUp']) dy -= 1;
+            if (input.keys['KeyS'] || input.keys['ArrowDown']) dy += 1;
+            if (input.keys['KeyA'] || input.keys['ArrowLeft']) dx -= 1;
+            if (input.keys['KeyD'] || input.keys['ArrowRight']) dx += 1;
+            if (input.touchActive) {
+                dx += input.touchMoveX;
+                dy += input.touchMoveY;
+            }
+            if (dx === 0 && dy === 0) {
+                const aimAngle = Math.atan2(input.mouseY - p.y, input.mouseX - p.x);
+                dx = Math.cos(aimAngle);
+                dy = Math.sin(aimAngle);
+            } else {
+                const len = Math.hypot(dx, dy);
+                dx /= len;
+                dy /= len;
+            }
+
+            p.dashDirX = dx;
+            p.dashDirY = dy;
+            p.dashActiveTimer = 0.16;
+            p.dashTimer = p.dashCooldown;
+            p.invulnTimer = Math.max(p.invulnTimer, 0.28);
+            sfx.playDash();
+
+            for (let i = 0; i < 14; i++) {
+                gameState.particles.push({
+                    x: p.x,
+                    y: p.y,
+                    vx: (Math.random() - 0.5) * 220 - dx * 120,
+                    vy: (Math.random() - 0.5) * 220 - dy * 120,
+                    radius: 3 + Math.random() * 3,
+                    color: p.accentColor,
+                    life: 0.35,
+                    maxLife: 0.35
+                });
+            }
+        }
+
+        function triggerDashEmpBurst(p) {
+            const empRadius = 115 + p.dashEmpLevel * 25;
+            const empDmg = p.damage * (0.9 + p.dashEmpLevel * 0.45);
+            spawnExplosion(p.x, p.y, empRadius, p.accentColor);
+            for (const enemy of gameState.enemies) {
+                const dist = Math.hypot(enemy.x - p.x, enemy.y - p.y);
+                if (dist <= empRadius + enemy.radius) {
+                    const pushAng = Math.atan2(enemy.y - p.y, enemy.x - p.x);
+                    enemy.x += Math.cos(pushAng) * 34;
+                    enemy.y += Math.sin(pushAng) * 34;
+                    damageEnemy(enemy, empDmg, false);
+                }
+            }
+        }
+
+        function firePlayerWeapons() {
+            const p = gameState.player;
+            if (!p) return;
+            const baseAngle = Math.atan2(input.mouseY - p.y, input.mouseX - p.x);
+            const count = p.multishot;
+            const speed = 640 * p.bulletSpeedMult;
+            const radius = 5.5 * p.bulletSizeMult;
+
+            for (let i = 0; i < count; i++) {
+                const offset = count === 1 ? 0 : (i - (count - 1) / 2) * p.spreadAngle;
+                const ang = baseAngle + offset;
+                gameState.bullets.push({
+                    x: p.x + Math.cos(ang) * (p.radius + 6),
+                    y: p.y + Math.sin(ang) * (p.radius + 6),
+                    vx: Math.cos(ang) * speed,
+                    vy: Math.sin(ang) * speed,
+                    radius,
+                    damage: p.damage,
+                    pierceLeft: p.pierce,
+                    bouncesLeft: p.ricochet,
+                    hitSet: new Set(),
+                    life: 2.2,
+                    color: p.primaryColor,
+                    isHoming: p.homingStrength > 0,
+                    isFast: p.bulletSpeedMult > 1.25
+                });
+            }
+
+            // Rear Guard Cannon
+            for (let r = 0; r < p.rearCannon; r++) {
+                const rearOffset = p.rearCannon === 1 ? 0 : (r - (p.rearCannon - 1) / 2) * 0.16;
+                const rearAng = baseAngle + Math.PI + rearOffset;
+                gameState.bullets.push({
+                    x: p.x + Math.cos(rearAng) * (p.radius + 4),
+                    y: p.y + Math.sin(rearAng) * (p.radius + 4),
+                    vx: Math.cos(rearAng) * speed * 0.92,
+                    vy: Math.sin(rearAng) * speed * 0.92,
+                    radius: radius * 0.9,
+                    damage: Math.max(4, Math.round(p.damage * 0.85)),
+                    pierceLeft: p.pierce,
+                    bouncesLeft: p.ricochet,
+                    hitSet: new Set(),
+                    life: 1.8,
+                    color: '#a78bfa',
+                    isHoming: p.homingStrength > 0,
+                    isFast: p.bulletSpeedMult > 1.25
+                });
+            }
+
+            sfx.playShoot(0.95 + Math.random() * 0.15);
+        }
+
+        function damageEnemy(enemy, rawDamage, allowChain = true) {
+            if (!enemy || enemy.hp <= 0) return;
+            const p = gameState.player;
+            const isCrit = p && p.critChance > 0 && Math.random() < p.critChance;
+            const finalDmg = Math.max(1, Math.round(rawDamage * (isCrit ? p.critMult : 1)));
+
+            enemy.hp -= finalDmg;
+            enemy.hitFlash = 0.08;
+            sfx.playHit(isCrit);
+
+            addFloatingText(
+                enemy.x + (Math.random() - 0.5) * 14,
+                enemy.y - enemy.radius - 4,
+                isCrit ? `${finalDmg}!` : `${finalDmg}`,
+                isCrit ? '#fde047' : '#ffffff',
+                isCrit ? 15 : 12,
+                0.55
+            );
+
+            // Chain Lightning
+            if (allowChain && p && p.chainLightning > 0) {
+                let currentSrc = enemy;
+                const visited = new Set([enemy]);
+                const bounces = p.chainLightning;
+                const arcDmg = Math.max(3, Math.round(finalDmg * 0.55));
+                for (let b = 0; b < bounces; b++) {
+                    let closest = null;
+                    let closestDist = 175;
+                    for (const candidate of gameState.enemies) {
+                        if (visited.has(candidate) || candidate.hp <= 0) continue;
+                        const d = Math.hypot(candidate.x - currentSrc.x, candidate.y - currentSrc.y);
+                        if (d < closestDist) {
+                            closestDist = d;
+                            closest = candidate;
+                        }
+                    }
+                    if (!closest) break;
+                    visited.add(closest);
+                    gameState.particles.push({
+                        type: 'lightning',
+                        x1: currentSrc.x,
+                        y1: currentSrc.y,
+                        x2: closest.x,
+                        y2: closest.y,
+                        color: '#38bdf8',
+                        life: 0.14,
+                        maxLife: 0.14
+                    });
+                    closest.hp -= arcDmg;
+                    closest.hitFlash = 0.08;
+                    addFloatingText(closest.x, closest.y - closest.radius, `${arcDmg}`, '#7dd3fc', 11, 0.45);
+                    if (closest.hp <= 0) {
+                        handleEnemyKilled(closest);
+                    }
+                    currentSrc = closest;
+                }
+            }
+
+            if (enemy.hp <= 0) {
+                handleEnemyKilled(enemy);
+            }
+        }
+
+        function handleEnemyKilled(enemy) {
+            if (enemy._dead) return;
+            enemy._dead = true;
+            const p = gameState.player;
+
+            splatPaintOnFloor(enemy.x, enemy.y, enemy.color.hex, enemy.isBoss ? 54 : 26);
+
+            // Particle burst
+            const burstCount = enemy.isBoss ? 38 : 16;
+            for (let i = 0; i < burstCount; i++) {
+                const ang = Math.random() * Math.PI * 2;
+                const spd = 70 + Math.random() * (enemy.isBoss ? 280 : 180);
+                gameState.particles.push({
+                    x: enemy.x,
+                    y: enemy.y,
+                    vx: Math.cos(ang) * spd,
+                    vy: Math.sin(ang) * spd,
+                    radius: 3 + Math.random() * (enemy.isBoss ? 5 : 3.5),
+                    color: enemy.color.hex,
+                    life: 0.45 + Math.random() * 0.25,
+                    maxLife: 0.7
+                });
+            }
+
+            // Splitter Heptagon spawns 2 fast mini-shards (do not count as new hex IDs)
+            if (enemy.archetype === 'splitter' && !enemy.isMiniSplit) {
+                for (let s = 0; s < 2; s++) {
+                    const offsetAng = (s === 0 ? -0.7 : 0.7) + Math.random() * 0.3;
+                    gameState.enemies.push({
+                        color: enemy.color,
+                        archetype: 'chaser',
+                        isBoss: false,
+                        isMiniSplit: true,
+                        x: enemy.x + Math.cos(offsetAng) * 14,
+                        y: enemy.y + Math.sin(offsetAng) * 14,
+                        vx: 0,
+                        vy: 0,
+                        radius: 12,
+                        hp: Math.max(6, Math.round(enemy.maxHp * 0.35)),
+                        maxHp: Math.max(6, Math.round(enemy.maxHp * 0.35)),
+                        speed: enemy.speed * 1.45,
+                        damage: Math.max(4, Math.round(enemy.damage * 0.65)),
+                        angle: offsetAng,
+                        spinAngle: 0,
+                        fireTimer: 2.0,
+                        dashTimer: 2.0,
+                        dashBurst: 0,
+                        hitFlash: 0,
+                        orbitDir: 1
+                    });
+                }
+            }
+
+            // Chroma Nova (Death Burst)
+            if (p && p.deathNovaLevel > 0) {
+                const bolts = 4 + p.deathNovaLevel * 2;
+                for (let b = 0; b < bolts; b++) {
+                    const ang = (b / bolts) * Math.PI * 2;
+                    gameState.bullets.push({
+                        x: enemy.x,
+                        y: enemy.y,
+                        vx: Math.cos(ang) * 520,
+                        vy: Math.sin(ang) * 520,
+                        radius: 4.5,
+                        damage: Math.max(5, Math.round(p.damage * 0.75)),
+                        pierceLeft: 0,
+                        bouncesLeft: 0,
+                        hitSet: new Set(),
+                        life: 0.65,
+                        color: enemy.color.hex,
+                        isHoming: false,
+                        isFast: true
+                    });
+                }
+            }
+
+            if (!enemy.isMiniSplit) {
+                gameState.killedColors.push(enemy.color);
+                addKillFeedBanner(enemy.color);
+                if (p && p.lifesteal > 0 && p.hp < p.maxHp) {
+                    p.hp = Math.min(p.maxHp, p.hp + p.lifesteal);
+                }
+            }
+
+            gameState.screenShake = Math.min(14, gameState.screenShake + (enemy.isBoss ? 10 : 3));
+            sfx.playKill(enemy.isBoss);
+            updateHUD();
+        }
+
+        function spawnExplosion(x, y, radius, color) {
+            gameState.particles.push({
+                type: 'ring',
+                x,
+                y,
+                radius: 8,
+                maxRadius: radius,
+                color,
+                life: 0.25,
+                maxLife: 0.25
+            });
+        }
+
+        function splatPaintOnFloor(x, y, hexColor, size) {
+            paintCtx.save();
+            paintCtx.globalAlpha = 0.24;
+            paintCtx.fillStyle = hexColor;
+            paintCtx.beginPath();
+            paintCtx.arc(x, y, size, 0, Math.PI * 2);
+            paintCtx.fill();
+            for (let i = 0; i < 5; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const d = size * (0.5 + Math.random() * 0.8);
+                paintCtx.beginPath();
+                paintCtx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, size * (0.18 + Math.random() * 0.25), 0, Math.PI * 2);
+                paintCtx.fill();
+            }
+            paintCtx.restore();
+        }
+
+        function addFloatingText(x, y, text, color, size = 13, life = 0.6) {
+            gameState.floatingTexts.push({ x, y, text, color, size, life, maxLife: life });
+        }
+
+        function addKillFeedBanner(colorRec) {
+            gameState.killBanners.unshift({ color: colorRec, life: 2.2 });
+            if (gameState.killBanners.length > 4) gameState.killBanners.pop();
+        }
+
+        // =========================================================================
+        // 8. MAIN SIMULATION UPDATE LOOP
+        // =========================================================================
+        function update(dt) {
+            if (gameState.status !== 'PLAYING') return;
+            const p = gameState.player;
+            if (!p) return;
+
+            if (gameState.screenShake > 0) {
+                gameState.screenShake = Math.max(0, gameState.screenShake - dt * 32);
+            }
+
+            // Player Timers
+            if (p.fireTimer > 0) p.fireTimer -= dt;
+            if (p.dashTimer > 0) p.dashTimer = Math.max(0, p.dashTimer - dt);
+            if (p.invulnTimer > 0) p.invulnTimer = Math.max(0, p.invulnTimer - dt);
+
+            // Player Movement
+            if (p.dashActiveTimer > 0) {
+                p.dashActiveTimer -= dt;
+                const dashSpeed = p.speed * 3.1;
+                p.x += p.dashDirX * dashSpeed * dt;
+                p.y += p.dashDirY * dashSpeed * dt;
+                if (p.dashActiveTimer <= 0 && p.dashEmpLevel > 0) {
+                    triggerDashEmpBurst(p);
+                }
+            } else {
+                let mx = 0, my = 0;
+                if (input.keys['KeyW'] || input.keys['ArrowUp']) my -= 1;
+                if (input.keys['KeyS'] || input.keys['ArrowDown']) my += 1;
+                if (input.keys['KeyA'] || input.keys['ArrowLeft']) mx -= 1;
+                if (input.keys['KeyD'] || input.keys['ArrowRight']) mx += 1;
+                if (input.touchActive) {
+                    mx += input.touchMoveX;
+                    my += input.touchMoveY;
+                }
+                if (mx !== 0 || my !== 0) {
+                    const len = Math.hypot(mx, my);
+                    mx /= len;
+                    my /= len;
+                    p.x += mx * p.speed * dt;
+                    p.y += my * p.speed * dt;
+                }
+            }
+
+            p.x = Math.max(p.radius + 8, Math.min(width - p.radius - 8, p.x));
+            p.y = Math.max(p.radius + 8, Math.min(height - p.radius - 8, p.y));
+
+            // Player Shooting
+            if ((input.mouseDown || input.autoFire) && p.fireTimer <= 0) {
+                firePlayerWeapons();
+                p.fireTimer = p.fireRate;
+            }
+
+            // Orbiting Solar Fire Ring
+            if (p.fireRingCount > 0) {
+                p.fireRingAngle += dt * 3.2;
+                const orbDmg = Math.max(4, Math.round(p.damage * 0.65));
+                for (let i = 0; i < p.fireRingCount; i++) {
+                    const ang = p.fireRingAngle + (i / p.fireRingCount) * Math.PI * 2;
+                    const ox = p.x + Math.cos(ang) * p.fireRingRadius;
+                    const oy = p.y + Math.sin(ang) * p.fireRingRadius;
+                    for (const enemy of gameState.enemies) {
+                        if (enemy.hp <= 0) continue;
+                        if (Math.hypot(enemy.x - ox, enemy.y - oy) < enemy.radius + 12) {
+                            if (!enemy._fireTick || enemy._fireTick <= 0) {
+                                enemy._fireTick = 0.28;
+                                damageEnemy(enemy, orbDmg, false);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Static Field (Tesla Aura)
+            if (p.teslaLevel > 0) {
+                p.teslaTimer -= dt;
+                if (p.teslaTimer <= 0) {
+                    p.teslaTimer = Math.max(0.45, 1.15 - p.teslaLevel * 0.12);
+                    const teslaRange = 145 + p.teslaLevel * 20;
+                    const maxTargets = 2 + p.teslaLevel;
+                    let zapped = 0;
+                    for (const enemy of gameState.enemies) {
+                        if (enemy.hp <= 0) continue;
+                        if (Math.hypot(enemy.x - p.x, enemy.y - p.y) <= teslaRange + enemy.radius) {
+                            gameState.particles.push({
+                                type: 'lightning',
+                                x1: p.x,
+                                y1: p.y,
+                                x2: enemy.x,
+                                y2: enemy.y,
+                                color: '#facc15',
+                                life: 0.16,
+                                maxLife: 0.16
+                            });
+                            damageEnemy(enemy, Math.max(4, Math.round(p.damage * 0.6)), false);
+                            zapped++;
+                            if (zapped >= maxTargets) break;
+                        }
+                    }
+                }
+            }
+
+            // Laser Sentinel Drones
+            if (p.drones > 0) {
+                p.droneAngle += dt * 2.1;
+                p.droneFireTimer -= dt;
+                if (p.droneFireTimer <= 0 && gameState.enemies.length > 0) {
+                    p.droneFireTimer = 0.55;
+                    for (let d = 0; d < p.drones; d++) {
+                        const ang = p.droneAngle + (d / p.drones) * Math.PI * 2;
+                        const dx = p.x + Math.cos(ang) * 44;
+                        const dy = p.y + Math.sin(ang) * 44;
+                        let target = null;
+                        let bestDist = 420;
+                        for (const enemy of gameState.enemies) {
+                            if (enemy.hp <= 0) continue;
+                            const dist = Math.hypot(enemy.x - dx, enemy.y - dy);
+                            if (dist < bestDist) {
+                                bestDist = dist;
+                                target = enemy;
+                            }
+                        }
+                        if (target) {
+                            const shootAng = Math.atan2(target.y - dy, target.x - dx);
+                            gameState.bullets.push({
+                                x: dx,
+                                y: dy,
+                                vx: Math.cos(shootAng) * 620,
+                                vy: Math.sin(shootAng) * 620,
+                                radius: 4,
+                                damage: Math.max(4, Math.round(p.damage * 0.65)),
+                                pierceLeft: 0,
+                                bouncesLeft: 0,
+                                hitSet: new Set(),
+                                life: 1.2,
+                                color: '#2dd4bf',
+                                isHoming: false,
+                                isFast: true
+                            });
+                        }
+                    }
+                }
+            }
+
+            // Player Bullets
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const b = gameState.bullets[i];
+                b.life -= dt;
+                if (b.life <= 0) {
+                    gameState.bullets.splice(i, 1);
+                    continue;
+                }
+
+                // Gentle Homing Curve
+                if (b.isHoming && p.homingStrength > 0) {
+                    let nearest = null;
+                    let bestDist = p.homingRadius;
+                    for (const enemy of gameState.enemies) {
+                        if (enemy.hp <= 0 || b.hitSet.has(enemy)) continue;
+                        const d = Math.hypot(enemy.x - b.x, enemy.y - b.y);
+                        if (d < bestDist) {
+                            bestDist = d;
+                            nearest = enemy;
+                        }
+                    }
+                    if (nearest) {
+                        const curAng = Math.atan2(b.vy, b.vx);
+                        const desAng = Math.atan2(nearest.y - b.y, nearest.x - b.x);
+                        let diff = desAng - curAng;
+                        while (diff > Math.PI) diff -= Math.PI * 2;
+                        while (diff < -Math.PI) diff += Math.PI * 2;
+                        const maxTurn = p.homingStrength * dt;
+                        const newAng = curAng + Math.max(-maxTurn, Math.min(maxTurn, diff));
+                        const spd = Math.hypot(b.vx, b.vy);
+                        b.vx = Math.cos(newAng) * spd;
+                        b.vy = Math.sin(newAng) * spd;
+                    }
+                }
+
+                b.x += b.vx * dt;
+                b.y += b.vy * dt;
+
+                // Arena Ricochet
+                if (b.x < b.radius || b.x > width - b.radius) {
+                    if (b.bouncesLeft > 0) {
+                        b.vx *= -1;
+                        b.x = Math.max(b.radius, Math.min(width - b.radius, b.x));
+                        b.bouncesLeft--;
+                    } else {
+                        gameState.bullets.splice(i, 1);
+                        continue;
+                    }
+                }
+                if (b.y < b.radius || b.y > height - b.radius) {
+                    if (b.bouncesLeft > 0) {
+                        b.vy *= -1;
+                        b.y = Math.max(b.radius, Math.min(height - b.radius, b.y));
+                        b.bouncesLeft--;
+                    } else {
+                        gameState.bullets.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                // Enemy Collision
+                let removeBullet = false;
+                for (const enemy of gameState.enemies) {
+                    if (enemy.hp <= 0 || b.hitSet.has(enemy)) continue;
+                    if (Math.hypot(enemy.x - b.x, enemy.y - b.y) <= enemy.radius + b.radius) {
+                        b.hitSet.add(enemy);
+                        damageEnemy(enemy, b.damage, true);
+
+                        // Knockback
+                        const kb = (enemy.isBoss ? 3 : 12) * p.bulletSizeMult;
+                        const bang = Math.atan2(b.vy, b.vx);
+                        enemy.x += Math.cos(bang) * kb;
+                        enemy.y += Math.sin(bang) * kb;
+
+                        // Explosive Rounds
+                        if (p.explosiveRadius > 0) {
+                            spawnExplosion(b.x, b.y, p.explosiveRadius, '#fb7185');
+                            const splashDmg = Math.max(3, Math.round(b.damage * 0.55));
+                            for (const other of gameState.enemies) {
+                                if (other === enemy || other.hp <= 0) continue;
+                                if (Math.hypot(other.x - b.x, other.y - b.y) <= p.explosiveRadius + other.radius) {
+                                    damageEnemy(other, splashDmg, false);
+                                }
+                            }
+                        }
+
+                        if (b.pierceLeft > 0) {
+                            b.pierceLeft--;
+                        } else {
+                            removeBullet = true;
+                            break;
+                        }
+                    }
+                }
+                if (removeBullet) {
+                    gameState.bullets.splice(i, 1);
+                }
+            }
+
+            // Enemy AI & Movement
+            const expSteps = Math.max(0, gameState.wave - 2);
+            const enemyBulletSpd = 215 * Math.min(1.85, Math.pow(1.04, expSteps));
+
+            for (const enemy of gameState.enemies) {
+                if (enemy.hp <= 0) continue;
+                if (enemy.hitFlash > 0) enemy.hitFlash = Math.max(0, enemy.hitFlash - dt);
+                if (enemy._fireTick > 0) enemy._fireTick = Math.max(0, enemy._fireTick - dt);
+                enemy.spinAngle += dt * (enemy.isBoss ? 1.4 : 2.1);
+
+                const toPlayerAng = Math.atan2(p.y - enemy.y, p.x - enemy.x);
+                const distToPlayer = Math.hypot(p.x - enemy.x, p.y - enemy.y);
+
+                // Cryo Aura slow + tick
+                let slowFactor = 1.0;
+                if (p.slowAuraRadius > 0 && distToPlayer <= p.slowAuraRadius + enemy.radius) {
+                    slowFactor = 0.6;
+                    if (!enemy._frostTick || enemy._frostTick <= 0) {
+                        enemy._frostTick = 0.5;
+                        damageEnemy(enemy, Math.max(2, Math.round(p.damage * 0.25)), false);
+                    }
+                }
+                if (enemy._frostTick > 0) enemy._frostTick -= dt;
+
+                const effSpeed = enemy.speed * slowFactor;
+
+                if (enemy.archetype === 'cube_boss') {
+                    // Diagonal wall/corner bounce boss
+                    enemy.x += enemy.vx * slowFactor * dt;
+                    enemy.y += enemy.vy * slowFactor * dt;
+                    let hitX = false, hitY = false;
+                    if (enemy.x <= enemy.radius + 6) {
+                        enemy.x = enemy.radius + 6;
+                        enemy.vx = Math.abs(enemy.vx);
+                        hitX = true;
+                    } else if (enemy.x >= width - enemy.radius - 6) {
+                        enemy.x = width - enemy.radius - 6;
+                        enemy.vx = -Math.abs(enemy.vx);
+                        hitX = true;
+                    }
+                    if (enemy.y <= enemy.radius + 6) {
+                        enemy.y = enemy.radius + 6;
+                        enemy.vy = Math.abs(enemy.vy);
+                        hitY = true;
+                    } else if (enemy.y >= height - enemy.radius - 6) {
+                        enemy.y = height - enemy.radius - 6;
+                        enemy.vy = -Math.abs(enemy.vy);
+                        hitY = true;
+                    }
+
+                    if (hitX || hitY) {
+                        const isCorner = hitX && hitY;
+                        const spokes = isCorner ? 14 : 8;
+                        spawnExplosion(enemy.x, enemy.y, isCorner ? 110 : 75, enemy.color.hex);
+                        for (let s = 0; s < spokes; s++) {
+                            const bang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
+                            gameState.enemyBullets.push({
+                                x: enemy.x,
+                                y: enemy.y,
+                                vx: Math.cos(bang) * (enemyBulletSpd * (isCorner ? 1.18 : 1.0)),
+                                vy: Math.sin(bang) * (enemyBulletSpd * (isCorner ? 1.18 : 1.0)),
+                                radius: isCorner ? 7 : 6,
+                                damage: enemy.damage,
+                                color: enemy.color.hex,
+                                life: 4.5
+                            });
+                        }
+                    }
+                } else if (enemy.archetype === 'dasher') {
+                    enemy.dashTimer -= dt;
+                    if (enemy.dashTimer <= 0) {
+                        enemy.dashBurst = 0.28;
+                        enemy.dashAngle = toPlayerAng;
+                        enemy.dashTimer = 2.2;
+                    }
+                    if (enemy.dashBurst > 0) {
+                        enemy.dashBurst -= dt;
+                        enemy.x += Math.cos(enemy.dashAngle) * effSpeed * 2.6 * dt;
+                        enemy.y += Math.sin(enemy.dashAngle) * effSpeed * 2.6 * dt;
+                    } else {
+                        enemy.x += Math.cos(toPlayerAng) * effSpeed * dt;
+                        enemy.y += Math.sin(toPlayerAng) * effSpeed * dt;
+                    }
+                } else if (enemy.archetype === 'orbiter') {
+                    const radialPush = distToPlayer > 230 ? 0.65 : distToPlayer < 160 ? -0.5 : 0;
+                    const strafeAng = toPlayerAng + (Math.PI / 2) * enemy.orbitDir;
+                    enemy.x += (Math.cos(strafeAng) + Math.cos(toPlayerAng) * radialPush) * effSpeed * dt;
+                    enemy.y += (Math.sin(strafeAng) + Math.sin(toPlayerAng) * radialPush) * effSpeed * dt;
+
+                    enemy.fireTimer -= dt;
+                    if (enemy.fireTimer <= 0) {
+                        enemy.fireTimer = 2.2;
+                        for (const off of [-0.14, 0.14]) {
+                            const ang = toPlayerAng + off;
+                            gameState.enemyBullets.push({
+                                x: enemy.x,
+                                y: enemy.y,
+                                vx: Math.cos(ang) * enemyBulletSpd,
+                                vy: Math.sin(ang) * enemyBulletSpd,
+                                radius: 5.5,
+                                damage: enemy.damage,
+                                color: enemy.color.hex,
+                                life: 4.0
+                            });
+                        }
+                    }
+                } else if (enemy.archetype === 'star') {
+                    if (distToPlayer > 210) {
+                        enemy.x += Math.cos(toPlayerAng) * effSpeed * dt;
+                        enemy.y += Math.sin(toPlayerAng) * effSpeed * dt;
+                    }
+                    enemy.fireTimer -= dt;
+                    if (enemy.fireTimer <= 0) {
+                        enemy.fireTimer = 2.3;
+                        for (let s = 0; s < 5; s++) {
+                            const ang = enemy.spinAngle + (s / 5) * Math.PI * 2;
+                            gameState.enemyBullets.push({
+                                x: enemy.x,
+                                y: enemy.y,
+                                vx: Math.cos(ang) * enemyBulletSpd * 0.9,
+                                vy: Math.sin(ang) * enemyBulletSpd * 0.9,
+                                radius: 5.5,
+                                damage: enemy.damage,
+                                color: enemy.color.hex,
+                                life: 4.2
+                            });
+                        }
+                    }
+                } else if (enemy.isBoss) {
+                    enemy.x += Math.cos(toPlayerAng) * effSpeed * dt;
+                    enemy.y += Math.sin(toPlayerAng) * effSpeed * dt;
+                    enemy.fireTimer -= dt;
+                    if (enemy.fireTimer <= 0) {
+                        enemy.fireTimer = 1.65;
+                        const spokes = enemy.archetype === 'void_boss' ? 8 : enemy.archetype === 'cross_boss' ? 8 : 6;
+                        for (let s = 0; s < spokes; s++) {
+                            const ang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
+                            gameState.enemyBullets.push({
+                                x: enemy.x,
+                                y: enemy.y,
+                                vx: Math.cos(ang) * enemyBulletSpd,
+                                vy: Math.sin(ang) * enemyBulletSpd,
+                                radius: 6.5,
+                                damage: enemy.damage,
+                                color: enemy.color.hex,
+                                life: 4.8
+                            });
+                        }
+                    }
+                } else {
+                    enemy.x += Math.cos(toPlayerAng) * effSpeed * dt;
+                    enemy.y += Math.sin(toPlayerAng) * effSpeed * dt;
+                }
+
+                // Keep inside arena
+                enemy.x = Math.max(enemy.radius + 4, Math.min(width - enemy.radius - 4, enemy.x));
+                enemy.y = Math.max(enemy.radius + 4, Math.min(height - enemy.radius - 4, enemy.y));
+
+                // Contact Damage to Player
+                if (Math.hypot(enemy.x - p.x, enemy.y - p.y) < enemy.radius + p.radius) {
+                    if (p.invulnTimer <= 0) {
+                        const mitigated = Math.max(1, Math.round(enemy.damage * (1 - p.armor)));
+                        p.hp = Math.max(0, p.hp - mitigated);
+                        p.invulnTimer = 0.55;
+                        gameState.screenShake = 8;
+                        sfx.playHurt();
+                        addFloatingText(p.x, p.y - 24, `-${mitigated}`, '#fb7185', 15, 0.7);
+                        updateHUD();
+                        if (p.hp <= 0) {
+                            endGame(false);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // Enemy Bullets
+            for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
+                const eb = gameState.enemyBullets[i];
+                eb.life -= dt;
+                eb.x += eb.vx * dt;
+                eb.y += eb.vy * dt;
+                if (eb.life <= 0 || eb.x < 0 || eb.x > width || eb.y < 0 || eb.y > height) {
+                    gameState.enemyBullets.splice(i, 1);
+                    continue;
+                }
+                if (Math.hypot(eb.x - p.x, eb.y - p.y) < eb.radius + p.radius - 3) {
+                    gameState.enemyBullets.splice(i, 1);
+                    if (p.invulnTimer <= 0) {
+                        const mitigated = Math.max(1, Math.round(eb.damage * (1 - p.armor)));
+                        p.hp = Math.max(0, p.hp - mitigated);
+                        p.invulnTimer = 0.45;
+                        gameState.screenShake = 6;
+                        sfx.playHurt();
+                        addFloatingText(p.x, p.y - 24, `-${mitigated}`, '#fb7185', 14, 0.65);
+                        updateHUD();
+                        if (p.hp <= 0) {
+                            endGame(false);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // Clean up slain enemies & check Wave Clear
+            gameState.enemies = gameState.enemies.filter(e => e.hp > 0);
+            updateHUD();
+
+            if (gameState.enemies.length === 0) {
+                openUpgradeDraft();
+            }
+
+            // Particles & Floating Texts
+            for (let i = gameState.particles.length - 1; i >= 0; i--) {
+                const pt = gameState.particles[i];
+                pt.life -= dt;
+                if (pt.life <= 0) {
+                    gameState.particles.splice(i, 1);
+                    continue;
+                }
+                if (pt.vx !== undefined) {
+                    pt.x += pt.vx * dt;
+                    pt.y += pt.vy * dt;
+                    pt.vx *= 0.94;
+                    pt.vy *= 0.94;
+                }
+            }
+
+            for (let i = gameState.floatingTexts.length - 1; i >= 0; i--) {
+                const ft = gameState.floatingTexts[i];
+                ft.life -= dt;
+                ft.y -= 34 * dt;
+                if (ft.life <= 0) gameState.floatingTexts.splice(i, 1);
+            }
+
+            for (let i = gameState.killBanners.length - 1; i >= 0; i--) {
+                gameState.killBanners[i].life -= dt;
+                if (gameState.killBanners[i].life <= 0) gameState.killBanners.splice(i, 1);
+            }
+        }
+
+        // =========================================================================
+        // 9. CANVAS RENDERING (SHAPES, BOSSES, HIGH-VISIBILITY WHITE RETICLE)
+        // =========================================================================
+        function drawPolygon(x, y, radius, sides, rotation) {
+            ctx.beginPath();
+            for (let i = 0; i < sides; i++) {
+                const a = rotation + (i / sides) * Math.PI * 2;
+                const px = x + Math.cos(a) * radius;
+                const py = y + Math.sin(a) * radius;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function drawStarShape(x, y, outerR, innerR, points, rotation) {
+            ctx.beginPath();
+            const total = points * 2;
+            for (let i = 0; i < total; i++) {
+                const r = i % 2 === 0 ? outerR : innerR;
+                const a = rotation + (i / total) * Math.PI * 2;
+                const px = x + Math.cos(a) * r;
+                const py = y + Math.sin(a) * r;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function render() {
+            ctx.save();
+            if (gameState.screenShake > 0) {
+                const sx = (Math.random() - 0.5) * gameState.screenShake;
+                const sy = (Math.random() - 0.5) * gameState.screenShake;
+                ctx.translate(sx, sy);
+            }
+
+            // Background + Persistent Hex Paint Layer
+            ctx.fillStyle = '#080c17';
+            ctx.fillRect(0, 0, width, height);
+            if (paintCanvas.width > 0 && paintCanvas.height > 0) {
+                ctx.drawImage(paintCanvas, 0, 0);
+            }
+
+            // Subtle Tactical Grid
+            ctx.strokeStyle = 'rgba(148, 163, 184, 0.05)';
+            ctx.lineWidth = 1;
+            const gridSize = 48;
+            for (let gx = 0; gx < width; gx += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(gx, 0);
+                ctx.lineTo(gx, height);
+                ctx.stroke();
+            }
+            for (let gy = 0; gy < height; gy += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(width, gy);
+                ctx.stroke();
+            }
+
+            const p = gameState.player;
+
+            // Player Auras (Cryo & Tesla)
+            if (p && gameState.status !== 'START') {
+                if (p.slowAuraRadius > 0) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.slowAuraRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(125, 211, 252, 0.28)';
+                    ctx.setLineDash([6, 6]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+                if (p.teslaLevel > 0) {
+                    const teslaRange = 145 + p.teslaLevel * 20;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, teslaRange, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(250, 204, 21, 0.22)';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
+            // Enemies & Hex Bosses
+            for (const enemy of gameState.enemies) {
+                ctx.save();
+                ctx.fillStyle = enemy.hitFlash > 0 ? '#ffffff' : enemy.color.hex;
+                ctx.strokeStyle = enemy.color.isDark ? '#e2e8f0' : 'rgba(15, 23, 42, 0.85)';
+                ctx.lineWidth = enemy.isBoss ? 3.5 : 2.2;
+
+                if (enemy.archetype === 'star' || enemy.archetype === 'star_boss') {
+                    drawStarShape(enemy.x, enemy.y, enemy.radius * 1.15, enemy.radius * 0.52, enemy.isBoss ? 6 : 5, enemy.spinAngle);
+                } else if (enemy.archetype === 'dasher') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius * 1.12, 3, enemy.spinAngle);
+                } else if (enemy.archetype === 'orbiter') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius, 5, enemy.spinAngle);
+                } else if (enemy.archetype === 'tank') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius, 6, enemy.spinAngle * 0.5);
+                } else if (enemy.archetype === 'splitter') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius, 7, enemy.spinAngle);
+                } else if (enemy.archetype === 'cube_boss') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius * 1.15, 4, enemy.spinAngle);
+                } else if (enemy.archetype === 'void_boss') {
+                    drawPolygon(enemy.x, enemy.y, enemy.radius * 1.08, 8, enemy.spinAngle);
+                } else if (enemy.archetype === 'cross_boss') {
+                    drawStarShape(enemy.x, enemy.y, enemy.radius * 1.25, enemy.radius * 0.42, 4, enemy.spinAngle);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+                }
+
+                ctx.fill();
+                ctx.stroke();
+
+                // Hex Code Label
+                if (!enemy.isMiniSplit) {
+                    ctx.font = `700 ${enemy.isBoss ? 12 : 10}px "JetBrains Mono", monospace`;
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.strokeStyle = 'rgba(2, 6, 23, 0.9)';
+                    ctx.lineWidth = 3;
+                    const labelY = enemy.y - enemy.radius - 8;
+                    ctx.strokeText(enemy.color.hex, enemy.x, labelY);
+                    ctx.fillText(enemy.color.hex, enemy.x, labelY);
+                }
+
+                // HP Bar
+                if (enemy.hp < enemy.maxHp) {
+                    const barW = enemy.radius * 1.9;
+                    const barH = enemy.isBoss ? 6 : 4;
+                    const bx = enemy.x - barW / 2;
+                    const by = enemy.y + enemy.radius + 6;
+                    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                    ctx.fillRect(bx, by, barW, barH);
+                    ctx.fillStyle = enemy.isBoss ? '#f43f5e' : '#34d399';
+                    ctx.fillRect(bx, by, barW * Math.max(0, enemy.hp / enemy.maxHp), barH);
+                }
+                ctx.restore();
+            }
+
+            // Enemy Projectiles
+            for (const eb of gameState.enemyBullets) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(eb.x, eb.y, eb.radius, 0, Math.PI * 2);
+                ctx.fillStyle = eb.color;
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Player Projectiles
+            for (const b of gameState.bullets) {
+                ctx.save();
+                if (b.isFast || b.isHoming) {
+                    ctx.beginPath();
+                    ctx.moveTo(b.x, b.y);
+                    ctx.lineTo(b.x - b.vx * 0.035, b.y - b.vy * 0.035);
+                    ctx.strokeStyle = b.isHoming ? 'rgba(34, 211, 238, 0.55)' : 'rgba(255, 255, 255, 0.45)';
+                    ctx.lineWidth = b.radius * 1.4;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+                }
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = b.color;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Player Ship, Fire Ring & Drones
+            if (p && gameState.status !== 'START') {
+                // Solar Fire Ring Orbs
+                for (let i = 0; i < p.fireRingCount; i++) {
+                    const ang = p.fireRingAngle + (i / p.fireRingCount) * Math.PI * 2;
+                    const ox = p.x + Math.cos(ang) * p.fireRingRadius;
+                    const oy = p.y + Math.sin(ang) * p.fireRingRadius;
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(ox, oy, 9, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fb923c';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fef08a';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // Laser Sentinel Drones
+                for (let d = 0; d < p.drones; d++) {
+                    const ang = p.droneAngle + (d / p.drones) * Math.PI * 2;
+                    const dx = p.x + Math.cos(ang) * 44;
+                    const dy = p.y + Math.sin(ang) * 44;
+                    ctx.save();
+                    drawPolygon(dx, dy, 7, 4, ang);
+                    ctx.fillStyle = '#2dd4bf';
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // Player Hull
+                const aimAngle = Math.atan2(input.mouseY - p.y, input.mouseX - p.x);
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(aimAngle);
+                if (p.invulnTimer > 0 && Math.floor(p.invulnTimer * 20) % 2 === 0) {
+                    ctx.globalAlpha = 0.55;
+                }
+                ctx.beginPath();
+                ctx.moveTo(p.radius + 5, 0);
+                ctx.lineTo(-p.radius, -p.radius * 0.85);
+                ctx.lineTo(-p.radius * 0.55, 0);
+                ctx.lineTo(-p.radius, p.radius * 0.85);
+                ctx.closePath();
+                ctx.fillStyle = p.primaryColor;
+                ctx.fill();
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+
+                // Core cockpit
+                ctx.beginPath();
+                ctx.arc(0, 0, 5, 0, Math.PI * 2);
+                ctx.fillStyle = p.accentColor;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Particles (Sparks, Rings, Lightning)
+            for (const pt of gameState.particles) {
+                const alpha = Math.max(0, pt.life / pt.maxLife);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                if (pt.type === 'ring') {
+                    const r = pt.radius + (pt.maxRadius - pt.radius) * (1 - alpha);
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+                    ctx.strokeStyle = pt.color;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                } else if (pt.type === 'lightning') {
+                    ctx.beginPath();
+                    ctx.moveTo(pt.x1, pt.y1);
+                    const midX = (pt.x1 + pt.x2) / 2 + (Math.random() - 0.5) * 24;
+                    const midY = (pt.y1 + pt.y2) / 2 + (Math.random() - 0.5) * 24;
+                    ctx.lineTo(midX, midY);
+                    ctx.lineTo(pt.x2, pt.y2);
+                    ctx.strokeStyle = pt.color;
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = pt.color;
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            // Floating Damage / Heal Numbers
+            for (const ft of gameState.floatingTexts) {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
+                ctx.font = `800 ${ft.size}px "JetBrains Mono", monospace`;
+                ctx.textAlign = 'center';
+                ctx.fillStyle = ft.color;
+                ctx.strokeStyle = 'rgba(2, 6, 23, 0.9)';
+                ctx.lineWidth = 3;
+                ctx.strokeText(ft.text, ft.x, ft.y);
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            }
+
+            // Bottom-Left Kill Feed
+            gameState.killBanners.forEach((kb, idx) => {
+                const alpha = Math.min(1, kb.life);
+                const bx = 18;
+                const by = height - 26 - idx * 28;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+                ctx.beginPath();
+                ctx.roundRect(bx, by - 16, 154, 22, 8);
+                ctx.fill();
+                ctx.fillStyle = kb.color.hex;
+                ctx.fillRect(bx + 6, by - 11, 12, 12);
+                ctx.font = '700 11px "JetBrains Mono", monospace';
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillText(`${kb.color.hex} SLAIN`, bx + 24, by - 1);
+                ctx.restore();
+            });
+
+            // High-Visibility Glowing White Tactical Reticle
+            if (gameState.status === 'PLAYING') {
+                const rx = input.mouseX;
+                const ry = input.mouseY;
+                const spread = input.mouseDown || input.autoFire ? 8 : 11;
+                ctx.save();
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.arc(rx, ry, spread, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(rx, ry, spread, 0, Math.PI * 2);
+                ctx.stroke();
+
+                const ticks = [
+                    [rx, ry - spread - 6, rx, ry - spread + 2],
+                    [rx, ry + spread - 2, rx, ry + spread + 6],
+                    [rx - spread - 6, ry, rx - spread + 2, ry],
+                    [rx + spread - 2, ry, rx + spread + 6, ry]
+                ];
+                for (const [x1, y1, x2, y2] of ticks) {
+                    ctx.strokeStyle = 'rgba(0, 0, 0, 0.85)';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+
+                ctx.beginPath();
+                ctx.arc(rx, ry, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function gameLoop(timestamp) {
+            const dt = Math.min(0.05, (timestamp - (gameState.lastTime || timestamp)) / 1000);
+            gameState.lastTime = timestamp;
+            update(dt);
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // =========================================================================
+        // 10. HUD, UPGRADE DRAFT, HEX DEX, FIELD GUIDE & ENDGAME UI
+        // =========================================================================
+        function updateHUD() {
+            const p = gameState.player;
+            const mode = BIT_MODES[gameState.selectedBits] || BIT_MODES[24];
+            const killedCount = gameState.killedColors.length;
+
+            document.getElementById('waveBadge').textContent = `WAVE ${gameState.wave}`;
+            const activeHexes = gameState.enemies.filter(e => !e.isMiniSplit).length;
+            document.getElementById('waveRemainingText').textContent = `${activeHexes} Hexes Left`;
+            document.getElementById('totalColorsText').textContent = `${killedCount.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
+            const pct = Math.min(100, (killedCount / mode.totalColors) * 100);
+            document.getElementById('spectrumProgressBar').style.width = `${pct}%`;
+
+            if (!p) return;
+            document.getElementById('hpText').textContent = `${Math.ceil(p.hp)} / ${p.maxHp}`;
+            document.getElementById('hpBar').style.width = `${Math.max(0, Math.min(100, (p.hp / p.maxHp) * 100))}%`;
+            document.getElementById('statAtk').textContent = p.damage;
+            document.getElementById('statSpd').textContent = p.speed;
+            document.getElementById('statMultishot').textContent = p.multishot;
+            document.getElementById('statDash').textContent = p.dashTimer <= 0 ? 'READY' : `${p.dashTimer.toFixed(1)}s`;
+        }
+
+        function renderUpgradeBadges() {
+            const bar = document.getElementById('activeUpgradesBar');
+            const p = gameState.player;
+            if (!bar || !p) return;
+            bar.innerHTML = '';
+            Object.entries(p.upgrades).forEach(([id, count]) => {
+                const upg = UPGRADE_POOL.find(u => u.id === id);
+                if (!upg || count <= 0) return;
+                const badge = document.createElement('span');
+                badge.className = 'glass-panel px-2.5 py-0.5 rounded-full text-[11px] font-semibold text-slate-200 border border-slate-700/70';
+                badge.textContent = `${upg.icon} ${upg.name.split(' (')[0]} ×${count}`;
+                bar.appendChild(badge);
+            });
+        }
+
+        function renderUpgradeChoices() {
+            const container = document.getElementById('cardsContainer');
+            const p = gameState.player;
+            const numChoices = Math.min(5, 3 + (p ? p.bonusCardChoices : 0));
+
+            container.className = numChoices >= 5
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 w-full'
+                : numChoices === 4
+                    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 w-full'
+                    : 'grid grid-cols-1 md:grid-cols-3 gap-4 w-full';
+
+            const eligible = UPGRADE_POOL.filter(u => {
+                if (!u.maxStacks) return true;
+                return ((p && p.upgrades[u.id]) || 0) < u.maxStacks;
+            });
+
+            const shuffled = [...eligible].sort(() => Math.random() - 0.5).slice(0, numChoices);
+            container.innerHTML = '';
+
+            shuffled.forEach(upg => {
+                const curStacks = (p && p.upgrades[upg.id]) || 0;
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'upgrade-card glass-panel rounded-2xl p-4 sm:p-5 text-left border border-slate-700/80 hover:border-indigo-400 flex flex-col justify-between shadow-xl';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-2xl">${upg.icon}</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono-code font-bold uppercase border ${upg.rarityColor}">${upg.rarity}</span>
+                        </div>
+                        <h3 class="font-display text-sm sm:text-base font-extrabold text-white mb-1.5">${upg.name}</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">${upg.desc}</p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono-code">
+                        <span class="text-slate-400">Rank ${curStacks} → ${curStacks + 1}</span>
+                        <span class="text-indigo-300 font-bold">INSTALL →</span>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    sfx.playUpgrade();
+                    upg.apply(p);
+                    p.upgrades[upg.id] = (p.upgrades[upg.id] || 0) + 1;
+                    renderUpgradeBadges();
+                    updateHUD();
+
+                    const overlay = document.getElementById('upgradeOverlay');
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    gameState.wave += 1;
+                    gameState.status = 'PLAYING';
+                    spawnWave(gameState.wave);
+                });
+                container.appendChild(card);
+            });
+        }
+
+        function openUpgradeDraft() {
+            const mode = BIT_MODES[gameState.selectedBits];
+            if (gameState.killedColors.length >= mode.totalColors) {
+                endGame(true);
+                return;
+            }
+
+            const p = gameState.player;
+            let healSummary = '';
+            if (p && p.hp < p.maxHp) {
+                const healAmount = Math.max(12, Math.round(p.maxHp * 0.15));
+                const beforeHp = Math.ceil(p.hp);
+                p.hp = Math.min(p.maxHp, p.hp + healAmount);
+                const actualHealed = Math.ceil(p.hp) - beforeHp;
+                if (actualHealed > 0) {
+                    healSummary = ` • +${actualHealed} HULL REPAIRED`;
+                    addFloatingText(p.x, p.y - 28, `+${actualHealed} HP`, '#34d399', 15, 0.9);
+                    updateHUD();
+                }
+            }
+
+            if (p && p.bonusRerollRate > 0 && gameState.wave % 3 === 0) {
+                gameState.rerollsLeft += p.bonusRerollRate;
+            }
+
+            const rerollBtn = document.getElementById('btnRerollCards');
+            const rerollBadge = document.getElementById('rerollCountBadge');
+            if (rerollBadge) rerollBadge.textContent = `${gameState.rerollsLeft} Left`;
+            if (rerollBtn) {
+                rerollBtn.disabled = gameState.rerollsLeft <= 0;
+                rerollBtn.classList.toggle('opacity-40', gameState.rerollsLeft <= 0);
+            }
+
+            gameState.status = 'UPGRADE';
+            document.getElementById('waveClearBadge').textContent =
+                `WAVE ${gameState.wave} CLEARED${healSummary} — ${gameState.killedColors.length.toLocaleString()} / ${mode.totalColors.toLocaleString()} ERADICATED`;
+            renderUpgradeChoices();
+            const overlay = document.getElementById('upgradeOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        document.getElementById('btnRerollCards').addEventListener('click', () => {
+            if (gameState.rerollsLeft <= 0) return;
+            gameState.rerollsLeft -= 1;
+            sfx.playShoot(1.3);
+            const rerollBtn = document.getElementById('btnRerollCards');
+            const rerollBadge = document.getElementById('rerollCountBadge');
+            rerollBadge.textContent = `${gameState.rerollsLeft} Left`;
+            if (gameState.rerollsLeft <= 0) {
+                rerollBtn.disabled = true;
+                rerollBtn.classList.add('opacity-40');
+            }
+            renderUpgradeChoices();
+        });
+
+        // Hex Spectrum Dex Modal
+        function openDex() {
+            if (gameState.status === 'DEX') return;
+            gameState.previousStatus = gameState.status;
+            gameState.status = 'DEX';
+            renderDex();
+            const overlay = document.getElementById('colorDexOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function closeDex() {
+            const overlay = document.getElementById('colorDexOverlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            gameState.status = gameState.previousStatus || 'PLAYING';
+        }
+
+        function renderDex() {
+            const mode = BIT_MODES[gameState.selectedBits];
+            const totalKilled = gameState.killedColors.length;
+            document.getElementById('dexCountBadge').textContent = `${totalKilled.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
+            const pct = (totalKilled / mode.totalColors) * 100;
+            document.getElementById('dexPercentBadge').textContent = `${pct.toFixed(5)}%`;
+
+            // Draw Spectrum Map
+            const mapCanvas = document.getElementById('spectrumMapCanvas');
+            const mctx = mapCanvas.getContext('2d');
+            mctx.fillStyle = '#0f172a';
+            mctx.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
+            for (const c of gameState.killedColors) {
+                const mx = (c.hsl.h / 360) * mapCanvas.width;
+                const my = ((100 - c.hsl.l) / 100) * mapCanvas.height;
+                mctx.fillStyle = c.hex;
+                mctx.fillRect(mx - 2, my - 2, 4, 4);
+            }
+
+            const query = document.getElementById('dexSearchInput').value.trim().toUpperCase();
+            const sortBy = document.getElementById('dexSortSelect').value;
+            let list = [...gameState.killedColors];
+            if (sortBy === 'recent') list.reverse();
+            else if (sortBy === 'hue') list.sort((a, b) => a.hsl.h - b.hsl.h);
+            else if (sortBy === 'hex') list.sort((a, b) => a.hex.localeCompare(b.hex));
+
+            if (query) {
+                list = list.filter(c => c.hex.includes(query));
+            }
+
+            const grid = document.getElementById('dexGrid');
+            grid.innerHTML = '';
+            list.slice(0, 180).forEach(c => {
+                const cell = document.createElement('div');
+                cell.className = 'rounded-xl p-2 border border-slate-700/80 flex flex-col justify-between';
+                cell.style.backgroundColor = c.hex;
+                cell.style.color = c.textColor;
+                cell.innerHTML = `
+                    <div class="font-mono-code text-xs font-extrabold">${c.hex}</div>
+                    <div class="font-mono-code text-[10px] opacity-85 mt-1">rgb(${c.r},${c.g},${c.b})</div>
+                `;
+                grid.appendChild(cell);
+            });
+        }
+
+        document.getElementById('btnOpenDex').addEventListener('click', openDex);
+        document.getElementById('btnCloseDex').addEventListener('click', closeDex);
+        document.getElementById('dexSearchInput').addEventListener('input', renderDex);
+        document.getElementById('dexSortSelect').addEventListener('change', renderDex);
+
+        // Field Guide & Intel Modal
+        let activeHelpTab = 'abilities';
+
+        function openHelp() {
+            if (gameState.status === 'HELP') return;
+            gameState.previousStatus = gameState.status;
+            gameState.status = 'HELP';
+            renderHelpTab(activeHelpTab);
+            const overlay = document.getElementById('helpOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function closeHelp() {
+            const overlay = document.getElementById('helpOverlay');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+            gameState.status = gameState.previousStatus || 'START';
+        }
+
+        function renderHelpTab(tab) {
+            activeHelpTab = tab;
+            document.querySelectorAll('.help-tab-btn').forEach(b => {
+                const active = b.dataset.helptab === tab;
+                b.className = active
+                    ? 'help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-500/25 border border-indigo-400 text-white transition'
+                    : 'help-tab-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-900/80 border border-slate-700 text-slate-300 hover:border-slate-500 transition';
+            });
+
+            const area = document.getElementById('helpContentArea');
+            if (tab === 'abilities') {
+                area.innerHTML = UPGRADE_POOL.map(u => `
+                    <div class="bg-slate-900/80 rounded-2xl p-3.5 border border-slate-800 flex items-start gap-3">
+                        <div class="text-2xl">${u.icon}</div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-display text-sm font-bold text-white">${u.name}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono-code font-bold border ${u.rarityColor}">${u.rarity}</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${u.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else if (tab === 'enemies') {
+                const enemiesInfo = [
+                    { icon: '●', name: 'Chaser (Wave 1+)', hp: '20 Base HP', desc: 'Standard circular hex enemy that tracks directly toward your ship. Sole enemy type on Wave 1.' },
+                    { icon: '▲', name: 'Dasher (Wave 2+)', hp: '16 Base HP', desc: 'Agile triangle hex that pauses briefly before lunging forward at 2.6x burst speed.' },
+                    { icon: '⬡', name: 'Armored Tank (Wave 3+)', hp: '46 Base HP', desc: 'Heavy hexagon hex with 2.3x base HP that marches steadily toward your hull.' },
+                    { icon: '⬠', name: 'Prism Orbiter (Wave 3+)', hp: '24 Base HP', desc: 'Strafes in an orbit around your ship at mid-range while firing twin hex bolts.' },
+                    { icon: '★', name: 'Star Spiral Shooter (Wave 4+)', hp: '30 Base HP', desc: 'Spinning 5-pointed star that holds distance and unleashes 5-way rotating radial volleys.' },
+                    { icon: '⬢', name: 'Splitter Heptagon (Wave 4+)', hp: '28 Base HP', desc: '7-sided hex that fractures upon death into 2 fast mini-shards.' }
+                ];
+                area.innerHTML = enemiesInfo.map(e => `
+                    <div class="bg-slate-900/80 rounded-2xl p-3.5 border border-slate-800 flex items-start gap-3">
+                        <div class="text-xl text-indigo-300 font-bold w-7 text-center">${e.icon}</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-display text-sm font-bold text-white">${e.name}</span>
+                                <span class="font-mono-code text-[11px] text-amber-300">${e.hp}</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${e.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else if (tab === 'bosses') {
+                const bossesInfo = [
+                    { icon: '✦', name: 'Nova Star Boss (Waves 5, 25…)', hp: '260 Base HP', desc: '6-pointed colossal star boss that advances steadily while firing rotating 6-way star bursts.' },
+                    { icon: '▣', name: 'Prism Cube Boss (Waves 10, 30…)', hp: '290 Base HP', desc: 'Ricochets diagonally off arena walls and corners—firing an 8-way radial burst on every wall bounce and a 14-way burst on corner hits.' },
+                    { icon: '⯃', name: 'Void Octagon Boss (Waves 15, 35…)', hp: '320 Base HP', desc: 'Heavily armored 8-sided dreadnought firing dense 8-way radial spreads.' },
+                    { icon: '✚', name: 'Crucible Cross Boss (Waves 20, 40…)', hp: '300 Base HP', desc: 'Spinning 4-pointed solar cross firing rapid rotating cross barrages.' }
+                ];
+                area.innerHTML = bossesInfo.map(b => `
+                    <div class="bg-slate-900/80 rounded-2xl p-3.5 border border-slate-800 flex items-start gap-3">
+                        <div class="text-xl text-rose-400 font-bold w-7 text-center">${b.icon}</div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-display text-sm font-bold text-white">${b.name}</span>
+                                <span class="font-mono-code text-[11px] text-rose-300">${b.hp}</span>
+                            </div>
+                            <p class="text-xs text-slate-300 mt-1 leading-relaxed">${b.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                area.innerHTML = `
+                    <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-2 text-xs text-slate-300 leading-relaxed">
+                        <div class="font-display text-sm font-bold text-indigo-300">Exponential Difficulty & End-of-Wave Repair</div>
+                        <p>• <strong class="text-white">Opening Waves (1–2):</strong> Reduced HP (0.75x / 0.95x) and gentle speeds so you can build your foundation.</p>
+                        <p>• <strong class="text-white">Exponential Ramp (Wave 3+):</strong> Enemy HP scales by <span class="font-mono-code text-amber-300">1.18^(wave - 2) × Difficulty</span>, while damage scales by <span class="font-mono-code text-rose-300">1.10^(wave - 2) × Difficulty</span>.</p>
+                        <p>• <strong class="text-white">End-of-Round Hull Repair:</strong> Clearing any wave automatically repairs <span class="font-mono-code text-emerald-300">15% Max HP</span> (minimum +12 HP).</p>
+                    </div>
+                `;
+            }
+        }
+
+        document.querySelectorAll('.help-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => renderHelpTab(btn.dataset.helptab));
+        });
+        document.getElementById('btnOpenHelpStart').addEventListener('click', openHelp);
+        document.getElementById('btnOpenHelpHud').addEventListener('click', openHelp);
+        document.getElementById('btnCloseHelp').addEventListener('click', closeHelp);
+
+        function endGame(isVictory) {
+            gameState.status = isVictory ? 'VICTORY' : 'GAMEOVER';
+            const badge = document.getElementById('endBadge');
+            const title = document.getElementById('endTitle');
+            const sub = document.getElementById('endSubtitle');
+
+            if (isVictory) {
+                badge.className = 'inline-block px-3.5 py-1 rounded-full text-xs font-display font-bold tracking-widest uppercase mb-3 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+                badge.textContent = 'SPECTRUM ERADICATED';
+                title.textContent = '100% CHROMA VICTORY';
+                sub.textContent = 'Every single hexadecimal color in the selected spectrum has been wiped out!';
+            } else {
+                badge.className = 'inline-block px-3.5 py-1 rounded-full text-xs font-display font-bold tracking-widest uppercase mb-3 bg-rose-500/20 text-rose-300 border border-rose-400/30';
+                badge.textContent = 'HULL BREACHED';
+                title.textContent = 'SPECTRUM SURVIVED';
+                sub.textContent = 'The hex spectrum overwhelmed your hull, but your discoveries remain logged.';
+            }
+
+            const p = gameState.player;
+            const totalUpgrades = p ? Object.values(p.upgrades).reduce((a, b) => a + b, 0) : 0;
+            document.getElementById('endWave').textContent = gameState.wave;
+            document.getElementById('endKilled').textContent = gameState.killedColors.length.toLocaleString();
+            document.getElementById('endUpgrades').textContent = totalUpgrades;
+
+            const overlay = document.getElementById('endOverlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        // Difficulty Slider
+        const difficultySlider = document.getElementById('difficultySlider');
+        const difficultyLabelBadge = document.getElementById('difficultyLabelBadge');
+        if (difficultySlider && difficultyLabelBadge) {
+            difficultySlider.addEventListener('input', () => {
+                const val = parseFloat(difficultySlider.value) || 1.0;
+                gameState.difficultyMult = val;
+                let tier = 'STANDARD';
+                let colorClass = 'text-emerald-300';
+                if (val <= 0.8) {
+                    tier = 'CHILL';
+                    colorClass = 'text-sky-300';
+                } else if (val >= 1.7) {
+                    tier = 'NIGHTMARE';
+                    colorClass = 'text-rose-400';
+                } else if (val >= 1.3) {
+                    tier = 'VETERAN';
+                    colorClass = 'text-amber-300';
+                }
+                difficultyLabelBadge.className = `font-mono-code text-xs font-extrabold ${colorClass}`;
+                difficultyLabelBadge.textContent = `${tier} (${val.toFixed(1)}x)`;
+            });
+        }
+
+        document.getElementById('btnStartGame').addEventListener('click', () => {
+            sfx.init();
+            document.getElementById('startOverlay').classList.add('hidden');
+            resetGame();
+        });
+
+        document.getElementById('btnRestartGame').addEventListener('click', () => {
+            sfx.init();
+            const endOverlay = document.getElementById('endOverlay');
+            endOverlay.classList.add('hidden');
+            endOverlay.classList.remove('flex');
+            resetGame();
+        });
+
+        document.getElementById('btnMainMenu').addEventListener('click', () => {
+            sfx.init();
+            const endOverlay = document.getElementById('endOverlay');
+            endOverlay.classList.add('hidden');
+            endOverlay.classList.remove('flex');
+            gameState.status = 'START';
+            gameState.enemies = [];
+            gameState.bullets = [];
+            gameState.enemyBullets = [];
+            document.getElementById('startOverlay').classList.remove('hidden');
+        });
+
+        // Boot on window load
+        window.onload = function () {
+            resizeCanvas();
+            requestAnimationFrame(gameLoop);
+        };
+    </script>
+</body>
+</html>

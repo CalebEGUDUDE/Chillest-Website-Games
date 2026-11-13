@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PARRY ROAD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            box-sizing: border-box;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #7dd3fc;
+            font-family: 'Fredoka', sans-serif;
+            touch-action: none;
+        }
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .arcade-shadow {
+            box-shadow: 0 6px 0 rgba(15, 23, 42, 0.25);
+        }
+        .arcade-btn {
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
+            box-shadow: 0 6px 0 #1e293b;
+        }
+        .arcade-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1e293b;
+        }
+        .text-stroke {
+            -webkit-text-stroke: 2px #0f172a;
+            paint-order: stroke fill;
+            text-shadow: 0 4px 0 rgba(15, 23, 42, 0.35);
+        }
+        .text-stroke-lg {
+            -webkit-text-stroke: 5px #0f172a;
+            paint-order: stroke fill;
+            text-shadow: 0 8px 0 rgba(15, 23, 42, 0.35);
+        }
+        @keyframes pulse-fast {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+        }
+        .animate-pulse-fast {
+            animation: pulse-fast 1.2s infinite ease-in-out;
+        }
+        @keyframes pop-in {
+            0% { transform: scale(0.7); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pop-in {
+            animation: pop-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes float-up {
+            0% { transform: translate(-50%, -20%) scale(0.7); opacity: 0; }
+            18% { transform: translate(-50%, -60%) scale(1.12); opacity: 1; }
+            100% { transform: translate(-50%, -180%) scale(0.95); opacity: 0; }
+        }
+        .callout-float {
+            animation: float-up 0.95s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        #flash-overlay {
+            pointer-events: none;
+            transition: opacity 0.12s ease-out;
+        }
+    </style>
+</head>
+<body class="relative w-full h-full">
+
+    <!-- WebGL Canvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Impact Flash Overlay (for ULTRA-PARRY freeze frame) -->
+    <div id="flash-overlay" class="fixed inset-0 bg-white opacity-0 z-20"></div>
+
+    <!-- Floating Callout Container -->
+    <div id="callout-layer" class="fixed inset-0 pointer-events-none z-20 overflow-hidden"></div>
+
+    <!-- Top HUD -->
+    <div id="hud" class="fixed top-0 left-0 right-0 p-4 sm:p-6 flex justify-between items-start pointer-events-none z-10">
+        <!-- Score & High Score -->
+        <div class="flex flex-col gap-1">
+            <div class="flex items-baseline gap-3">
+                <span id="score-display" class="text-5xl sm:text-6xl font-bold text-white text-stroke tracking-tight">0</span>
+                <span id="combo-badge" class="hidden px-3 py-1 rounded-full bg-amber-400 border-2 border-slate-900 text-slate-900 font-extrabold text-sm sm:text-base shadow-md">
+                    PARRY x1
+                </span>
+            </div>
+            <div class="flex items-center gap-2 text-white/95 font-bold text-sm sm:text-base text-stroke">
+                <span>BEST: <span id="best-display">0</span></span>
+                <span class="mx-1">•</span>
+                <span class="text-amber-300">PARRIES: <span id="parry-count-display">0</span></span>
+            </div>
+        </div>
+
+        <!-- Right HUD: Parry Readiness & Sound Toggle -->
+        <div class="flex flex-col items-end gap-2">
+            <button id="mute-btn" class="pointer-events-auto w-11 h-11 rounded-2xl bg-white/90 hover:bg-white border-2 border-slate-900 flex items-center justify-center text-slate-900 arcade-shadow active:translate-y-1" title="Toggle Sound">
+                <svg id="icon-sound-on" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/>
+                </svg>
+                <svg id="icon-sound-off" class="w-6 h-6 hidden text-rose-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/>
+                </svg>
+            </button>
+
+            <!-- Parry Meter -->
+            <div class="bg-slate-900/80 backdrop-blur-sm border-2 border-slate-900 rounded-2xl p-2.5 w-36 sm:w-44 shadow-lg">
+                <div class="flex justify-between items-center text-xs font-extrabold text-white mb-1 tracking-wider">
+                    <span class="flex items-center gap-1">
+                        <kbd class="px-1.5 py-0.5 bg-cyan-400 text-slate-950 rounded text-[11px] font-mono">F</kbd>
+                        PARRY
+                    </span>
+                    <span id="parry-status-text" class="text-cyan-300">READY</span>
+                </div>
+                <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                    <div id="parry-bar" class="h-full bg-gradient-to-r from-cyan-400 to-amber-300 transition-all duration-75" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Touch Controls (Visible on touch / small screens) -->
+    <div id="mobile-controls" class="fixed bottom-4 left-4 right-4 flex justify-between items-end z-10 pointer-events-none md:hidden">
+        <!-- D-Pad -->
+        <div class="grid grid-cols-3 gap-1.5 pointer-events-auto">
+            <div></div>
+            <button data-dir="up" class="touch-dir w-14 h-14 rounded-2xl bg-white/85 border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-xl active:bg-amber-300 arcade-shadow">▲</button>
+            <div></div>
+            <button data-dir="left" class="touch-dir w-14 h-14 rounded-2xl bg-white/85 border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-xl active:bg-amber-300 arcade-shadow">◀</button>
+            <button data-dir="down" class="touch-dir w-14 h-14 rounded-2xl bg-white/85 border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-xl active:bg-amber-300 arcade-shadow">▼</button>
+            <button data-dir="right" class="touch-dir w-14 h-14 rounded-2xl bg-white/85 border-2 border-slate-900 flex items-center justify-center text-slate-900 font-bold text-xl active:bg-amber-300 arcade-shadow">▶</button>
+        </div>
+
+        <!-- Big Parry Button -->
+        <button id="mobile-parry-btn" class="pointer-events-auto w-24 h-24 rounded-full bg-gradient-to-b from-cyan-300 to-cyan-500 border-4 border-slate-900 flex flex-col items-center justify-center text-slate-950 font-extrabold shadow-xl active:scale-95">
+            <span class="text-xl leading-none">PARRY</span>
+            <span class="text-xs font-mono mt-1 bg-slate-900 text-cyan-300 px-2 py-0.5 rounded-full">[F]</span>
+        </button>
+    </div>
+
+    <!-- Desktop Subtle Controls Footer -->
+    <div id="desktop-hint" class="hidden md:flex fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900/75 backdrop-blur-sm text-white px-4 py-2 rounded-full border border-white/20 text-xs font-bold tracking-wide gap-4 items-center pointer-events-none z-10">
+        <span><kbd class="px-1.5 py-0.5 bg-white/20 rounded font-mono">WASD</kbd> / <kbd class="px-1.5 py-0.5 bg-white/20 rounded font-mono">ARROWS</kbd> Hop</span>
+        <span class="text-white/40">|</span>
+        <span class="text-cyan-300"><kbd class="px-1.5 py-0.5 bg-cyan-400 text-slate-950 rounded font-mono">F</kbd> Parry Oncoming Traffic</span>
+    </div>
+
+    <!-- Title Screen Overlay -->
+    <div id="start-screen" class="fixed inset-0 flex flex-col items-center justify-center z-30 bg-slate-950/35 backdrop-blur-[2px] p-4">
+        <div class="text-center max-w-lg w-full pop-in">
+            <div class="inline-block px-4 py-1 rounded-full bg-amber-400 border-2 border-slate-900 text-slate-950 font-extrabold text-xs sm:text-sm tracking-widest uppercase mb-3 shadow-md">
+                VOXEL DEFLECTION ARCADE
+            </div>
+            <h1 class="text-6xl sm:text-7xl font-bold text-white text-stroke-lg tracking-tight leading-none mb-2">
+                PARRY<br><span class="text-cyan-300">ROAD</span>
+            </h1>
+            <p class="text-white font-bold text-base sm:text-lg text-stroke mb-6">
+                Don't just dodge traffic—deflect cars into orbit!
+            </p>
+
+            <!-- Controls Card -->
+            <div class="bg-white/95 border-4 border-slate-900 rounded-3xl p-4 sm:p-5 mb-6 arcade-shadow text-left">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-100 rounded-2xl p-3 border-2 border-slate-200">
+                        <div class="text-xs font-extrabold text-slate-500 uppercase mb-1">Move & Hop</div>
+                        <div class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                            <kbd class="px-2 py-0.5 bg-white border-2 border-slate-900 rounded-lg font-mono text-xs">WASD</kbd>
+                            <span>or</span>
+                            <kbd class="px-2 py-0.5 bg-white border-2 border-slate-900 rounded-lg font-mono text-xs">Arrows</kbd>
+                        </div>
+                    </div>
+                    <div class="bg-cyan-50 rounded-2xl p-3 border-2 border-cyan-300">
+                        <div class="text-xs font-extrabold text-cyan-700 uppercase mb-1">Deflect Vehicles</div>
+                        <div class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-1.5">
+                            <kbd class="px-2.5 py-0.5 bg-cyan-400 border-2 border-slate-900 rounded-lg font-mono text-xs font-extrabold">F</kbd>
+                            <span>Just before impact!</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-t-2 border-slate-100 text-xs sm:text-sm font-semibold text-slate-600 flex flex-col gap-1">
+                    <span>⚡ Parrying grants <strong class="text-cyan-600">+50 PTS</strong>, combo boost & instant cooldown reset!</span>
+                    <span>🔥 <strong class="text-amber-600">FRAME-PERFECT PARRY (≤10ms):</strong> Unleashes an AoE shockwave that obliterates all nearby cars!</span>
+                </div>
+            </div>
+
+            <button id="play-btn" class="arcade-btn w-full sm:w-auto px-12 py-4 rounded-2xl bg-gradient-to-b from-emerald-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 border-4 border-slate-900 text-slate-950 font-extrabold text-2xl tracking-wide animate-pulse-fast cursor-pointer">
+                PLAY NOW
+            </button>
+            <div class="mt-3 text-white/90 text-xs font-bold text-stroke">
+                Press <span class="text-amber-300">SPACE</span> or <span class="text-amber-300">ENTER</span> to start
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameover-screen" class="hidden fixed inset-0 flex flex-col items-center justify-center z-30 bg-slate-950/55 backdrop-blur-sm p-4">
+        <div class="bg-white border-4 border-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full text-center arcade-shadow pop-in">
+            <div id="death-reason" class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-600 border-2 border-rose-300 font-extrabold text-xs uppercase tracking-wider mb-2">
+                SQUISHED BY TRAFFIC
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-5">GAME OVER</h2>
+
+            <div class="grid grid-cols-3 gap-2.5 mb-6">
+                <div class="bg-slate-100 border-2 border-slate-200 rounded-2xl p-3">
+                    <div class="text-[11px] font-extrabold text-slate-500 uppercase">Score</div>
+                    <div id="final-score" class="text-2xl sm:text-3xl font-extrabold text-slate-900">0</div>
+                </div>
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3">
+                    <div class="text-[11px] font-extrabold text-amber-700 uppercase">Best</div>
+                    <div id="final-best" class="text-2xl sm:text-3xl font-extrabold text-amber-600">0</div>
+                </div>
+                <div class="bg-cyan-50 border-2 border-cyan-300 rounded-2xl p-3">
+                    <div class="text-[11px] font-extrabold text-cyan-700 uppercase">Parries</div>
+                    <div id="final-parries" class="text-2xl sm:text-3xl font-extrabold text-cyan-600">0</div>
+                </div>
+            </div>
+
+            <button id="restart-btn" class="arcade-btn w-full py-4 rounded-2xl bg-gradient-to-b from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 border-4 border-slate-900 text-slate-950 font-extrabold text-xl tracking-wide cursor-pointer">
+                PLAY AGAIN
+            </button>
+            <div class="mt-3 text-slate-400 text-xs font-bold">
+                Press <span class="text-slate-700">SPACE</span> or <span class="text-slate-700">ENTER</span> for instant retry
+            </div>
+        </div>
+    </div>
+
+<script>
+/**
+ * PARRY ROAD
+ * A 3D Voxel Crossy-Road-style arcade game with Sekiro / ULTRAKILL-inspired 'F' Parry mechanics.
+ * Built in a single self-contained HTML file using Three.js and Web Audio API.
+ */
+
+// ==========================================
+// 1. PROCEDURAL WEB AUDIO SYNTHESIZER
+// ==========================================
+class SoundFX {
+    constructor() {
+        this.ctx = null;
+        this.muted = false;
+    }
+
+    init() {
+        if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioCtx();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+    }
+
+    toggleMute() {
+        this.muted = !this.muted;
+        return this.muted;
+    }
+
+    playHop() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(240, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.08);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.09);
+    }
+
+    playParrySwing() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(1400, now + 0.12);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.14);
+    }
+
+    playParryImpact(combo = 1) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+
+        // 1. ULTRAKILL / Sekiro Metallic Bell Clang
+        const pitchBoost = Math.min(combo * 45, 450);
+        const freqs = [1180 + pitchBoost, 1790 + pitchBoost, 2640 + pitchBoost, 3420 + pitchBoost];
+        freqs.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+            osc.frequency.setValueAtTime(f, now);
+            osc.frequency.exponentialRampToValueAtTime(f * 0.96, now + 0.55);
+
+            const vol = 0.22 / (idx + 1);
+            gain.gain.setValueAtTime(vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.0008, now + 0.55);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.56);
+        });
+
+        // 2. Heavy Sub-Bass Impact Thump
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(160, now);
+        sub.frequency.exponentialRampToValueAtTime(34, now + 0.35);
+        subGain.gain.setValueAtTime(0.55, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start(now);
+        sub.stop(now + 0.37);
+
+        // 3. Crunchy Explosion Noise Burst
+        const bufferSize = this.ctx.sampleRate * 0.28;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.08));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(900, now);
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.35, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start(now);
+    }
+
+    playPerfectParryImpact(combo = 1) {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+
+        // 1. Harmonic Bell Chord (ULTRAKILL / Sekiro Super-Deflect)
+        const pitchBoost = Math.min(combo * 35, 350);
+        const chord = [1320 + pitchBoost, 1661 + pitchBoost, 1975 + pitchBoost, 2637 + pitchBoost, 3951 + pitchBoost];
+        chord.forEach((f, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+            osc.frequency.setValueAtTime(f, now);
+            osc.frequency.exponentialRampToValueAtTime(f * 1.015, now + 0.85);
+
+            const vol = 0.24 / (idx * 0.65 + 1);
+            gain.gain.setValueAtTime(vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.88);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.9);
+        });
+
+        // 2. Massive Seismic Sub-Bass Drop
+        const sub = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        sub.type = 'sine';
+        sub.frequency.setValueAtTime(210, now);
+        sub.frequency.exponentialRampToValueAtTime(26, now + 0.65);
+        subGain.gain.setValueAtTime(0.75, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.68);
+        sub.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        sub.start(now);
+        sub.stop(now + 0.7);
+
+        // 3. Thunderous Shockwave Blast
+        const bufferSize = this.ctx.sampleRate * 0.55;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.16));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(2400, now);
+        filter.frequency.exponentialRampToValueAtTime(140, now + 0.55);
+
+        const noiseGain = this.ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.5, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.ctx.destination);
+        noise.start(now);
+    }
+
+    playCoin() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, now);
+        osc.frequency.setValueAtTime(1318.51, now + 0.065);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+    }
+
+    playHorn() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc1.type = 'sawtooth';
+        osc2.type = 'sawtooth';
+        const base = 280 + Math.random() * 90;
+        osc1.frequency.setValueAtTime(base, now);
+        osc2.frequency.setValueAtTime(base * 1.25, now);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.16);
+        osc2.stop(now + 0.16);
+    }
+
+    playSquish() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(190, now);
+        osc.frequency.exponentialRampToValueAtTime(42, now + 0.28);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    }
+
+    playSplash() {
+        if (this.muted) return;
+        this.init();
+        const now = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 0.35;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.12));
+        }
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(750, now);
+        filter.frequency.exponentialRampToValueAtTime(180, now + 0.35);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(now);
+    }
+}
+
+const sfx = new SoundFX();
+
+// ==========================================
+// 2. GAME CONSTANTS & CONFIGURATION
+// ==========================================
+const TILE_SIZE = 2.0;
+const LANE_MIN_X = -8;
+const LANE_MAX_X = 8;
+const SPAWN_X = 24;
+const VISIBLE_LANES_AHEAD = 26;
+const VISIBLE_LANES_BEHIND = 8;
+
+// Parry Timing Constants (Tuned for crisp, rewarding arcade feel)
+const PARRY_ACTIVE_DURATION = 0.26;      // 260ms total active parry window
+const PERFECT_PARRY_WINDOW = 0.010;      // First 10ms (~0.6 frames at 60fps) triggers AoE wipe!
+const PERFECT_PARRY_AOE_RADIUS = 18.0;   // ~9 tiles radius AoE obliteration
+const PARRY_COOLDOWN_DURATION = 0.65;    // 650ms cooldown on whiff (reset to 0 on hit!)
+const PARRY_REACH_BONUS = 1.15;          // Generous frontal/side parry hitbox expansion
+
+// ==========================================
+// 3. THREE.JS SCENE & LIGHTING SETUP
+// ==========================================
+const canvas = document.getElementById('game-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x7dd3fc);
+scene.fog = new THREE.Fog(0x7dd3fc, 38, 72);
+
+// Isometric-style Orthographic Camera for crisp Crossy Road feel
+let frustumSize = 23;
+const aspect = window.innerWidth / window.innerHeight;
+const camera = new THREE.OrthographicCamera(
+    (frustumSize * aspect) / -2,
+    (frustumSize * aspect) / 2,
+    frustumSize / 2,
+    frustumSize / -2,
+    1,
+    150
+);
+const CAMERA_OFFSET = new THREE.Vector3(14, 21, 16);
+camera.position.copy(CAMERA_OFFSET);
+camera.lookAt(0, 0, 0);
+
+// Lights
+const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.72);
+scene.add(hemiLight);
+
+const dirLight = new THREE.DirectionalLight(0xfffbeb, 0.9);
+dirLight.position.set(18, 32, 14);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 2048;
+dirLight.shadow.mapSize.height = 2048;
+dirLight.shadow.camera.near = 5;
+dirLight.shadow.camera.far = 95;
+const d = 28;
+dirLight.shadow.camera.left = -d;
+dirLight.shadow.camera.right = d;
+dirLight.shadow.camera.top = d;
+dirLight.shadow.camera.bottom = -d;
+dirLight.shadow.bias = -0.0005;
+scene.add(dirLight);
+scene.add(dirLight.target);
+
+// ==========================================
+// 4. VOXEL MESH BUILDERS
+// ==========================================
+function makeBox(w, h, d, color, castShadow = true, receiveShadow = true) {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    const mat = new THREE.MeshLambertMaterial({ color });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow = castShadow;
+    mesh.receiveShadow = receiveShadow;
+    return mesh;
+}
+
+function createPlayerMesh() {
+    const root = new THREE.Group();
+    const bodyGroup = new THREE.Group();
+    root.add(bodyGroup);
+
+    // Classic Voxel Chicken / Parry Hero with Cyan Scarf & Crest
+    const body = makeBox(1.05, 1.05, 1.15, 0xffffff);
+    body.position.y = 0.72;
+    bodyGroup.add(body);
+
+    // Heroic Cyan Parry Scarf
+    const scarf = makeBox(1.16, 0.24, 1.26, 0x06b6d4);
+    scarf.position.y = 0.62;
+    bodyGroup.add(scarf);
+
+    const scarfTail = makeBox(0.28, 0.45, 0.22, 0x06b6d4);
+    scarfTail.position.set(0.32, 0.48, 0.65);
+    scarfTail.rotation.x = 0.35;
+    bodyGroup.add(scarfTail);
+
+    // Red Comb on Head
+    const comb = makeBox(0.24, 0.32, 0.55, 0xf43f5e);
+    comb.position.set(0, 1.38, -0.05);
+    bodyGroup.add(comb);
+
+    // Orange Beak
+    const beak = makeBox(0.36, 0.24, 0.35, 0xf59e0b);
+    beak.position.set(0, 0.96, -0.68);
+    bodyGroup.add(beak);
+
+    // Eyes
+    const eyeL = makeBox(0.12, 0.16, 0.12, 0x0f172a);
+    eyeL.position.set(-0.54, 1.04, -0.25);
+    bodyGroup.add(eyeL);
+
+    const eyeR = makeBox(0.12, 0.16, 0.12, 0x0f172a);
+    eyeR.position.set(0.54, 1.04, -0.25);
+    bodyGroup.add(eyeR);
+
+    // Wings
+    const wingL = makeBox(0.18, 0.52, 0.65, 0xe2e8f0);
+    wingL.position.set(-0.6, 0.72, 0.05);
+    bodyGroup.add(wingL);
+
+    const wingR = makeBox(0.18, 0.52, 0.65, 0xe2e8f0);
+    wingR.position.set(0.6, 0.72, 0.05);
+    bodyGroup.add(wingR);
+
+    // Feet
+    const footL = makeBox(0.24, 0.2, 0.36, 0xf59e0b);
+    footL.position.set(-0.26, 0.1, -0.05);
+    bodyGroup.add(footL);
+
+    const footR = makeBox(0.24, 0.2, 0.36, 0xf59e0b);
+    footR.position.set(0.26, 0.1, -0.05);
+    bodyGroup.add(footR);
+
+    // Parry Energy Shield Dome (Visual feedback for 'F')
+    const shieldGeo = new THREE.OctahedronGeometry(1.45, 1);
+    const shieldMat = new THREE.MeshBasicMaterial({
+        color: 0x22d3ee,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.0
+    });
+    const shieldMesh = new THREE.Mesh(shieldGeo, shieldMat);
+    shieldMesh.position.y = 0.85;
+    root.add(shieldMesh);
+
+    // Inner glowing parry ring on ground
+    const ringGeo = new THREE.RingGeometry(1.15, 1.55, 24);
+    const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xfde047,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.0
+    });
+    const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+    ringMesh.rotation.x = -Math.PI / 2;
+    ringMesh.position.y = 0.08;
+    root.add(ringMesh);
+
+    return { root, bodyGroup, shieldMesh, shieldMat, ringMesh, ringMat };
+}
+
+function createTreeMesh() {
+    const tree = new THREE.Group();
+    const trunk = makeBox(0.65, 1.1, 0.65, 0x78350f);
+    trunk.position.y = 0.55;
+    tree.add(trunk);
+
+    const layers = [
+        { w: 1.75, h: 1.0, y: 1.5, c: 0x15803d },
+        { w: 1.35, h: 0.9, y: 2.3, c: 0x16a34a },
+        { w: 0.85, h: 0.8, y: 3.0, c: 0x22c55e }
+    ];
+    layers.forEach(l => {
+        const foliage = makeBox(l.w, l.h, l.w, l.c);
+        foliage.position.y = l.y;
+        tree.add(foliage);
+    });
+    return tree;
+}
+
+function createRockMesh() {
+    const rock = new THREE.Group();
+    const main = makeBox(1.3, 0.85, 1.15, 0x94a3b8);
+    main.position.y = 0.42;
+    rock.add(main);
+    const top = makeBox(0.85, 0.4, 0.75, 0xcbd5e1);
+    top.position.set(0.1, 0.95, -0.05);
+    rock.add(top);
+    return rock;
+}
+
+function createCoinMesh() {
+    const coin = makeBox(0.65, 0.65, 0.22, 0xfacc15);
+    coin.position.y = 0.85;
+    return coin;
+}
+
+function createVehicleMesh(type, dir) {
+    const car = new THREE.Group();
+    const palette = [0xef4444, 0x3b82f6, 0xf97316, 0xa855f7, 0xec4899, 0x14b8a6, 0xeab308];
+    const color = palette[Math.floor(Math.random() * palette.length)];
+
+    let length = 2.8;
+    let width = 1.45;
+
+    if (type === 'truck') {
+        length = 4.6;
+        // Cab
+        const cab = makeBox(1.3, 1.45, width, 0xf8fafc);
+        cab.position.set(1.45, 0.92, 0);
+        car.add(cab);
+
+        const windshield = makeBox(0.15, 0.55, width * 0.86, 0x0f172a);
+        windshield.position.set(2.06, 1.15, 0);
+        car.add(windshield);
+
+        // Cargo Trailer
+        const trailer = makeBox(3.1, 1.75, width * 1.04, color);
+        trailer.position.set(-0.7, 1.08, 0);
+        car.add(trailer);
+
+        // Wheels
+        [-1.6, -0.4, 1.4].forEach(wx => {
+            [-0.75, 0.75].forEach(wz => {
+                const wheel = makeBox(0.55, 0.55, 0.25, 0x1e293b);
+                wheel.position.set(wx, 0.28, wz);
+                car.add(wheel);
+            });
+        });
+    } else if (type === 'police') {
+        length = 3.0;
+        const chassis = makeBox(length, 0.75, width, 0x0f172a);
+        chassis.position.y = 0.58;
+        car.add(chassis);
+
+        const cabin = makeBox(1.75, 0.62, width * 0.88, 0xffffff);
+        cabin.position.set(-0.1, 1.22, 0);
+        car.add(cabin);
+
+        // Siren lightbar
+        const sirenRed = makeBox(0.28, 0.22, 0.45, 0xef4444);
+        sirenRed.position.set(-0.1, 1.62, -0.25);
+        car.add(sirenRed);
+
+        const sirenBlue = makeBox(0.28, 0.22, 0.45, 0x3b82f6);
+        sirenBlue.position.set(-0.1, 1.62, 0.25);
+        car.add(sirenBlue);
+
+        [-0.95, 0.95].forEach(wx => {
+            [-0.72, 0.72].forEach(wz => {
+                const wheel = makeBox(0.52, 0.52, 0.24, 0x1e293b);
+                wheel.position.set(wx, 0.26, wz);
+                car.add(wheel);
+            });
+        });
+    } else if (type === 'sports') {
+        length = 2.9;
+        const chassis = makeBox(length, 0.58, width, color);
+        chassis.position.y = 0.48;
+        car.add(chassis);
+
+        const cabin = makeBox(1.45, 0.48, width * 0.84, 0x0f172a);
+        cabin.position.set(-0.15, 0.98, 0);
+        car.add(cabin);
+
+        const spoiler = makeBox(0.32, 0.25, width * 0.96, 0x0f172a);
+        spoiler.position.set(-1.3, 0.9, 0);
+        car.add(spoiler);
+
+        [-0.9, 0.9].forEach(wx => {
+            [-0.72, 0.72].forEach(wz => {
+                const wheel = makeBox(0.5, 0.5, 0.24, 0x1e293b);
+                wheel.position.set(wx, 0.25, wz);
+                car.add(wheel);
+            });
+        });
+    } else {
+        // Standard Sedan
+        length = 2.75;
+        const chassis = makeBox(length, 0.72, width, color);
+        chassis.position.y = 0.55;
+        car.add(chassis);
+
+        const cabin = makeBox(1.55, 0.6, width * 0.86, 0xf8fafc);
+        cabin.position.set(-0.12, 1.18, 0);
+        car.add(cabin);
+
+        [-0.85, 0.85].forEach(wx => {
+            [-0.72, 0.72].forEach(wz => {
+                const wheel = makeBox(0.5, 0.5, 0.24, 0x1e293b);
+                wheel.position.set(wx, 0.25, wz);
+                car.add(wheel);
+            });
+        });
+    }
+
+    // Headlights (Always on +X in local space, flipped via rotation.y if dir < 0)
+    const hlL = makeBox(0.14, 0.22, 0.28, 0xfef08a, false, false);
+    hlL.position.set(length / 2 + 0.02, 0.62, -0.45);
+    car.add(hlL);
+
+    const hlR = makeBox(0.14, 0.22, 0.28, 0xfef08a, false, false);
+    hlR.position.set(length / 2 + 0.02, 0.62, 0.45);
+    car.add(hlR);
+
+    if (dir < 0) {
+        car.rotation.y = Math.PI;
+    }
+
+    return { mesh: car, length };
+}
+
+function createLogMesh(length) {
+    const log = new THREE.Group();
+    const bark = makeBox(length, 0.45, 1.45, 0x92400e, false, true);
+    bark.position.y = -0.18;
+    log.add(bark);
+
+    const endL = makeBox(0.12, 0.36, 1.25, 0xfde68a, false, false);
+    endL.position.set(-length / 2 - 0.02, -0.18, 0);
+    log.add(endL);
+
+    const endR = makeBox(0.12, 0.36, 1.25, 0xfde68a, false, false);
+    endR.position.set(length / 2 + 0.02, -0.18, 0);
+    log.add(endR);
+
+    return log;
+}
+
+// ==========================================
+// 5. GAME STATE & WORLD MANAGEMENT
+// ==========================================
+let gameState = 'START'; // 'START', 'PLAYING', 'GAMEOVER'
+let score = 0;
+let bestScore = parseInt(localStorage.getItem('parryRoadBest') || '0', 10);
+let totalParries = 0;
+let parryCombo = 0;
+let maxRowReached = 0;
+
+// Hit-stop & Camera Juice
+let hitStopTimer = 0;
+let screenShakeTimer = 0;
+let screenShakeIntensity = 0;
+
+// Dynamic Entities
+const lanes = new Map(); // rowIndex -> LaneData
+const flyingCars = [];   // Parried vehicles flying off into orbit!
+const particles = [];    // Explosion & splash voxel particles
+const shockwaves = [];   // Expanding AoE shockwave spheres/rings
+
+// Player State
+const playerMesh = createPlayerMesh();
+scene.add(playerMesh.root);
+
+const player = {
+    gridX: 0,
+    gridZ: 0, // Negative Z is forward!
+    worldX: 0,
+    worldZ: 0,
+    startX: 0,
+    startZ: 0,
+    targetX: 0,
+    targetZ: 0,
+    isHopping: false,
+    hopProgress: 0,
+    hopDuration: 0.12,
+    facingY: 0,
+    // Parry State
+    parryActiveTimer: 0,
+    parryCooldownTimer: 0,
+    parrySuccessFlag: false,
+    // Squash & Stretch
+    scaleX: 1,
+    scaleY: 1,
+    scaleZ: 1,
+    dead: false,
+    squished: false
+};
+
+// ==========================================
+// 6. LANE GENERATION & CLEANUP
+// ==========================================
+function generateLane(rowIndex) {
+    if (lanes.has(rowIndex)) return;
+
+    const zPos = -rowIndex * TILE_SIZE;
+    const group = new THREE.Group();
+    group.position.z = zPos;
+    scene.add(group);
+
+    let type = 'grass';
+    if (rowIndex <= 1) {
+        type = 'grass';
+    } else if (rowIndex === 2) {
+        // Guarantee an immediate road on row 2 so player can test parrying right away!
+        type = 'road';
+    } else {
+        const difficulty = Math.min(rowIndex / 65, 1);
+        const r = Math.random();
+        const prevLane = lanes.get(rowIndex - 1);
+        const prevType = prevLane ? prevLane.type : 'grass';
+
+        if (prevType === 'river' && Math.random() < 0.35) {
+            type = 'river';
+        } else if (r < 0.26 - difficulty * 0.08) {
+            type = 'grass';
+        } else if (r < 0.80) {
+            type = 'road';
+        } else {
+            type = 'river';
+        }
+    }
+
+    const laneData = {
+        rowIndex,
+        zPos,
+        type,
+        group,
+        obstacles: new Set(), // gridX ints for grass trees/rocks
+        coins: [],
+        vehicles: [],
+        logs: [],
+        dir: Math.random() < 0.5 ? 1 : -1,
+        speed: 0
+    };
+
+    const totalWidth = 56;
+
+    if (type === 'grass') {
+        const isEven = Math.abs(rowIndex) % 2 === 0;
+        const ground = makeBox(totalWidth, 1.0, TILE_SIZE, isEven ? 0x4ade80 : 0x22c55e, false, true);
+        ground.position.y = -0.5;
+        group.add(ground);
+
+        // Border trees outside playable corridor (-9 to +9)
+        for (let gx = -13; gx <= 13; gx++) {
+            if (gx < LANE_MIN_X || gx > LANE_MAX_X) {
+                const tree = createTreeMesh();
+                tree.position.x = gx * TILE_SIZE;
+                group.add(tree);
+                laneData.obstacles.add(gx);
+            } else if (rowIndex > 0) {
+                // Sparse interior obstacles, never blocking center spawn
+                if (Math.random() < 0.16 && !(rowIndex <= 1 && Math.abs(gx) <= 1)) {
+                    const obs = Math.random() < 0.72 ? createTreeMesh() : createRockMesh();
+                    obs.position.x = gx * TILE_SIZE;
+                    group.add(obs);
+                    laneData.obstacles.add(gx);
+                } else if (Math.random() < 0.09) {
+                    const coinMesh = createCoinMesh();
+                    coinMesh.position.x = gx * TILE_SIZE;
+                    group.add(coinMesh);
+                    laneData.coins.push({ gridX: gx, mesh: coinMesh, collected: false });
+                }
+            }
+        }
+    } else if (type === 'road') {
+        const road = makeBox(totalWidth, 0.9, TILE_SIZE, 0x334155, false, true);
+        road.position.y = -0.55;
+        group.add(road);
+
+        // Dashed lane markings
+        for (let mx = -24; mx <= 24; mx += 4) {
+            const stripe = makeBox(1.5, 0.04, 0.18, 0xe2e8f0, false, false);
+            stripe.position.set(mx, -0.09, TILE_SIZE * 0.48);
+            group.add(stripe);
+        }
+
+        const difficulty = Math.min(rowIndex / 55, 1);
+        const baseSpeed = 6.5 + difficulty * 9.5 + Math.random() * 4.5;
+        laneData.speed = baseSpeed;
+
+        // Populate initial vehicles along the road
+        const vehicleTypes = ['sedan', 'sedan', 'sports', 'police', 'truck'];
+        const vType = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
+        const count = vType === 'truck' ? 2 : (Math.random() < 0.45 ? 3 : 2);
+        const spacing = (SPAWN_X * 2) / count;
+
+        for (let i = 0; i < count; i++) {
+            const { mesh, length } = createVehicleMesh(vType, laneData.dir);
+            const startX = -SPAWN_X + i * spacing + (Math.random() * 4 - 2);
+            mesh.position.x = startX;
+            group.add(mesh);
+            laneData.vehicles.push({
+                mesh,
+                x: startX,
+                length,
+                type: vType,
+                honked: false
+            });
+        }
+    } else if (type === 'river') {
+        const water = makeBox(totalWidth, 0.72, TILE_SIZE, 0x0ea5e9, false, true);
+        water.position.y = -0.64;
+        group.add(water);
+
+        // Ensure opposite direction from adjacent river so player doesn't get swept away unfairly
+        const prevLane = lanes.get(rowIndex - 1);
+        if (prevLane && prevLane.type === 'river') {
+            laneData.dir = -prevLane.dir;
+        }
+
+        const difficulty = Math.min(rowIndex / 60, 1);
+        laneData.speed = 4.2 + difficulty * 4.8 + Math.random() * 2.2;
+
+        const logLength = Math.random() < 0.45 ? 3 * TILE_SIZE : 2 * TILE_SIZE;
+        const count = 3;
+        const spacing = (SPAWN_X * 2) / count;
+
+        for (let i = 0; i < count; i++) {
+            const mesh = createLogMesh(logLength);
+            const startX = -SPAWN_X + i * spacing + (Math.random() * 2.5 - 1.25);
+            mesh.position.x = startX;
+            group.add(mesh);
+            laneData.logs.push({
+                mesh,
+                x: startX,
+                length: logLength
+            });
+        }
+    }
+
+    lanes.set(rowIndex, laneData);
+}
+
+function removeLane(rowIndex) {
+    const lane = lanes.get(rowIndex);
+    if (!lane) return;
+    scene.remove(lane.group);
+    lanes.delete(rowIndex);
+}
+
+function clearAllLanes() {
+    for (const [idx, lane] of lanes.entries()) {
+        scene.remove(lane.group);
+    }
+    lanes.clear();
+}
+
+// ==========================================
+// 7. PARTICLES, SHOCKWAVES & JUICE CALLOUTS
+// ==========================================
+function spawnParticles(x, y, z, colors, count = 18, speedScale = 1.0) {
+    for (let i = 0; i < count; i++) {
+        const size = 0.18 + Math.random() * 0.28;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const mesh = makeBox(size, size, size, color, false, false);
+        mesh.position.set(x, y, z);
+        scene.add(mesh);
+
+        const angle = Math.random() * Math.PI * 2;
+        const spd = (4 + Math.random() * 11) * speedScale;
+        particles.push({
+            mesh,
+            vx: Math.cos(angle) * spd,
+            vy: (5 + Math.random() * 11) * speedScale,
+            vz: Math.sin(angle) * spd,
+            rx: (Math.random() - 0.5) * 18,
+            ry: (Math.random() - 0.5) * 18,
+            life: 0.55 + Math.random() * 0.35,
+            maxLife: 0.9
+        });
+    }
+}
+
+function spawnPerfectParryShockwave(x, y, z) {
+    // 1. Expanding golden wireframe sphere
+    const sphereGeo = new THREE.SphereGeometry(1.0, 20, 14);
+    const sphereMat = new THREE.MeshBasicMaterial({
+        color: 0xfde047,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.95
+    });
+    const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    sphere.position.set(x, y + 0.6, z);
+    scene.add(sphere);
+
+    // 2. Ground shockwave ring
+    const ringGeo = new THREE.RingGeometry(0.7, 1.0, 36);
+    const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xf59e0b,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.95
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(x, 0.14, z);
+    scene.add(ring);
+
+    shockwaves.push({
+        sphere,
+        sphereMat,
+        ring,
+        ringMat,
+        timer: 0,
+        duration: 0.48,
+        maxRadius: PERFECT_PARRY_AOE_RADIUS
+    });
+}
+
+function spawnScreenCallout(worldPos, titleText, subText, colorClass = 'text-cyan-300') {
+    const projected = worldPos.clone().project(camera);
+    const screenX = (projected.x * 0.5 + 0.5) * window.innerWidth;
+    const screenY = (-projected.y * 0.5 + 0.5) * window.innerHeight;
+
+    const el = document.createElement('div');
+    el.className = 'fixed callout-float pointer-events-none text-center z-30';
+    el.style.left = `${Math.max(90, Math.min(window.innerWidth - 90, screenX))}px`;
+    el.style.top = `${Math.max(80, Math.min(window.innerHeight - 100, screenY - 24))}px`;
+    el.innerHTML = `
+        <div class="font-extrabold text-xl sm:text-2xl ${colorClass} text-stroke tracking-wider whitespace-nowrap">${titleText}</div>
+        ${subText ? `<div class="font-mono font-extrabold text-xs sm:text-sm text-white text-stroke mt-0.5">${subText}</div>` : ''}
+    `;
+    document.getElementById('callout-layer').appendChild(el);
+    setTimeout(() => el.remove(), 960);
+}
+
+function triggerScreenFlash(colorHex = '#ffffff', opacity = 0.55, durationMs = 110) {
+    const overlay = document.getElementById('flash-overlay');
+    overlay.style.backgroundColor = colorHex;
+    overlay.style.opacity = String(opacity);
+    setTimeout(() => {
+        overlay.style.opacity = '0';
+    }, durationMs);
+}
+
+// ==========================================
+// 8. VEHICLE LAUNCH & PARRY RESOLUTION
+// ==========================================
+function launchVehicleFromLane(lane, vehicleIndex, blastOrigin = null) {
+    const v = lane.vehicles[vehicleIndex];
+    lane.vehicles.splice(vehicleIndex, 1);
+
+    const worldPos = new THREE.Vector3();
+    v.mesh.getWorldPosition(worldPos);
+
+    // Reparent directly to scene so it can fly freely in 3D space
+    lane.group.remove(v.mesh);
+    v.mesh.position.copy(worldPos);
+    scene.add(v.mesh);
+
+    let vx, vy, vz;
+    if (blastOrigin) {
+        // Radial AoE blast away from player!
+        const dx = worldPos.x - blastOrigin.x;
+        const dz = worldPos.z - blastOrigin.z;
+        const dist = Math.hypot(dx, dz) || 1;
+        const radialSpeed = 24 + Math.random() * 14;
+        vx = (dx / dist) * radialSpeed + (Math.random() - 0.5) * 8;
+        vz = (dz / dist) * radialSpeed + (Math.random() - 0.5) * 8;
+        vy = 26 + Math.random() * 14;
+    } else {
+        // Standard parry launch opposite to incoming velocity + skyward spin
+        vx = -lane.dir * (22 + Math.random() * 10);
+        vy = 22 + Math.random() * 8;
+        vz = -14 - Math.random() * 10;
+    }
+
+    flyingCars.push({
+        mesh: v.mesh,
+        vx,
+        vy,
+        vz,
+        rx: (Math.random() - 0.5) * 16,
+        ry: (Math.random() - 0.5) * 16,
+        rz: (Math.random() - 0.5) * 16,
+        life: 1.5
+    });
+
+    return worldPos;
+}
+
+function executeParry(lane, vehicleIndex) {
+    const elapsedSincePress = PARRY_ACTIVE_DURATION - player.parryActiveTimer;
+    const isFramePerfect = elapsedSincePress <= PERFECT_PARRY_WINDOW;
+
+    // Reset cooldown immediately so player can chain parries!
+    player.parryCooldownTimer = 0;
+    player.parrySuccessFlag = true;
+
+    // Squash & stretch pop on player
+    player.scaleX = 1.35;
+    player.scaleY = 0.72;
+    player.scaleZ = 1.35;
+
+    if (isFramePerfect) {
+        // ========================================================
+        // FRAME-PERFECT PARRY (<= 10ms): AOE SHOCKWAVE OBLITERATION!
+        // ========================================================
+        const primaryPos = launchVehicleFromLane(lane, vehicleIndex, playerMesh.root.position);
+        spawnParticles(primaryPos.x, primaryPos.y + 0.8, primaryPos.z, [0xfde047, 0xf59e0b, 0xffffff, 0x22d3ee], 28, 1.35);
+
+        let wipedCount = 1;
+        const playerPos = playerMesh.root.position;
+
+        // Sweep all lanes and obliterate every vehicle within PERFECT_PARRY_AOE_RADIUS
+        for (const [, otherLane] of lanes.entries()) {
+            if (otherLane.type !== 'road') continue;
+            for (let j = otherLane.vehicles.length - 1; j >= 0; j--) {
+                const ov = otherLane.vehicles[j];
+                const dist = Math.hypot(ov.x - playerPos.x, otherLane.zPos - playerPos.z);
+                if (dist <= PERFECT_PARRY_AOE_RADIUS) {
+                    const blastPos = launchVehicleFromLane(otherLane, j, playerPos);
+                    spawnParticles(blastPos.x, blastPos.y + 0.8, blastPos.z, [0xfde047, 0xf97316, 0x22d3ee, 0xffffff], 18, 1.25);
+                    wipedCount++;
+                }
+            }
+        }
+
+        totalParries += wipedCount;
+        parryCombo += wipedCount;
+
+        // Award +100 * combo per car obliterated in the AoE shockwave
+        const pointsPerCar = 100 * parryCombo;
+        const totalPointsEarned = pointsPerCar * wipedCount;
+        score += totalPointsEarned;
+        if (score > bestScore) {
+            bestScore = score;
+            localStorage.setItem('parryRoadBest', String(bestScore));
+        }
+
+        // Golden shield flare & AoE shockwave visual
+        playerMesh.shieldMat.color.setHex(0xfde047);
+        playerMesh.shieldMat.opacity = 1.0;
+        spawnPerfectParryShockwave(playerPos.x, playerPos.y, playerPos.z);
+
+        // Heavy Hit-stop, golden flash, seismic camera shake & harmonic chord
+        hitStopTimer = 0.135;
+        screenShakeTimer = 0.36;
+        screenShakeIntensity = 0.72;
+        triggerScreenFlash('#fde047', 0.65, 140);
+        sfx.playPerfectParryImpact(parryCombo);
+
+        const subLabel = wipedCount > 1
+            ? `${wipedCount} CARS WIPED! +${totalPointsEarned}`
+            : `+${totalPointsEarned}`;
+        spawnScreenCallout(playerMesh.root.position, '10ms PERFECT PARRY! +AOE WIPE!', subLabel, 'text-amber-300');
+        updateHUD();
+    } else {
+        // ========================================================
+        // STANDARD PARRY (10ms - 260ms): SINGLE-CAR DEFLECTION
+        // ========================================================
+        const worldPos = launchVehicleFromLane(lane, vehicleIndex, null);
+        spawnParticles(worldPos.x, worldPos.y + 0.8, worldPos.z, [0x22d3ee, 0xfde047, 0xffffff, 0xf97316], 22, 1.15);
+
+        totalParries += 1;
+        parryCombo += 1;
+
+        const pts = 50 * parryCombo;
+        score += pts;
+        if (score > bestScore) {
+            bestScore = score;
+            localStorage.setItem('parryRoadBest', String(bestScore));
+        }
+
+        // Crisp cyan hit-stop, flash & shake
+        hitStopTimer = 0.075;
+        screenShakeTimer = 0.22;
+        screenShakeIntensity = 0.42;
+        triggerScreenFlash('#ffffff', 0.45, 95);
+        sfx.playParryImpact(parryCombo);
+
+        spawnScreenCallout(playerMesh.root.position, `PARRY! x${parryCombo}`, `+${pts}`, 'text-cyan-300');
+        updateHUD();
+    }
+}
+
+// ==========================================
+// 9. PLAYER INPUTS & ACTIONS
+// ==========================================
+function triggerParry() {
+    if (gameState !== 'PLAYING' || player.dead) return;
+    if (player.parryActiveTimer > 0 || player.parryCooldownTimer > 0) return;
+
+    player.parryActiveTimer = PARRY_ACTIVE_DURATION;
+    player.parryCooldownTimer = PARRY_COOLDOWN_DURATION;
+    player.parrySuccessFlag = false;
+
+    // Reset shield color to cyan at the start of parry
+    playerMesh.shieldMat.color.setHex(0x22d3ee);
+    player.scaleX = 1.18;
+    player.scaleY = 0.86;
+    player.scaleZ = 1.18;
+
+    sfx.playParrySwing();
+}
+
+function tryHop(dx, dz) {
+    if (gameState !== 'PLAYING' || player.dead || player.isHopping) return;
+
+    // Update facing rotation immediately
+    if (dz < 0) player.facingY = 0;
+    else if (dz > 0) player.facingY = Math.PI;
+    else if (dx < 0) player.facingY = Math.PI / 2;
+    else if (dx > 0) player.facingY = -Math.PI / 2;
+
+    const nextGridX = Math.round(player.worldX / TILE_SIZE) + dx;
+    const nextRow = Math.round(-player.worldZ / TILE_SIZE) - dz;
+
+    if (nextGridX < LANE_MIN_X || nextGridX > LANE_MAX_X) return;
+    if (nextRow < maxRowReached - 4) return; // Prevent hopping too far backwards off camera
+
+    generateLane(nextRow);
+    const targetLane = lanes.get(nextRow);
+    if (targetLane && targetLane.type === 'grass' && targetLane.obstacles.has(nextGridX)) {
+        // Blocked by tree or rock: cute bump animation
+        player.scaleX = 1.15;
+        player.scaleY = 0.85;
+        return;
+    }
+
+    player.isHopping = true;
+    player.hopProgress = 0;
+    player.startX = player.worldX;
+    player.startZ = player.worldZ;
+    player.targetX = nextGridX * TILE_SIZE;
+    player.targetZ = -nextRow * TILE_SIZE;
+    player.gridX = nextGridX;
+    player.gridZ = -nextRow;
+
+    // Stretch on jump
+    player.scaleX = 0.82;
+    player.scaleY = 1.28;
+    player.scaleZ = 0.82;
+
+    sfx.playHop();
+
+    if (nextRow > maxRowReached) {
+        const diff = nextRow - maxRowReached;
+        maxRowReached = nextRow;
+        score += diff;
+        if (score > bestScore) {
+            bestScore = score;
+            localStorage.setItem('parryRoadBest', String(bestScore));
+        }
+        updateHUD();
+    }
+}
+
+// Keyboard Controls
+window.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
+    const key = e.key.toLowerCase();
+
+    if (gameState === 'START' || gameState === 'GAMEOVER') {
+        if (key === ' ' || key === 'enter') {
+            e.preventDefault();
+            startGame();
+        }
+        return;
+    }
+
+    if (key === 'w' || key === 'arrowup') {
+        e.preventDefault();
+        tryHop(0, -1);
+    } else if (key === 's' || key === 'arrowdown') {
+        e.preventDefault();
+        tryHop(0, 1);
+    } else if (key === 'a' || key === 'arrowleft') {
+        e.preventDefault();
+        tryHop(-1, 0);
+    } else if (key === 'd' || key === 'arrowright') {
+        e.preventDefault();
+        tryHop(1, 0);
+    } else if (key === 'f') {
+        e.preventDefault();
+        triggerParry();
+    }
+});
+
+// Touch / Mobile Buttons
+document.querySelectorAll('.touch-dir').forEach(btn => {
+    btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        const dir = btn.dataset.dir;
+        if (dir === 'up') tryHop(0, -1);
+        if (dir === 'down') tryHop(0, 1);
+        if (dir === 'left') tryHop(-1, 0);
+        if (dir === 'right') tryHop(1, 0);
+    });
+});
+
+document.getElementById('mobile-parry-btn').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    triggerParry();
+});
+
+// Swipe Gesture Support on Canvas
+let touchStartX = 0;
+let touchStartY = 0;
+canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 0) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }
+}, { passive: true });
+
+canvas.addEventListener('touchend', (e) => {
+    if (gameState !== 'PLAYING' || e.changedTouches.length === 0) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+
+    if (Math.max(absX, absY) < 22) {
+        // Quick tap on canvas hops forward
+        tryHop(0, -1);
+    } else if (absX > absY) {
+        tryHop(dx > 0 ? 1 : -1, 0);
+    } else {
+        tryHop(0, dy > 0 ? 1 : -1);
+    }
+}, { passive: true });
+
+// UI Buttons
+document.getElementById('play-btn').addEventListener('click', startGame);
+document.getElementById('restart-btn').addEventListener('click', startGame);
+document.getElementById('mute-btn').addEventListener('click', () => {
+    const isMuted = sfx.toggleMute();
+    document.getElementById('icon-sound-on').classList.toggle('hidden', isMuted);
+    document.getElementById('icon-sound-off').classList.toggle('hidden', !isMuted);
+});
+
+// ==========================================
+// 10. HUD & GAME LIFECYCLE
+// ==========================================
+function updateHUD() {
+    document.getElementById('score-display').textContent = score;
+    document.getElementById('best-display').textContent = bestScore;
+    document.getElementById('parry-count-display').textContent = totalParries;
+
+    const comboBadge = document.getElementById('combo-badge');
+    if (parryCombo > 0) {
+        comboBadge.textContent = `PARRY x${parryCombo}`;
+        comboBadge.classList.remove('hidden');
+    } else {
+        comboBadge.classList.add('hidden');
+    }
+}
+
+function updateParryMeterUI() {
+    const bar = document.getElementById('parry-bar');
+    const statusText = document.getElementById('parry-status-text');
+
+    if (player.parryActiveTimer > 0) {
+        const pct = (player.parryActiveTimer / PARRY_ACTIVE_DURATION) * 100;
+        bar.style.width = `${pct}%`;
+        bar.className = 'h-full bg-amber-300';
+        statusText.textContent = 'ACTIVE!';
+        statusText.className = 'text-amber-300';
+    } else if (player.parryCooldownTimer > 0) {
+        const pct = Math.max(0, (1 - player.parryCooldownTimer / PARRY_COOLDOWN_DURATION) * 100);
+        bar.style.width = `${pct}%`;
+        bar.className = 'h-full bg-rose-400';
+        statusText.textContent = 'RECHARGING';
+        statusText.className = 'text-rose-400';
+    } else {
+        bar.style.width = '100%';
+        bar.className = 'h-full bg-gradient-to-r from-cyan-400 to-amber-300';
+        statusText.textContent = 'READY';
+        statusText.className = 'text-cyan-300';
+    }
+}
+
+function triggerGameOver(reasonText) {
+    if (player.dead) return;
+    player.dead = true;
+    gameState = 'GAMEOVER';
+
+    document.getElementById('death-reason').textContent = reasonText;
+    document.getElementById('final-score').textContent = score;
+    document.getElementById('final-best').textContent = bestScore;
+    document.getElementById('final-parries').textContent = totalParries;
+
+    setTimeout(() => {
+        document.getElementById('gameover-screen').classList.remove('hidden');
+    }, 450);
+}
+
+function startGame() {
+    sfx.init();
+    clearAllLanes();
+
+    // Clear flying cars & particles
+    while (flyingCars.length) scene.remove(flyingCars.pop().mesh);
+    while (particles.length) scene.remove(particles.pop().mesh);
+    while (shockwaves.length) {
+        const sw = shockwaves.pop();
+        scene.remove(sw.sphere);
+        scene.remove(sw.ring);
+    }
+
+    score = 0;
+    totalParries = 0;
+    parryCombo = 0;
+    maxRowReached = 0;
+    hitStopTimer = 0;
+    screenShakeTimer = 0;
+
+    player.gridX = 0;
+    player.gridZ = 0;
+    player.worldX = 0;
+    player.worldZ = 0;
+    player.startX = 0;
+    player.startZ = 0;
+    player.targetX = 0;
+    player.targetZ = 0;
+    player.isHopping = false;
+    player.hopProgress = 0;
+    player.facingY = 0;
+    player.parryActiveTimer = 0;
+    player.parryCooldownTimer = 0;
+    player.scaleX = 1;
+    player.scaleY = 1;
+    player.scaleZ = 1;
+    player.dead = false;
+    player.squished = false;
+
+    playerMesh.root.position.set(0, 0, 0);
+    playerMesh.root.visible = true;
+    playerMesh.bodyGroup.scale.set(1, 1, 1);
+    playerMesh.bodyGroup.position.set(0, 0, 0);
+    playerMesh.bodyGroup.rotation.set(0, 0, 0);
+
+    for (let r = -VISIBLE_LANES_BEHIND; r <= VISIBLE_LANES_AHEAD; r++) {
+        generateLane(r);
+    }
+
+    camera.position.copy(CAMERA_OFFSET);
+    camera.lookAt(0, 0, 0);
+
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('gameover-screen').classList.add('hidden');
+    updateHUD();
+    updateParryMeterUI();
+
+    gameState = 'PLAYING';
+}
+
+// ==========================================
+// 11. MAIN SIMULATION & RENDER LOOP
+// ==========================================
+function update(dt) {
+    // Handle Hit-Stop Freeze Frame on Parry Impact
+    if (hitStopTimer > 0) {
+        hitStopTimer -= dt;
+        return;
+    }
+
+    // Update Parry Timers
+    if (player.parryActiveTimer > 0) {
+        player.parryActiveTimer = Math.max(0, player.parryActiveTimer - dt);
+        const isPerfectWindow = (PARRY_ACTIVE_DURATION - player.parryActiveTimer) <= PERFECT_PARRY_WINDOW;
+        playerMesh.shieldMat.opacity = 0.85;
+        playerMesh.ringMat.opacity = 0.8;
+        playerMesh.shieldMesh.rotation.y += dt * 14;
+        playerMesh.shieldMesh.rotation.x += dt * 9;
+        const pulse = (isPerfectWindow ? 1.18 : 1.0) + Math.sin(performance.now() * 0.04) * 0.08;
+        playerMesh.shieldMesh.scale.setScalar(pulse);
+        playerMesh.ringMesh.scale.setScalar(pulse);
+    } else {
+        playerMesh.shieldMat.opacity = Math.max(0, playerMesh.shieldMat.opacity - dt * 10);
+        playerMesh.ringMat.opacity = Math.max(0, playerMesh.ringMat.opacity - dt * 10);
+    }
+
+    if (player.parryCooldownTimer > 0) {
+        player.parryCooldownTimer = Math.max(0, player.parryCooldownTimer - dt);
+    }
+    updateParryMeterUI();
+
+    // Update Player Hop Movement
+    let hopArcY = 0;
+    if (player.isHopping && !player.dead) {
+        player.hopProgress += dt / player.hopDuration;
+        if (player.hopProgress >= 1) {
+            player.hopProgress = 1;
+            player.isHopping = false;
+            // Squash on landing
+            player.scaleX = 1.22;
+            player.scaleY = 0.78;
+            player.scaleZ = 1.22;
+        }
+        const t = player.hopProgress;
+        player.worldX = player.startX + (player.targetX - player.startX) * t;
+        player.worldZ = player.startZ + (player.targetZ - player.startZ) * t;
+        hopArcY = Math.sin(t * Math.PI) * 1.15;
+    }
+
+    // Recover Squash & Stretch smoothly
+    player.scaleX += (1 - player.scaleX) * Math.min(1, dt * 16);
+    player.scaleY += (1 - player.scaleY) * Math.min(1, dt * 16);
+    player.scaleZ += (1 - player.scaleZ) * Math.min(1, dt * 16);
+
+    if (!player.squished) {
+        playerMesh.bodyGroup.scale.set(player.scaleX, player.scaleY, player.scaleZ);
+    }
+    playerMesh.bodyGroup.position.y = hopArcY;
+
+    // Smooth facing rotation
+    let angleDiff = player.facingY - playerMesh.bodyGroup.rotation.y;
+    while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+    while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+    playerMesh.bodyGroup.rotation.y += angleDiff * Math.min(1, dt * 22);
+
+    // Ensure upcoming lanes exist & cull old ones behind camera
+    const currentRow = Math.round(-player.worldZ / TILE_SIZE);
+    for (let r = currentRow - VISIBLE_LANES_BEHIND; r <= currentRow + VISIBLE_LANES_AHEAD; r++) {
+        generateLane(r);
+    }
+    for (const [r] of lanes.entries()) {
+        if (r < maxRowReached - VISIBLE_LANES_BEHIND - 2) {
+            removeLane(r);
+        }
+    }
+
+    // Update Lanes, Vehicles, Logs & Coins
+    const activeLane = lanes.get(currentRow);
+    let onLog = false;
+
+    for (const [r, lane] of lanes.entries()) {
+        if (lane.type === 'road') {
+            for (let i = lane.vehicles.length - 1; i >= 0; i--) {
+                const v = lane.vehicles[i];
+                v.x += lane.dir * lane.speed * dt;
+                if (lane.dir > 0 && v.x > SPAWN_X + 6) {
+                    v.x = -SPAWN_X - 4;
+                    v.honked = false;
+                } else if (lane.dir < 0 && v.x < -SPAWN_X - 6) {
+                    v.x = SPAWN_X + 4;
+                    v.honked = false;
+                }
+                v.mesh.position.x = v.x;
+
+                // Check interaction with player when playing
+                if (gameState === 'PLAYING' && !player.dead) {
+                    const zDist = Math.abs(player.worldZ - lane.zPos);
+                    const xDist = Math.abs(player.worldX - v.x);
+                    const halfVehicle = v.length * 0.5;
+                    const playerHalf = 0.48;
+
+                    // Play warning horn when car approaches close to player
+                    if (!v.honked && zDist < TILE_SIZE * 1.2 && xDist < halfVehicle + 4.5 && xDist > halfVehicle + 1.0) {
+                        const movingToward = (lane.dir > 0 && v.x < player.worldX) || (lane.dir < 0 && v.x > player.worldX);
+                        if (movingToward && Math.random() < 0.35) {
+                            sfx.playHorn();
+                        }
+                        v.honked = true;
+                    }
+
+                    // 1. Check Parry Hitbox (Expanded slightly for crisp, rewarding deflection!)
+                    if (player.parryActiveTimer > 0) {
+                        if (zDist < TILE_SIZE * 0.85 && xDist < halfVehicle + playerHalf + PARRY_REACH_BONUS) {
+                            executeParry(lane, i);
+                            break;
+                        }
+                    }
+
+                    // 2. Check Lethal Collision (Only when not mid-air high over bumper & not parrying)
+                    if (zDist < TILE_SIZE * 0.48 && xDist < halfVehicle + playerHalf - 0.14) {
+                        player.squished = true;
+                        playerMesh.bodyGroup.scale.set(1.55, 0.14, 1.55);
+                        playerMesh.bodyGroup.position.y = 0.05;
+                        sfx.playSquish();
+                        spawnParticles(player.worldX, 0.5, player.worldZ, [0xffffff, 0x06b6d4, 0xf43f5e], 18, 0.8);
+                        screenShakeTimer = 0.25;
+                        screenShakeIntensity = 0.45;
+                        triggerGameOver('SQUISHED BY TRAFFIC');
+                    }
+                }
+            }
+        } else if (lane.type === 'river') {
+            for (const log of lane.logs) {
+                log.x += lane.dir * lane.speed * dt;
+                if (lane.dir > 0 && log.x > SPAWN_X + 6) {
+                    log.x = -SPAWN_X - 4;
+                } else if (lane.dir < 0 && log.x < -SPAWN_X - 6) {
+                    log.x = SPAWN_X + 4;
+                }
+                log.mesh.position.x = log.x;
+
+                // Carry player if standing on this log
+                if (gameState === 'PLAYING' && !player.dead && !player.isHopping && r === currentRow) {
+                    if (Math.abs(player.worldX - log.x) <= log.length * 0.5 + 0.22) {
+                        onLog = true;
+                        player.worldX += lane.dir * lane.speed * dt;
+                    }
+                }
+            }
+        } else if (lane.type === 'grass') {
+            // Spin coins & check pickup
+            for (const coin of lane.coins) {
+                if (!coin.collected) {
+                    coin.mesh.rotation.y += dt * 3.2;
+                    coin.mesh.position.y = 0.85 + Math.sin(performance.now() * 0.005 + coin.gridX) * 0.12;
+
+                    if (gameState === 'PLAYING' && !player.dead && r === currentRow) {
+                        if (Math.abs(player.worldX - coin.gridX * TILE_SIZE) < 0.95) {
+                            coin.collected = true;
+                            coin.mesh.visible = false;
+                            score += 10;
+                            if (score > bestScore) {
+                                bestScore = score;
+                                localStorage.setItem('parryRoadBest', String(bestScore));
+                            }
+                            sfx.playCoin();
+                            spawnParticles(player.worldX, 1.0, player.worldZ, [0xfacc15, 0xfef08a], 10, 0.65);
+                            spawnScreenCallout(playerMesh.root.position, '+10', '', 'text-amber-300');
+                            updateHUD();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // River drowning & off-screen drift check
+    if (gameState === 'PLAYING' && !player.dead && !player.isHopping && activeLane) {
+        if (activeLane.type === 'river' && !onLog) {
+            playerMesh.root.visible = false;
+            sfx.playSplash();
+            spawnParticles(player.worldX, 0.2, player.worldZ, [0x38bdf8, 0xe0f2fe, 0xffffff], 22, 0.85);
+            triggerGameOver('FELL IN THE RIVER');
+        } else if (Math.abs(player.worldX) > (LANE_MAX_X + 1.2) * TILE_SIZE) {
+            sfx.playSplash();
+            triggerGameOver('SWEPT OFF THE MAP');
+        }
+    }
+
+    playerMesh.root.position.set(player.worldX, 0, player.worldZ);
+
+    // Update Parried Flying Vehicles
+    for (let i = flyingCars.length - 1; i >= 0; i--) {
+        const fc = flyingCars[i];
+        fc.life -= dt;
+        fc.vy -= 42 * dt; // Gravity
+        fc.mesh.position.x += fc.vx * dt;
+        fc.mesh.position.y += fc.vy * dt;
+        fc.mesh.position.z += fc.vz * dt;
+        fc.mesh.rotation.x += fc.rx * dt;
+        fc.mesh.rotation.y += fc.ry * dt;
+        fc.mesh.rotation.z += fc.rz * dt;
+
+        if (fc.life <= 0 || fc.mesh.position.y < -15) {
+            scene.remove(fc.mesh);
+            flyingCars.splice(i, 1);
+        }
+    }
+
+    // Update Particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.life -= dt;
+        p.vy -= 28 * dt;
+        p.mesh.position.x += p.vx * dt;
+        p.mesh.position.y += p.vy * dt;
+        p.mesh.position.z += p.vz * dt;
+        p.mesh.rotation.x += p.rx * dt;
+        p.mesh.rotation.y += p.ry * dt;
+        const s = Math.max(0.01, p.life / p.maxLife);
+        p.mesh.scale.setScalar(s);
+
+        if (p.life <= 0) {
+            scene.remove(p.mesh);
+            particles.splice(i, 1);
+        }
+    }
+
+    // Update Expanding AoE Shockwaves
+    for (let i = shockwaves.length - 1; i >= 0; i--) {
+        const sw = shockwaves[i];
+        sw.timer += dt;
+        const progress = Math.min(1, sw.timer / sw.duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const radius = 1.0 + eased * (sw.maxRadius - 1.0);
+
+        sw.sphere.scale.setScalar(radius);
+        sw.ring.scale.setScalar(radius);
+        sw.sphereMat.opacity = (1 - progress) * 0.85;
+        sw.ringMat.opacity = (1 - progress) * 0.95;
+
+        if (progress >= 1) {
+            scene.remove(sw.sphere);
+            scene.remove(sw.ring);
+            shockwaves.splice(i, 1);
+        }
+    }
+
+    // Smooth Camera Follow + Screen Shake
+    const targetCamFocusX = player.worldX * 0.45;
+    const targetCamFocusZ = Math.min(player.worldZ, -maxRowReached * TILE_SIZE + 3.5);
+
+    const desiredCamPos = new THREE.Vector3(
+        targetCamFocusX + CAMERA_OFFSET.x,
+        CAMERA_OFFSET.y,
+        targetCamFocusZ + CAMERA_OFFSET.z
+    );
+    camera.position.lerp(desiredCamPos, Math.min(1, dt * 6.5));
+
+    if (screenShakeTimer > 0) {
+        screenShakeTimer -= dt;
+        camera.position.x += (Math.random() - 0.5) * screenShakeIntensity * 2;
+        camera.position.y += (Math.random() - 0.5) * screenShakeIntensity * 2;
+    }
+
+    dirLight.position.set(targetCamFocusX + 18, 32, targetCamFocusZ + 14);
+    dirLight.target.position.set(targetCamFocusX, 0, targetCamFocusZ);
+    dirLight.target.updateMatrixWorld();
+}
+
+// Handle Window Resize
+window.addEventListener('resize', () => {
+    const newAspect = window.innerWidth / window.innerHeight;
+    frustumSize = window.innerWidth < 640 ? 26 : 23;
+    camera.left = (frustumSize * newAspect) / -2;
+    camera.right = (frustumSize * newAspect) / 2;
+    camera.top = frustumSize / 2;
+    camera.bottom = frustumSize / -2;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Initialize background preview world on Title Screen
+(function initTitlePreview() {
+    document.getElementById('best-display').textContent = bestScore;
+    for (let r = -VISIBLE_LANES_BEHIND; r <= VISIBLE_LANES_AHEAD; r++) {
+        generateLane(r);
+    }
+})();
+
+let lastTime = performance.now();
+function animate(now) {
+    requestAnimationFrame(animate);
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+
+    update(dt);
+    renderer.render(scene, camera);
+}
+
+window.onload = function () {
+    animate(performance.now());
+};
+</script>
+</body>
+</html>
