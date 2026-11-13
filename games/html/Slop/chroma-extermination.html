@@ -283,6 +283,21 @@
                 </div>
             </div>
 
+            <div class="mb-4 text-left bg-slate-900/75 rounded-2xl p-3 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Run Mode</span>
+                    <span class="font-mono-code text-[10px] text-slate-400">every 10 kills grants a module</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" data-mode="classic" class="mode-btn rounded-xl p-2.5 border text-left transition bg-indigo-500/20 border-indigo-400 text-white font-bold text-[11px] tracking-wider uppercase">
+                        Classic
+                    </button>
+                    <button type="button" data-mode="endless" class="mode-btn rounded-xl p-2.5 border text-left transition bg-slate-900/80 border-slate-700/80 hover:border-slate-500 text-slate-300 font-bold text-[11px] tracking-wider uppercase">
+                        Endless
+                    </button>
+                </div>
+            </div>
+
             <div class="grid grid-cols-3 gap-2 text-left mb-4 text-xs">
                 <div class="bg-slate-900/75 rounded-xl p-2.5 border border-slate-800">
                     <div class="font-bold text-indigo-300 mb-0.5">MOVE & AIM</div>
@@ -1105,11 +1120,14 @@
             previousStatus: 'START',
             selectedBits: 24,
             selectedClass: 'vanguard',
+            selectedMode: 'classic',
+            isEndless: false,
             difficultyMult: 1.0,
             wave: 1,
             rerollsLeft: 2,
             usedColorIds: new Set(),
             killedColors: [],
+            killsSinceUpgrade: 0,
             player: null,
             bullets: [],
             enemyBullets: [],
@@ -1269,6 +1287,8 @@
         function resetGame() {
             gameState.wave = 1;
             gameState.rerollsLeft = 2;
+            gameState.isEndless = gameState.selectedMode === 'endless';
+            gameState.killsSinceUpgrade = 0;
             gameState.usedColorIds.clear();
             gameState.killedColors = [];
             gameState.bullets = [];
@@ -1345,8 +1365,12 @@
 
         function spawnWave(wave) {
             const mode = BIT_MODES[gameState.selectedBits] || BIT_MODES[24];
-            const remainingSpectrum = mode.totalColors - gameState.usedColorIds.size;
-            if (remainingSpectrum <= 0) {
+            let remainingSpectrum = mode.totalColors - gameState.usedColorIds.size;
+            if (gameState.isEndless && remainingSpectrum <= 0) {
+                gameState.usedColorIds.clear();
+                remainingSpectrum = mode.totalColors;
+            }
+            if (!gameState.isEndless && remainingSpectrum <= 0) {
                 endGame(true);
                 return;
             }
@@ -1541,9 +1565,11 @@
             for (let i = 0; i < count; i++) {
                 const offset = count === 1 ? 0 : (i - (count - 1) / 2) * p.spreadAngle;
                 const ang = baseAngle + offset;
+                const muzzleX = p.x + Math.cos(ang) * (p.radius + 6);
+                const muzzleY = p.y + Math.sin(ang) * (p.radius + 6);
                 gameState.bullets.push({
-                    x: p.x + Math.cos(ang) * (p.radius + 6),
-                    y: p.y + Math.sin(ang) * (p.radius + 6),
+                    x: muzzleX,
+                    y: muzzleY,
                     vx: Math.cos(ang) * speed,
                     vy: Math.sin(ang) * speed,
                     radius,
@@ -1556,15 +1582,33 @@
                     isHoming: p.homingStrength > 0,
                     isFast: p.bulletSpeedMult > 1.25
                 });
+
+                for (let n = 0; n < 3; n++) {
+                    const spread = (Math.random() - 0.5) * 1.4;
+                    gameState.particles.push({
+                        type: 'fire',
+                        x: muzzleX,
+                        y: muzzleY,
+                        vx: Math.cos(ang + spread) * (70 + Math.random() * 60),
+                        vy: Math.sin(ang + spread) * (70 + Math.random() * 60),
+                        radius: 2.5 + Math.random() * 3.2,
+                        color: p.accentColor,
+                        life: 0.14 + Math.random() * 0.12,
+                        maxLife: 0.22,
+                        glow: true
+                    });
+                }
             }
 
             // Rear Guard Cannon
             for (let r = 0; r < p.rearCannon; r++) {
                 const rearOffset = p.rearCannon === 1 ? 0 : (r - (p.rearCannon - 1) / 2) * 0.16;
                 const rearAng = baseAngle + Math.PI + rearOffset;
+                const rearX = p.x + Math.cos(rearAng) * (p.radius + 4);
+                const rearY = p.y + Math.sin(rearAng) * (p.radius + 4);
                 gameState.bullets.push({
-                    x: p.x + Math.cos(rearAng) * (p.radius + 4),
-                    y: p.y + Math.sin(rearAng) * (p.radius + 4),
+                    x: rearX,
+                    y: rearY,
                     vx: Math.cos(rearAng) * speed * 0.92,
                     vy: Math.sin(rearAng) * speed * 0.92,
                     radius: radius * 0.9,
@@ -1820,6 +1864,25 @@
 
             p.x = Math.max(p.radius + 8, Math.min(width - p.radius - 8, p.x));
             p.y = Math.max(p.radius + 8, Math.min(height - p.radius - 8, p.y));
+
+            const engineAngle = Math.atan2(input.mouseY - p.y, input.mouseX - p.x);
+            const enginePulse = p.dashActiveTimer > 0 ? 1.2 : 0.7;
+            if (Math.random() < 0.24 * enginePulse) {
+                const flareDistance = p.radius + 12 + (p.dashActiveTimer > 0 ? 10 : 0);
+                const flareX = p.x - Math.cos(engineAngle) * flareDistance;
+                const flareY = p.y - Math.sin(engineAngle) * flareDistance;
+                gameState.particles.push({
+                    type: 'fire',
+                    x: flareX + (Math.random() - 0.5) * 6,
+                    y: flareY + (Math.random() - 0.5) * 6,
+                    vx: -Math.cos(engineAngle) * (40 + Math.random() * 35),
+                    vy: -Math.sin(engineAngle) * (40 + Math.random() * 35),
+                    radius: 2 + Math.random() * 4,
+                    color: p.accentColor,
+                    life: 0.12 + Math.random() * 0.14,
+                    maxLife: 0.22
+                });
+            }
 
             // Player Shooting
             if ((input.mouseDown || input.autoFire) && p.fireTimer <= 0) {
@@ -2261,6 +2324,16 @@
         // =========================================================================
         // 9. CANVAS RENDERING (SHAPES, BOSSES, HIGH-VISIBILITY WHITE RETICLE)
         // =========================================================================
+        function hexToRgba(hex, alpha = 1) {
+            const value = hex.replace('#', '');
+            const full = value.length === 3 ? value.split('').map(c => c + c).join('') : value;
+            const int = parseInt(full, 16);
+            const r = (int >> 16) & 255;
+            const g = (int >> 8) & 255;
+            const b = int & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
         function drawPolygon(x, y, radius, sides, rotation) {
             ctx.beginPath();
             for (let i = 0; i < sides; i++) {
@@ -2296,7 +2369,11 @@
             }
 
             // Background + Persistent Hex Paint Layer
-            ctx.fillStyle = '#080c17';
+            const bg = ctx.createRadialGradient(width * 0.5, height * 0.5, 40, width * 0.5, height * 0.5, width * 0.8);
+            bg.addColorStop(0, 'rgba(15, 23, 42, 0.95)');
+            bg.addColorStop(0.55, '#0b1120');
+            bg.addColorStop(1, '#080c17');
+            ctx.fillStyle = bg;
             ctx.fillRect(0, 0, width, height);
             if (paintCanvas.width > 0 && paintCanvas.height > 0) {
                 ctx.drawImage(paintCanvas, 0, 0);
@@ -2429,6 +2506,10 @@
                     ctx.stroke();
                 }
                 ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius + 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = hexToRgba(b.color, 0.22);
+                ctx.fill();
+                ctx.beginPath();
                 ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
                 ctx.fillStyle = '#ffffff';
                 ctx.fill();
@@ -2479,6 +2560,24 @@
                 if (p.invulnTimer > 0 && Math.floor(p.invulnTimer * 20) % 2 === 0) {
                     ctx.globalAlpha = 0.55;
                 }
+
+                const engineFlame = 16 + (p.dashActiveTimer > 0 ? 18 : 0) + Math.sin(performance.now() * 0.02) * 4;
+                const flameGradient = ctx.createRadialGradient(-p.radius - 18, 0, 2, -p.radius - 18, 0, engineFlame * 2.2);
+                flameGradient.addColorStop(0, hexToRgba('#fef3c7', 1));
+                flameGradient.addColorStop(0.18, hexToRgba(p.accentColor, 0.95));
+                flameGradient.addColorStop(0.5, hexToRgba('#f97316', 0.7));
+                flameGradient.addColorStop(1, hexToRgba('#f97316', 0));
+                ctx.beginPath();
+                ctx.moveTo(-p.radius - 12, 0);
+                ctx.lineTo(-p.radius - 18 - engineFlame, -6 - Math.random() * 2);
+                ctx.lineTo(-p.radius - 10 - engineFlame * 0.7, 0);
+                ctx.lineTo(-p.radius - 18 - engineFlame, 6 + Math.random() * 2);
+                ctx.closePath();
+                ctx.fillStyle = flameGradient;
+                ctx.fill();
+
+                ctx.shadowColor = p.primaryColor;
+                ctx.shadowBlur = 20;
                 ctx.beginPath();
                 ctx.moveTo(p.radius + 5, 0);
                 ctx.lineTo(-p.radius, -p.radius * 0.85);
@@ -2521,6 +2620,15 @@
                     ctx.strokeStyle = pt.color;
                     ctx.lineWidth = 2.5;
                     ctx.stroke();
+                } else if (pt.type === 'fire') {
+                    const glow = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, pt.radius * 4);
+                    glow.addColorStop(0, hexToRgba(pt.color, 1));
+                    glow.addColorStop(0.35, hexToRgba(pt.color, 0.7));
+                    glow.addColorStop(1, hexToRgba(pt.color, 0));
+                    ctx.fillStyle = glow;
+                    ctx.beginPath();
+                    ctx.arc(pt.x, pt.y, pt.radius * 4, 0, Math.PI * 2);
+                    ctx.fill();
                 } else {
                     ctx.beginPath();
                     ctx.arc(pt.x, pt.y, pt.radius, 0, Math.PI * 2);
