@@ -180,7 +180,7 @@
             </h1>
             <p class="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed mb-4">
                 Every enemy is a unique hexadecimal color (<span class="font-mono-code text-pink-400">#FF00FF</span>, <span class="font-mono-code text-cyan-400">#00FFFF</span>, <span class="font-mono-code text-amber-300">#FFD700</span>…).
-                Eradicate <strong class="text-white">10 unique hexes per wave</strong>, draft upgrades, and wipe out the entire RGB spectrum.
+                Classic mode clears the selected spectrum one wave at a time; Endless mode spawns one enemy every second and grants an upgrade every 10 kills.
             </p>
 
             <!-- Ship Class Selector -->
@@ -281,12 +281,17 @@
                     <span>1.5x Veteran</span>
                     <span>2.0x Nightmare</span>
                 </div>
+                <button id="btnBulletHell" type="button" aria-pressed="false"
+                    class="mt-2 w-full rounded-xl px-3 py-2 bg-slate-900/80 border border-slate-700/80 hover:border-rose-400 text-left transition flex flex-wrap items-center justify-between gap-1">
+                    <span class="font-display text-[11px] font-bold tracking-wider text-rose-300">BULLET HELL</span>
+                    <span class="font-mono-code text-[10px] text-slate-400">2.0x • 2x bullets • rapid fire</span>
+                </button>
             </div>
 
             <div class="mb-4 text-left bg-slate-900/75 rounded-2xl p-3 border border-slate-800">
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Run Mode</span>
-                    <span class="font-mono-code text-[10px] text-slate-400">every 10 kills grants a module</span>
+                    <span class="font-mono-code text-[10px] text-slate-400">Endless: +1 enemy/sec • upgrade every 10 kills</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <button type="button" data-mode="classic" class="mode-btn rounded-xl p-2.5 border text-left transition bg-indigo-500/20 border-indigo-400 text-white font-bold text-[11px] tracking-wider uppercase">
@@ -1122,8 +1127,11 @@
             selectedClass: 'vanguard',
             selectedMode: 'classic',
             isEndless: false,
+            isBulletHell: false,
             difficultyMult: 1.0,
             wave: 1,
+            endlessSpawnTimer: 1,
+            endlessSpawnsThisWave: 0,
             rerollsLeft: 2,
             usedColorIds: new Set(),
             killedColors: [],
@@ -1169,6 +1177,20 @@
                         : 'bit-mode-btn rounded-xl p-2.5 bg-slate-900/80 border border-slate-700/80 hover:border-slate-500 text-left transition';
                 });
                 updateHUD();
+            });
+        });
+
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mode = btn.dataset.mode;
+                if (mode !== 'classic' && mode !== 'endless') return;
+                gameState.selectedMode = mode;
+                document.querySelectorAll('.mode-btn').forEach(b => {
+                    const active = b.dataset.mode === mode;
+                    b.className = active
+                        ? 'mode-btn rounded-xl p-2.5 border text-left transition bg-indigo-500/20 border-indigo-400 text-white font-bold text-[11px] tracking-wider uppercase'
+                        : 'mode-btn rounded-xl p-2.5 border text-left transition bg-slate-900/80 border-slate-700/80 hover:border-slate-500 text-slate-300 font-bold text-[11px] tracking-wider uppercase';
+                });
             });
         });
 
@@ -1286,6 +1308,8 @@
         // =========================================================================
         function resetGame() {
             gameState.wave = 1;
+            gameState.endlessSpawnTimer = 1;
+            gameState.endlessSpawnsThisWave = 0;
             gameState.rerollsLeft = 2;
             gameState.isEndless = gameState.selectedMode === 'endless';
             gameState.killsSinceUpgrade = 0;
@@ -1360,10 +1384,10 @@
             gameState.player = p;
             gameState.status = 'PLAYING';
             updateHUD();
-            spawnWave(1);
+            if (!gameState.isEndless) spawnWave(1);
         }
 
-        function spawnWave(wave) {
+        function spawnWave(wave, spawnCount = COLORS_PER_WAVE) {
             const mode = BIT_MODES[gameState.selectedBits] || BIT_MODES[24];
             let remainingSpectrum = mode.totalColors - gameState.usedColorIds.size;
             if (gameState.isEndless && remainingSpectrum <= 0) {
@@ -1375,8 +1399,9 @@
                 return;
             }
 
-            const count = Math.min(COLORS_PER_WAVE, remainingSpectrum);
-            const isBossWave = wave % 5 === 0;
+            const count = Math.min(spawnCount, remainingSpectrum);
+            const isBossWave = wave % 5 === 0
+                && (!gameState.isEndless || gameState.endlessSpawnsThisWave === COLORS_PER_WAVE - 1);
             const diff = gameState.difficultyMult || 1.0;
 
             // Gentle opening waves 1-2, then exponential scaling multiplied by Threat Difficulty
@@ -1433,10 +1458,10 @@
                     orbiter: 24,
                     star: 30,
                     splitter: 28,
-                    star_boss: 260,
-                    cube_boss: 290,
-                    void_boss: 320,
-                    cross_boss: 300
+                    star_boss: 390,
+                    cube_boss: 435,
+                    void_boss: 480,
+                    cross_boss: 450
                 };
 
                 const baseSpeedMap = {
@@ -1446,10 +1471,10 @@
                     orbiter: 125,
                     star: 78,
                     splitter: 88,
-                    star_boss: 68,
-                    cube_boss: 215,
-                    void_boss: 74,
-                    cross_boss: 72
+                    star_boss: 78,
+                    cube_boss: 230,
+                    void_boss: 85,
+                    cross_boss: 83
                 };
 
                 const radiusMap = {
@@ -1482,10 +1507,11 @@
                     hp: maxHp,
                     maxHp,
                     speed: moveSpeed,
-                    damage: Math.max(5, Math.round((isBoss ? 18 : 9) * damageScale)),
+                    damage: Math.max(5, Math.round((isBoss ? 24 : 9) * damageScale)),
                     angle: Math.random() * Math.PI * 2,
                     spinAngle: Math.random() * Math.PI * 2,
-                    fireTimer: 1.0 + Math.random() * 1.4,
+                    fireTimer: (isBoss ? 0.7 + Math.random() * 0.45 : 1.0 + Math.random() * 1.4)
+                        / (gameState.isBulletHell ? 3 : 1),
                     dashTimer: 1.8 + Math.random() * 1.2,
                     dashBurst: 0,
                     hitFlash: 0,
@@ -1577,7 +1603,6 @@
                     pierceLeft: p.pierce,
                     bouncesLeft: p.ricochet,
                     hitSet: new Set(),
-                    life: 2.2,
                     color: p.primaryColor,
                     isHoming: p.homingStrength > 0,
                     isFast: p.bulletSpeedMult > 1.25
@@ -1616,7 +1641,6 @@
                     pierceLeft: p.pierce,
                     bouncesLeft: p.ricochet,
                     hitSet: new Set(),
-                    life: 1.8,
                     color: '#a78bfa',
                     isHoming: p.homingStrength > 0,
                     isFast: p.bulletSpeedMult > 1.25
@@ -1757,7 +1781,6 @@
                         pierceLeft: 0,
                         bouncesLeft: 0,
                         hitSet: new Set(),
-                        life: 0.65,
                         color: enemy.color.hex,
                         isHoming: false,
                         isFast: true
@@ -1768,6 +1791,7 @@
             if (!enemy.isMiniSplit) {
                 gameState.killedColors.push(enemy.color);
                 addKillFeedBanner(enemy.color);
+                if (gameState.isEndless) gameState.killsSinceUpgrade += 1;
                 if (p && p.lifesteal > 0 && p.hp < p.maxHp) {
                     p.hp = Math.min(p.maxHp, p.hp + p.lifesteal);
                 }
@@ -1824,6 +1848,20 @@
             if (gameState.status !== 'PLAYING') return;
             const p = gameState.player;
             if (!p) return;
+
+            if (gameState.isEndless) {
+                gameState.endlessSpawnTimer -= dt;
+                if (gameState.endlessSpawnTimer <= 0) {
+                    spawnWave(gameState.wave, 1);
+                    gameState.endlessSpawnTimer += 1;
+                    gameState.endlessSpawnsThisWave += 1;
+                    if (gameState.endlessSpawnsThisWave >= COLORS_PER_WAVE) {
+                        gameState.wave += 1;
+                        gameState.endlessSpawnsThisWave = 0;
+                        updateHUD();
+                    }
+                }
+            }
 
             if (gameState.screenShake > 0) {
                 gameState.screenShake = Math.max(0, gameState.screenShake - dt * 32);
@@ -1971,7 +2009,6 @@
                                 pierceLeft: 0,
                                 bouncesLeft: 0,
                                 hitSet: new Set(),
-                                life: 1.2,
                                 color: '#2dd4bf',
                                 isHoming: false,
                                 isFast: true
@@ -1984,11 +2021,6 @@
             // Player Bullets
             for (let i = gameState.bullets.length - 1; i >= 0; i--) {
                 const b = gameState.bullets[i];
-                b.life -= dt;
-                if (b.life <= 0) {
-                    gameState.bullets.splice(i, 1);
-                    continue;
-                }
 
                 // Gentle Homing Curve
                 if (b.isHoming && p.homingStrength > 0) {
@@ -2083,6 +2115,8 @@
             // Enemy AI & Movement
             const expSteps = Math.max(0, gameState.wave - 2);
             const enemyBulletSpd = 215 * Math.min(1.85, Math.pow(1.04, expSteps));
+            const enemyFireRateMult = gameState.isBulletHell ? 3 : 1;
+            const enemyBulletCountMult = gameState.isBulletHell ? 2 : 1;
 
             for (const enemy of gameState.enemies) {
                 if (enemy.hp <= 0) continue;
@@ -2132,20 +2166,39 @@
 
                     if (hitX || hitY) {
                         const isCorner = hitX && hitY;
-                        const spokes = isCorner ? 14 : 8;
+                        const spokes = (isCorner ? 18 : 10) * enemyBulletCountMult;
                         spawnExplosion(enemy.x, enemy.y, isCorner ? 110 : 75, enemy.color.hex);
                         for (let s = 0; s < spokes; s++) {
                             const bang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
                             gameState.enemyBullets.push({
                                 x: enemy.x,
                                 y: enemy.y,
-                                vx: Math.cos(bang) * (enemyBulletSpd * (isCorner ? 1.18 : 1.0)),
-                                vy: Math.sin(bang) * (enemyBulletSpd * (isCorner ? 1.18 : 1.0)),
+                                vx: Math.cos(bang) * enemyBulletSpd * 1.2 * (isCorner ? 1.18 : 1.0),
+                                vy: Math.sin(bang) * enemyBulletSpd * 1.2 * (isCorner ? 1.18 : 1.0),
                                 radius: isCorner ? 7 : 6,
                                 damage: enemy.damage,
                                 color: enemy.color.hex,
-                                life: 4.5
                             });
+                        }
+                    }
+
+                    if (gameState.isBulletHell) {
+                        enemy.fireTimer -= dt;
+                        if (enemy.fireTimer <= 0) {
+                            enemy.fireTimer = 1.2 / enemyFireRateMult;
+                            const spokes = 6 * enemyBulletCountMult;
+                            for (let s = 0; s < spokes; s++) {
+                                const bang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
+                                gameState.enemyBullets.push({
+                                    x: enemy.x,
+                                    y: enemy.y,
+                                    vx: Math.cos(bang) * enemyBulletSpd * 1.2,
+                                    vy: Math.sin(bang) * enemyBulletSpd * 1.2,
+                                    radius: 6,
+                                    damage: enemy.damage,
+                                    color: enemy.color.hex,
+                                });
+                            }
                         }
                     }
                 } else if (enemy.archetype === 'dasher') {
@@ -2171,8 +2224,10 @@
 
                     enemy.fireTimer -= dt;
                     if (enemy.fireTimer <= 0) {
-                        enemy.fireTimer = 2.2;
-                        for (const off of [-0.14, 0.14]) {
+                        enemy.fireTimer = 2.2 / enemyFireRateMult;
+                        const bulletCount = 2 * enemyBulletCountMult;
+                        for (let s = 0; s < bulletCount; s++) {
+                            const off = (s / (bulletCount - 1) - 0.5) * 0.28;
                             const ang = toPlayerAng + off;
                             gameState.enemyBullets.push({
                                 x: enemy.x,
@@ -2182,7 +2237,6 @@
                                 radius: 5.5,
                                 damage: enemy.damage,
                                 color: enemy.color.hex,
-                                life: 4.0
                             });
                         }
                     }
@@ -2193,9 +2247,10 @@
                     }
                     enemy.fireTimer -= dt;
                     if (enemy.fireTimer <= 0) {
-                        enemy.fireTimer = 2.3;
-                        for (let s = 0; s < 5; s++) {
-                            const ang = enemy.spinAngle + (s / 5) * Math.PI * 2;
+                        enemy.fireTimer = 2.3 / enemyFireRateMult;
+                        const spokes = 5 * enemyBulletCountMult;
+                        for (let s = 0; s < spokes; s++) {
+                            const ang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
                             gameState.enemyBullets.push({
                                 x: enemy.x,
                                 y: enemy.y,
@@ -2204,7 +2259,6 @@
                                 radius: 5.5,
                                 damage: enemy.damage,
                                 color: enemy.color.hex,
-                                life: 4.2
                             });
                         }
                     }
@@ -2213,19 +2267,19 @@
                     enemy.y += Math.sin(toPlayerAng) * effSpeed * dt;
                     enemy.fireTimer -= dt;
                     if (enemy.fireTimer <= 0) {
-                        enemy.fireTimer = 1.65;
-                        const spokes = enemy.archetype === 'void_boss' ? 8 : enemy.archetype === 'cross_boss' ? 8 : 6;
+                        enemy.fireTimer = 1.3 / enemyFireRateMult;
+                        const spokes = (enemy.archetype === 'void_boss' ? 10 : enemy.archetype === 'cross_boss' ? 12 : 8)
+                            * enemyBulletCountMult;
                         for (let s = 0; s < spokes; s++) {
                             const ang = enemy.spinAngle + (s / spokes) * Math.PI * 2;
                             gameState.enemyBullets.push({
                                 x: enemy.x,
                                 y: enemy.y,
-                                vx: Math.cos(ang) * enemyBulletSpd,
-                                vy: Math.sin(ang) * enemyBulletSpd,
-                                radius: 6.5,
+                                vx: Math.cos(ang) * enemyBulletSpd * 1.2,
+                                vy: Math.sin(ang) * enemyBulletSpd * 1.2,
+                                radius: 7,
                                 damage: enemy.damage,
                                 color: enemy.color.hex,
-                                life: 4.8
                             });
                         }
                     }
@@ -2259,10 +2313,9 @@
             // Enemy Bullets
             for (let i = gameState.enemyBullets.length - 1; i >= 0; i--) {
                 const eb = gameState.enemyBullets[i];
-                eb.life -= dt;
                 eb.x += eb.vx * dt;
                 eb.y += eb.vy * dt;
-                if (eb.life <= 0 || eb.x < 0 || eb.x > width || eb.y < 0 || eb.y > height) {
+                if (eb.x < 0 || eb.x > width || eb.y < 0 || eb.y > height) {
                     gameState.enemyBullets.splice(i, 1);
                     continue;
                 }
@@ -2288,7 +2341,13 @@
             gameState.enemies = gameState.enemies.filter(e => e.hp > 0);
             updateHUD();
 
-            if (gameState.enemies.length === 0) {
+            if (gameState.isEndless) {
+                if (gameState.killsSinceUpgrade >= COLORS_PER_WAVE) {
+                    gameState.killsSinceUpgrade -= COLORS_PER_WAVE;
+                    updateHUD();
+                    openUpgradeDraft();
+                }
+            } else if (gameState.enemies.length === 0) {
                 openUpgradeDraft();
             }
 
@@ -2738,10 +2797,17 @@
             const killedCount = gameState.killedColors.length;
 
             document.getElementById('waveBadge').textContent = `WAVE ${gameState.wave}`;
-            const activeHexes = gameState.enemies.filter(e => !e.isMiniSplit).length;
-            document.getElementById('waveRemainingText').textContent = `${activeHexes} Hexes Left`;
-            document.getElementById('totalColorsText').textContent = `${killedCount.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
-            const pct = Math.min(100, (killedCount / mode.totalColors) * 100);
+            const activeHexes = gameState.isEndless
+                ? gameState.enemies.length
+                : gameState.enemies.filter(e => !e.isMiniSplit).length;
+            document.getElementById('waveRemainingText').textContent = gameState.isEndless
+                ? `${activeHexes} Enemies • ${COLORS_PER_WAVE - gameState.killsSinceUpgrade} Kills to Upgrade`
+                : `${activeHexes} Hexes Left`;
+            document.getElementById('totalColorsText').textContent = gameState.isEndless
+                ? `${killedCount.toLocaleString()} KILLS`
+                : `${killedCount.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
+            const progressCount = gameState.isEndless ? gameState.usedColorIds.size : killedCount;
+            const pct = Math.min(100, (progressCount / mode.totalColors) * 100);
             document.getElementById('spectrumProgressBar').style.width = `${pct}%`;
 
             if (!p) return;
@@ -2816,9 +2882,11 @@
                     const overlay = document.getElementById('upgradeOverlay');
                     overlay.classList.add('hidden');
                     overlay.classList.remove('flex');
-                    gameState.wave += 1;
                     gameState.status = 'PLAYING';
-                    spawnWave(gameState.wave);
+                    if (!gameState.isEndless) {
+                        gameState.wave += 1;
+                        spawnWave(gameState.wave);
+                    }
                 });
                 container.appendChild(card);
             });
@@ -2826,7 +2894,7 @@
 
         function openUpgradeDraft() {
             const mode = BIT_MODES[gameState.selectedBits];
-            if (gameState.killedColors.length >= mode.totalColors) {
+            if (!gameState.isEndless && gameState.killedColors.length >= mode.totalColors) {
                 endGame(true);
                 return;
             }
@@ -2859,7 +2927,9 @@
 
             gameState.status = 'UPGRADE';
             document.getElementById('waveClearBadge').textContent =
-                `WAVE ${gameState.wave} CLEARED${healSummary} — ${gameState.killedColors.length.toLocaleString()} / ${mode.totalColors.toLocaleString()} ERADICATED`;
+                gameState.isEndless
+                    ? `${COLORS_PER_WAVE} KILLS — ${gameState.killedColors.length.toLocaleString()} TOTAL${healSummary}`
+                    : `WAVE ${gameState.wave} CLEARED${healSummary} — ${gameState.killedColors.length.toLocaleString()} / ${mode.totalColors.toLocaleString()} ERADICATED`;
             renderUpgradeChoices();
             const overlay = document.getElementById('upgradeOverlay');
             overlay.classList.remove('hidden');
@@ -2901,8 +2971,11 @@
         function renderDex() {
             const mode = BIT_MODES[gameState.selectedBits];
             const totalKilled = gameState.killedColors.length;
-            document.getElementById('dexCountBadge').textContent = `${totalKilled.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
-            const pct = (totalKilled / mode.totalColors) * 100;
+            document.getElementById('dexCountBadge').textContent = gameState.isEndless
+                ? `${totalKilled.toLocaleString()} KILLS`
+                : `${totalKilled.toLocaleString()} / ${mode.totalColors.toLocaleString()}`;
+            const progressCount = gameState.isEndless ? gameState.usedColorIds.size : totalKilled;
+            const pct = (progressCount / mode.totalColors) * 100;
             document.getElementById('dexPercentBadge').textContent = `${pct.toFixed(5)}%`;
 
             // Draw Spectrum Map
@@ -3014,10 +3087,10 @@
                 `).join('');
             } else if (tab === 'bosses') {
                 const bossesInfo = [
-                    { icon: '✦', name: 'Nova Star Boss (Waves 5, 25…)', hp: '260 Base HP', desc: '6-pointed colossal star boss that advances steadily while firing rotating 6-way star bursts.' },
-                    { icon: '▣', name: 'Prism Cube Boss (Waves 10, 30…)', hp: '290 Base HP', desc: 'Ricochets diagonally off arena walls and corners—firing an 8-way radial burst on every wall bounce and a 14-way burst on corner hits.' },
-                    { icon: '⯃', name: 'Void Octagon Boss (Waves 15, 35…)', hp: '320 Base HP', desc: 'Heavily armored 8-sided dreadnought firing dense 8-way radial spreads.' },
-                    { icon: '✚', name: 'Crucible Cross Boss (Waves 20, 40…)', hp: '300 Base HP', desc: 'Spinning 4-pointed solar cross firing rapid rotating cross barrages.' }
+                    { icon: '✦', name: 'Nova Star Boss (Waves 5, 25…)', hp: '390 Base HP', desc: '6-pointed colossal star boss that advances steadily while firing fast rotating 8-way star bursts.' },
+                    { icon: '▣', name: 'Prism Cube Boss (Waves 10, 30…)', hp: '435 Base HP', desc: 'Ricochets diagonally off arena walls and corners—firing 10-way radial bursts on wall bounces and 18-way bursts on corner hits.' },
+                    { icon: '⯃', name: 'Void Octagon Boss (Waves 15, 35…)', hp: '480 Base HP', desc: 'Heavily armored 8-sided dreadnought firing dense, fast 10-way radial spreads.' },
+                    { icon: '✚', name: 'Crucible Cross Boss (Waves 20, 40…)', hp: '450 Base HP', desc: 'Spinning 4-pointed solar cross firing rapid rotating 12-way barrages.' }
                 ];
                 area.innerHTML = bossesInfo.map(b => `
                     <div class="bg-slate-900/80 rounded-2xl p-3.5 border border-slate-800 flex items-start gap-3">
@@ -3037,6 +3110,7 @@
                         <div class="font-display text-sm font-bold text-indigo-300">Exponential Difficulty & End-of-Wave Repair</div>
                         <p>• <strong class="text-white">Opening Waves (1–2):</strong> Reduced HP (0.75x / 0.95x) and gentle speeds so you can build your foundation.</p>
                         <p>• <strong class="text-white">Exponential Ramp (Wave 3+):</strong> Enemy HP scales by <span class="font-mono-code text-amber-300">1.18^(wave - 2) × Difficulty</span>, while damage scales by <span class="font-mono-code text-rose-300">1.10^(wave - 2) × Difficulty</span>.</p>
+                        <p>• <strong class="text-white">Bullet Hell:</strong> Fixes threat scaling at <span class="font-mono-code text-rose-300">2.0x</span>, doubles enemy projectile volleys, and triples ranged enemy fire rate.</p>
                         <p>• <strong class="text-white">End-of-Round Hull Repair:</strong> Clearing any wave automatically repairs <span class="font-mono-code text-emerald-300">15% Max HP</span> (minimum +12 HP).</p>
                     </div>
                 `;
@@ -3082,13 +3156,17 @@
         // Difficulty Slider
         const difficultySlider = document.getElementById('difficultySlider');
         const difficultyLabelBadge = document.getElementById('difficultyLabelBadge');
+        const bulletHellButton = document.getElementById('btnBulletHell');
         if (difficultySlider && difficultyLabelBadge) {
-            difficultySlider.addEventListener('input', () => {
+            const updateDifficultyBadge = () => {
                 const val = parseFloat(difficultySlider.value) || 1.0;
                 gameState.difficultyMult = val;
                 let tier = 'STANDARD';
                 let colorClass = 'text-emerald-300';
-                if (val <= 0.8) {
+                if (gameState.isBulletHell) {
+                    tier = 'BULLET HELL';
+                    colorClass = 'text-rose-300';
+                } else if (val <= 0.8) {
                     tier = 'CHILL';
                     colorClass = 'text-sky-300';
                 } else if (val >= 1.7) {
@@ -3100,7 +3178,25 @@
                 }
                 difficultyLabelBadge.className = `font-mono-code text-xs font-extrabold ${colorClass}`;
                 difficultyLabelBadge.textContent = `${tier} (${val.toFixed(1)}x)`;
+                if (bulletHellButton) {
+                    bulletHellButton.setAttribute('aria-pressed', String(gameState.isBulletHell));
+                    bulletHellButton.className = gameState.isBulletHell
+                        ? 'mt-2 w-full rounded-xl px-3 py-2 bg-rose-500/15 border border-rose-400/60 text-left transition flex flex-wrap items-center justify-between gap-1'
+                        : 'mt-2 w-full rounded-xl px-3 py-2 bg-slate-900/80 border border-slate-700/80 hover:border-rose-400 text-left transition flex flex-wrap items-center justify-between gap-1';
+                }
+            };
+
+            difficultySlider.addEventListener('input', () => {
+                gameState.isBulletHell = false;
+                updateDifficultyBadge();
             });
+            if (bulletHellButton) {
+                bulletHellButton.addEventListener('click', () => {
+                    gameState.isBulletHell = !gameState.isBulletHell;
+                    if (gameState.isBulletHell) difficultySlider.value = '2.0';
+                    updateDifficultyBadge();
+                });
+            }
         }
 
         document.getElementById('btnStartGame').addEventListener('click', () => {
